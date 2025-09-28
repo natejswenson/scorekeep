@@ -16,9 +16,9 @@ const GameScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* Team 1 */}
-      <View style={styles.teamContainer}>
-        <Text style={styles.teamName}>{team1.name}</Text>
+      {/* Team 1 - Red Side */}
+      <View testID="team1-side" style={[styles.teamSide, styles.redSide]}>
+        <Text testID="team1-name" style={styles.teamName}>{team1.name}</Text>
         <TouchableOpacity
           testID="team1-score-area"
           style={styles.scoreArea}
@@ -37,9 +37,9 @@ const GameScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Team 2 */}
-      <View style={styles.teamContainer}>
-        <Text style={styles.teamName}>{team2.name}</Text>
+      {/* Team 2 - Blue Side */}
+      <View testID="team2-side" style={[styles.teamSide, styles.blueSide]}>
+        <Text testID="team2-name" style={styles.teamName}>{team2.name}</Text>
         <TouchableOpacity
           testID="team2-score-area"
           style={styles.scoreArea}
@@ -58,13 +58,13 @@ const GameScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Reset Button */}
+      {/* Reset Icon - Centered */}
       <TouchableOpacity
         testID="reset-button"
         style={styles.resetButton}
         onPress={() => dispatch(resetScores())}
       >
-        <Text style={styles.resetButtonText}>Reset</Text>
+        <Text style={styles.resetIcon}>↻</Text>
       </TouchableOpacity>
     </View>
   );
@@ -74,59 +74,81 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    position: 'relative',
+  },
+  teamSide: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
-  teamContainer: {
-    flex: 1,
-    alignItems: 'center',
+  redSide: {
+    backgroundColor: '#FF0000',
+  },
+  blueSide: {
+    backgroundColor: '#0000FF',
   },
   teamName: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#FFFFFF',
+    marginBottom: 40,
+    textAlign: 'center',
   },
   scoreArea: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#f0f0f0',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 40,
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
   },
   score: {
-    fontSize: 48,
+    fontSize: 72,
     fontWeight: 'bold',
+    color: '#FFFFFF',
   },
   decrementButton: {
-    width: 50,
-    height: 50,
-    backgroundColor: '#ff4444',
-    borderRadius: 25,
+    width: 60,
+    height: 60,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
   },
   buttonText: {
-    color: 'white',
-    fontSize: 24,
+    color: '#FFFFFF',
+    fontSize: 32,
     fontWeight: 'bold',
   },
   resetButton: {
     position: 'absolute',
-    bottom: 50,
     left: '50%',
-    transform: [{ translateX: -50 }],
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
+    top: '50%',
+    transform: [{ translateX: -35 }, { translateY: -35 }],
+    width: 70,
+    height: 70,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  resetButtonText: {
-    color: 'white',
-    fontSize: 18,
+  resetIcon: {
+    fontSize: 32,
+    color: '#333333',
     fontWeight: 'bold',
   },
 });

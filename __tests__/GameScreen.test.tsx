@@ -116,3 +116,59 @@ describe('Core Scoring', () => {
     expect(getByTestId('team2-score')).toHaveTextContent('0');
   });
 });
+
+describe('Visual Design Specification', () => {
+  test('should display team 1 side with red background', () => {
+    const store = createTestStore();
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <GameScreen />
+      </Provider>
+    );
+
+    const team1Side = getByTestId('team1-side');
+    expect(team1Side).toHaveStyle({ backgroundColor: '#FF0000' });
+  });
+
+  test('should display team 2 side with blue background', () => {
+    const store = createTestStore();
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <GameScreen />
+      </Provider>
+    );
+
+    const team2Side = getByTestId('team2-side');
+    expect(team2Side).toHaveStyle({ backgroundColor: '#0000FF' });
+  });
+
+  test('should display white text on colored backgrounds', () => {
+    const store = createTestStore();
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <GameScreen />
+      </Provider>
+    );
+
+    expect(getByTestId('team1-name')).toHaveStyle({ color: '#FFFFFF' });
+    expect(getByTestId('team2-name')).toHaveStyle({ color: '#FFFFFF' });
+    expect(getByTestId('team1-score')).toHaveStyle({ color: '#FFFFFF' });
+    expect(getByTestId('team2-score')).toHaveStyle({ color: '#FFFFFF' });
+  });
+
+  test('should have centered reset icon', () => {
+    const store = createTestStore();
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <GameScreen />
+      </Provider>
+    );
+
+    const resetButton = getByTestId('reset-button');
+    expect(resetButton).toHaveStyle({
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+    });
+  });
+});
