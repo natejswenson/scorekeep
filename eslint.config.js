@@ -1,10 +1,10 @@
-import js from '@eslint/js';
-import tsPlugin from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
+const js = require('@eslint/js');
+const tsPlugin = require('@typescript-eslint/eslint-plugin');
+const tsParser = require('@typescript-eslint/parser');
 
-export default [
+module.exports = [
   {
-    ignores: ['**/__tests__/**/*', '**/*.test.{ts,tsx}', 'node_modules/', 'coverage/'],
+    ignores: ['**/__tests__/**/*', '**/*.test.{ts,tsx}', 'node_modules/', 'coverage/', 'dist/'],
   },
   js.configs.recommended,
   {
@@ -33,7 +33,7 @@ export default [
     files: ['babel.config.js', 'eslint.config.js'],
     languageOptions: {
       ecmaVersion: 'latest',
-      sourceType: 'module',
+      sourceType: 'script',
       globals: {
         module: 'readonly',
         require: 'readonly',
