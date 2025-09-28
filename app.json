@@ -25,7 +25,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "bundler": "metro",
+      "build": {
+        "babel": {
+          "include": [
+            "node_modules/@expo/metro-runtime"
+          ]
+        }
+      }
     }
   }
 }
