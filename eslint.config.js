@@ -30,7 +30,7 @@ module.exports = [
     },
   },
   {
-    files: ['babel.config.js', 'eslint.config.js'],
+    files: ['babel.config.js', 'eslint.config.js', 'metro.config.js', 'scripts/**/*.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'script',
@@ -39,6 +39,9 @@ module.exports = [
         require: 'readonly',
         process: 'readonly',
         __dirname: 'readonly',
+        console: 'readonly',
+        Buffer: 'readonly',
+        global: 'readonly',
       },
     },
   },
