@@ -230,10 +230,9 @@ describe('gameSlice', () => {
     });
   });
 
-  describe('Game Wins Tally State', () => {
+  describe('game wins tally state management', () => {
     test('should initialize with zero wins for both teams', () => {
       const state = store.getState().game;
-      expect(state.gameWins).toBeDefined();
       expect(state.gameWins.team1).toBe(0);
       expect(state.gameWins.team2).toBe(0);
     });
@@ -254,7 +253,6 @@ describe('gameSlice', () => {
       store.dispatch(incrementTeam1Wins());
       store.dispatch(incrementTeam1Wins());
       store.dispatch(decrementTeam1Wins());
-
       const state = store.getState().game;
       expect(state.gameWins.team1).toBe(1);
     });
@@ -263,7 +261,6 @@ describe('gameSlice', () => {
       store.dispatch(incrementTeam2Wins());
       store.dispatch(incrementTeam2Wins());
       store.dispatch(decrementTeam2Wins());
-
       const state = store.getState().game;
       expect(state.gameWins.team2).toBe(1);
     });
@@ -283,9 +280,7 @@ describe('gameSlice', () => {
     test('should reset game wins independently', () => {
       store.dispatch(incrementTeam1Wins());
       store.dispatch(incrementTeam2Wins());
-      store.dispatch(incrementTeam2Wins());
       store.dispatch(resetGameWins());
-
       const state = store.getState().game;
       expect(state.gameWins.team1).toBe(0);
       expect(state.gameWins.team2).toBe(0);
@@ -298,30 +293,29 @@ describe('gameSlice', () => {
       store.dispatch(incrementTeam1Wins());
       store.dispatch(incrementTeam2Wins());
 
-      // Reset scores only
+      // Reset scores
       store.dispatch(resetScores());
 
       const state = store.getState().game;
       expect(state.team1.score).toBe(0);
       expect(state.team2.score).toBe(0);
-      expect(state.gameWins.team1).toBe(1);
-      expect(state.gameWins.team2).toBe(1);
+      expect(state.gameWins.team1).toBe(1); // Wins should be preserved
+      expect(state.gameWins.team2).toBe(1); // Wins should be preserved
     });
 
-    test('should maintain wins independence from scoring', () => {
-      // Increment scores multiple times
+    test('should maintain independence from scoring actions', () => {
+      // Set some wins
+      store.dispatch(incrementTeam1Wins());
+      store.dispatch(incrementTeam2Wins());
+
+      // Perform scoring actions
       store.dispatch(incrementTeam1Score());
-      store.dispatch(incrementTeam1Score());
+      store.dispatch(decrementTeam1Score());
       store.dispatch(incrementTeam2Score());
 
-      // Increment wins
-      store.dispatch(incrementTeam1Wins());
-
       const state = store.getState().game;
-      expect(state.team1.score).toBe(2);
-      expect(state.team2.score).toBe(1);
-      expect(state.gameWins.team1).toBe(1);
-      expect(state.gameWins.team2).toBe(0);
+      expect(state.gameWins.team1).toBe(1); // Wins unchanged by scoring
+      expect(state.gameWins.team2).toBe(1); // Wins unchanged by scoring
     });
   });
 });

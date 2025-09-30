@@ -6,8 +6,17 @@ interface TotalGameCounterProps {
 }
 
 const TotalGameCounter: React.FC<TotalGameCounterProps> = ({ totalGames }) => {
+  const getAccessibilityLabel = () => {
+    return `Game ${totalGames} of match`;
+  };
+
   return (
-    <View style={styles.container}>
+    <View
+      testID="total-game-container"
+      style={styles.container}
+      accessibilityLabel={getAccessibilityLabel()}
+      accessibilityRole="text"
+    >
       <Text testID="total-game-label" style={styles.label}>
         Game
       </Text>
@@ -21,15 +30,15 @@ const TotalGameCounter: React.FC<TotalGameCounterProps> = ({ totalGames }) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginVertical: 8,
+    marginBottom: 10,
   },
   label: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.7)',
-    fontWeight: '500',
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginBottom: 2,
   },
   counter: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },

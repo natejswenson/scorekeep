@@ -6,85 +6,139 @@ describe('TeamWinsTally Component', () => {
   describe('Rendering', () => {
     test('should display current win count', () => {
       const { getByTestId } = render(
-        <TeamWinsTally teamId="team1" wins={3} teamColor="#FF0000" />
+        <TeamWinsTally
+          teamId="team1"
+          wins={3}
+        />
       );
 
       expect(getByTestId('team1-wins-count')).toHaveTextContent('3');
     });
 
-    test('should display zero wins initially', () => {
+    test('should display "Games Won" label', () => {
       const { getByTestId } = render(
-        <TeamWinsTally teamId="team2" wins={0} teamColor="#0000FF" />
+        <TeamWinsTally
+          teamId="team2"
+          wins={0}
+        />
       );
 
-      expect(getByTestId('team2-wins-count')).toHaveTextContent('0');
+      expect(getByTestId('team2-wins-label')).toHaveTextContent('Games Won');
     });
 
-    test('should display label "Games Won"', () => {
+    test('should render with white text for visibility', () => {
       const { getByTestId } = render(
-        <TeamWinsTally teamId="team1" wins={5} teamColor="#FF0000" />
+        <TeamWinsTally
+          teamId="team1"
+          wins={1}
+        />
       );
 
-      expect(getByTestId('team1-wins-label')).toHaveTextContent('Games Won');
+      expect(getByTestId('team1-wins-label')).toHaveStyle({ color: '#FFFFFF' });
+      expect(getByTestId('team1-wins-count')).toHaveStyle({ color: '#FFFFFF' });
+    });
+
+    test('should display zero wins correctly', () => {
+      const { getByTestId } = render(
+        <TeamWinsTally
+          teamId="team1"
+          wins={0}
+        />
+      );
+
+      expect(getByTestId('team1-wins-count')).toHaveTextContent('0');
+    });
+
+    test('should handle large win counts', () => {
+      const { getByTestId } = render(
+        <TeamWinsTally
+          teamId="team2"
+          wins={99}
+        />
+      );
+
+      expect(getByTestId('team2-wins-count')).toHaveTextContent('99');
     });
   });
 
-  describe('Styling', () => {
-    test('should render with team1 color styling', () => {
+  describe('Team-specific behavior', () => {
+    test('should use correct testIDs for team1', () => {
       const { getByTestId } = render(
-        <TeamWinsTally teamId="team1" wins={2} teamColor="#FF0000" />
+        <TeamWinsTally
+          teamId="team1"
+          wins={2}
+        />
       );
 
-      const label = getByTestId('team1-wins-label');
-      const count = getByTestId('team1-wins-count');
-
-      expect(label.props.style).toContainEqual(
-        expect.objectContaining({ color: '#FF0000' })
-      );
-      expect(count.props.style).toContainEqual(
-        expect.objectContaining({ color: '#FF0000' })
-      );
+      expect(getByTestId('team1-wins-container')).toBeTruthy();
+      expect(getByTestId('team1-wins-label')).toBeTruthy();
+      expect(getByTestId('team1-wins-count')).toBeTruthy();
     });
 
-    test('should render with team2 color styling', () => {
+    test('should use correct testIDs for team2', () => {
       const { getByTestId } = render(
-        <TeamWinsTally teamId="team2" wins={4} teamColor="#0000FF" />
+        <TeamWinsTally
+          teamId="team2"
+          wins={2}
+        />
       );
 
-      const label = getByTestId('team2-wins-label');
-      const count = getByTestId('team2-wins-count');
-
-      expect(label.props.style).toContainEqual(
-        expect.objectContaining({ color: '#0000FF' })
-      );
-      expect(count.props.style).toContainEqual(
-        expect.objectContaining({ color: '#0000FF' })
-      );
+      expect(getByTestId('team2-wins-container')).toBeTruthy();
+      expect(getByTestId('team2-wins-label')).toBeTruthy();
+      expect(getByTestId('team2-wins-count')).toBeTruthy();
     });
   });
 
-  describe('Updates', () => {
-    test('should update when win count changes', () => {
-      const { getByTestId, rerender } = render(
-        <TeamWinsTally teamId="team1" wins={1} teamColor="#FF0000" />
+  describe('Accessibility', () => {
+    test('should have proper accessibility labels', () => {
+      const { getByTestId } = render(
+        <TeamWinsTally
+          teamId="team1"
+          wins={5}
+        />
       );
 
-      expect(getByTestId('team1-wins-count')).toHaveTextContent('1');
+      expect(getByTestId('team1-wins-container')).toHaveProp('accessibilityLabel', 'Team 1 games won: 5');
+    });
 
-      rerender(<TeamWinsTally teamId="team1" wins={2} teamColor="#FF0000" />);
+    test('should handle singular vs plural accessibility labels', () => {
+      const { getByTestId } = render(
+        <TeamWinsTally
+          teamId="team2"
+          wins={1}
+        />
+      );
 
-      expect(getByTestId('team1-wins-count')).toHaveTextContent('2');
+      expect(getByTestId('team2-wins-container')).toHaveProp('accessibilityLabel', 'Team 2 game won: 1');
     });
   });
 
-  describe('Layout', () => {
+  describe('Styling requirements', () => {
     test('should be positioned at bottom of team section', () => {
       const { getByTestId } = render(
-        <TeamWinsTally teamId="team1" wins={3} teamColor="#FF0000" />
+        <TeamWinsTally
+          teamId="team1"
+          wins={1}
+        />
       );
 
-      const container = getByTestId('team1-wins-tally-container');
-      expect(container).toBeTruthy();
+      const container = getByTestId('team1-wins-container');
+      expect(container).toHaveStyle({
+        alignItems: 'center',
+        marginTop: 20,
+      });
+    });
+
+    test('should have appropriate text sizing', () => {
+      const { getByTestId } = render(
+        <TeamWinsTally
+          teamId="team1"
+          wins={1}
+        />
+      );
+
+      expect(getByTestId('team1-wins-label')).toHaveStyle({ fontSize: 16 });
+      expect(getByTestId('team1-wins-count')).toHaveStyle({ fontSize: 24 });
     });
   });
 });

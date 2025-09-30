@@ -4,25 +4,33 @@ import { View, Text, StyleSheet } from 'react-native';
 interface TeamWinsTallyProps {
   teamId: 'team1' | 'team2';
   wins: number;
-  teamColor: string;
 }
 
 const TeamWinsTally: React.FC<TeamWinsTallyProps> = ({
   teamId,
   wins,
-  teamColor,
 }) => {
+  const getAccessibilityLabel = () => {
+    const teamName = teamId === 'team1' ? 'Team 1' : 'Team 2';
+    const gameText = wins === 1 ? 'game' : 'games';
+    return `${teamName} ${gameText} won: ${wins}`;
+  };
+
   return (
-    <View testID={`${teamId}-wins-tally-container`} style={styles.tallyContainer}>
+    <View
+      testID={`${teamId}-wins-container`}
+      style={styles.tallyContainer}
+      accessibilityLabel={getAccessibilityLabel()}
+    >
       <Text
         testID={`${teamId}-wins-label`}
-        style={[styles.tallyLabel, { color: teamColor }]}
+        style={styles.tallyLabel}
       >
         Games Won
       </Text>
       <Text
         testID={`${teamId}-wins-count`}
-        style={[styles.tallyCount, { color: teamColor }]}
+        style={styles.tallyCount}
       >
         {wins}
       </Text>
@@ -36,13 +44,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   tallyLabel: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: 'normal',
     marginBottom: 4,
+    color: '#FFFFFF',
   },
   tallyCount: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#FFFFFF',
   },
 });
 

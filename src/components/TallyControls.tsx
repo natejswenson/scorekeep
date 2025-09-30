@@ -23,39 +23,58 @@ const TallyControls: React.FC<TallyControlsProps> = ({
 
   return (
     <View testID="tally-controls-container" style={styles.controlsContainer}>
-      <View style={styles.teamControls}>
+      {/* Team 1 Controls */}
+      <View testID="team1-controls" style={styles.teamControls}>
         <TouchableOpacity
-          testID="team1-wins-decrement"
-          onPress={onDecrementTeam1}
+          testID="team1-decrement-button"
           style={styles.controlButton}
+          onPress={onDecrementTeam1}
+          accessibilityLabel="Decrement team 1 wins"
+          accessibilityRole="button"
         >
-          <Text style={styles.controlButtonText}>-</Text>
+          <Text testID="team1-decrement-text" style={styles.buttonText}>
+            -
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          testID="team1-wins-increment"
-          onPress={onIncrementTeam1}
+          testID="team1-increment-button"
           style={styles.controlButton}
+          onPress={onIncrementTeam1}
+          accessibilityLabel="Increment team 1 wins"
+          accessibilityRole="button"
         >
-          <Text style={styles.controlButtonText}>+</Text>
+          <Text testID="team1-increment-text" style={styles.buttonText}>
+            +
+          </Text>
         </TouchableOpacity>
       </View>
 
+      {/* Total Game Counter */}
       <TotalGameCounter totalGames={totalGames} />
 
-      <View style={styles.teamControls}>
+      {/* Team 2 Controls */}
+      <View testID="team2-controls" style={styles.teamControls}>
         <TouchableOpacity
-          testID="team2-wins-decrement"
-          onPress={onDecrementTeam2}
+          testID="team2-decrement-button"
           style={styles.controlButton}
+          onPress={onDecrementTeam2}
+          accessibilityLabel="Decrement team 2 wins"
+          accessibilityRole="button"
         >
-          <Text style={styles.controlButtonText}>-</Text>
+          <Text testID="team2-decrement-text" style={styles.buttonText}>
+            -
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          testID="team2-wins-increment"
-          onPress={onIncrementTeam2}
+          testID="team2-increment-button"
           style={styles.controlButton}
+          onPress={onIncrementTeam2}
+          accessibilityLabel="Increment team 2 wins"
+          accessibilityRole="button"
         >
-          <Text style={styles.controlButtonText}>+</Text>
+          <Text testID="team2-increment-text" style={styles.buttonText}>
+            +
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -68,23 +87,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 20,
   },
   teamControls: {
     flexDirection: 'column',
     alignItems: 'center',
   },
   controlButton: {
-    padding: 8,
-    minWidth: 24,
-    minHeight: 24,
+    minWidth: 44,
+    minHeight: 44,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
+    marginVertical: 2,
   },
-  controlButtonText: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
-    fontWeight: '600',
+  buttonText: {
+    fontSize: 18,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: 'bold',
   },
 });
 
