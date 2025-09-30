@@ -12,6 +12,10 @@ export interface GameState {
   isGameActive: boolean;
   winner: string | null;
   editingTeam: 'team1' | 'team2' | null;
+  gameWins: {
+    team1: number;
+    team2: number;
+  };
 }
 
 export interface AppState {

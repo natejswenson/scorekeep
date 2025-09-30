@@ -19,6 +19,10 @@ const initialState: GameState = {
   isGameActive: true,
   winner: null,
   editingTeam: null,
+  gameWins: {
+    team1: 0,
+    team2: 0,
+  },
 };
 
 export const gameSlice = createSlice({
@@ -68,6 +72,26 @@ export const gameSlice = createSlice({
       // Clear editing state regardless of validation
       state.editingTeam = null;
     },
+    incrementTeam1Wins: (state) => {
+      state.gameWins.team1 += 1;
+    },
+    incrementTeam2Wins: (state) => {
+      state.gameWins.team2 += 1;
+    },
+    decrementTeam1Wins: (state) => {
+      if (state.gameWins.team1 > 0) {
+        state.gameWins.team1 -= 1;
+      }
+    },
+    decrementTeam2Wins: (state) => {
+      if (state.gameWins.team2 > 0) {
+        state.gameWins.team2 -= 1;
+      }
+    },
+    resetGameWins: (state) => {
+      state.gameWins.team1 = 0;
+      state.gameWins.team2 = 0;
+    },
   },
 });
 
@@ -81,6 +105,11 @@ export const {
   updateTeam2,
   setEditingTeam,
   updateTeamName,
+  incrementTeam1Wins,
+  incrementTeam2Wins,
+  decrementTeam1Wins,
+  decrementTeam2Wins,
+  resetGameWins,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
