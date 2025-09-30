@@ -14,9 +14,11 @@ Whether you're playing beach volleyball at sunset 🌅, dominating the court at 
 
 - **🔴 Red vs 🔵 Blue** - Classic team colors that work in any lighting
 - **✏️ Custom Team Names** - Click the edit icon to rename teams from "Team 1" and "Team 2"
+- **🏆 Game Wins Tracker** - Keep track of multiple games with tallies for each team
+- **🎯 Total Game Counter** - See which game you're on (Team 1 wins + Team 2 wins + 1)
 - **👆 Tap to Score** - Large, easy-to-hit score areas (perfect for sweaty fingers)
 - **➖ Minus Buttons** - Because everyone makes mistakes (except that one ref 🙄)
-- **🔄 Reset Button** - Start fresh for the next set
+- **🔄 Reset Button** - Start fresh for the next set (game wins stay intact!)
 - **📱 Mobile First** - Works great on phones, tablets, whatever you've got
 - **🌐 Web Compatible** - Runs in your browser too
 - **🚫 Zero Ads** - Because nobody wants to see a mattress commercial mid-rally
@@ -29,8 +31,10 @@ Whether you're playing beach volleyball at sunset 🌅, dominating the court at 
 2. Click the edit icons (✏️) to customize team names
 3. Tap the big score circles to add points
 4. Use the minus buttons if you messed up
-5. Hit the reset button between sets
-6. Get back to playing! 🏐
+5. Hit the reset button between sets (keeps game wins!)
+6. Use the +/- controls in the middle to adjust game wins
+7. See the total game counter to track which game you're on
+8. Get back to playing! 🏐
 
 ### For Developers (Want to Hack On It)
 
@@ -73,6 +77,7 @@ Then open your browser and head to `http://localhost:19006` - boom! 💥
 
 ### Perfect for Volleyball Because:
 - **Customizable teams** - Name your teams "Beach Bombers" vs "Net Ninjas"
+- **Game series tracking** - Keep tallies across multiple games automatically
 - **Large touch targets** - Easy to hit even with sandy/sweaty hands
 - **High contrast colors** - Red vs Blue works in bright sun or dim gym
 - **Simple interface** - No complicated menus to navigate mid-game
@@ -92,7 +97,7 @@ This app is for players, by players. No ads, no premium subscriptions, no "unloc
 - 🎯 Serving rotation tracker
 - 📸 Score screenshots for bragging rights
 - 🎨 Custom team colors
-- 💾 Team name persistence across sessions
+- 💾 Team name and game wins persistence across sessions
 
 ## 🤝 Contributing
 

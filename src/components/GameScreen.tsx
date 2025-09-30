@@ -10,11 +10,17 @@ import {
   resetScores,
   setEditingTeam,
   updateTeamName,
+  incrementTeam1Wins,
+  incrementTeam2Wins,
+  decrementTeam1Wins,
+  decrementTeam2Wins,
 } from '../store/gameSlice';
 import TeamNameDisplay from './TeamNameDisplay';
+import TeamWinsTally from './TeamWinsTally';
+import TallyControls from './TallyControls';
 
 const GameScreen: React.FC = () => {
-  const { team1, team2, editingTeam } = useSelector((state: RootState) => state.game);
+  const { team1, team2, editingTeam, gameWins } = useSelector((state: RootState) => state.game);
   const dispatch = useDispatch();
 
   const handleStartEdit = (teamId: 'team1' | 'team2') => {
@@ -33,68 +39,92 @@ const GameScreen: React.FC = () => {
     <View style={styles.container}>
       {/* Team 1 - Red Side */}
       <View testID="team1-side" style={[styles.teamSide, styles.redSide]}>
-        <TeamNameDisplay
+        <View style={styles.topSection}>
+          <TeamNameDisplay
+            teamId="team1"
+            name={team1.name}
+            isEditing={editingTeam === 'team1'}
+            onStartEdit={handleStartEdit}
+            onSaveName={handleSaveName}
+            onCancelEdit={handleCancelEdit}
+          />
+          <TouchableOpacity
+            testID="team1-score-circle"
+            style={styles.scoreArea}
+            onPress={() => dispatch(incrementTeam1Score())}
+          >
+            <Text testID="team1-score" style={styles.score}>
+              {team1.score}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            testID="team1-decrement"
+            style={styles.decrementButton}
+            onPress={() => dispatch(decrementTeam1Score())}
+          >
+            <Text style={styles.buttonText}>-</Text>
+          </TouchableOpacity>
+        </View>
+        <TeamWinsTally
           teamId="team1"
-          name={team1.name}
-          isEditing={editingTeam === 'team1'}
-          onStartEdit={handleStartEdit}
-          onSaveName={handleSaveName}
-          onCancelEdit={handleCancelEdit}
+          wins={gameWins.team1}
+          teamColor={team1.color}
         />
-        <TouchableOpacity
-          testID="team1-score-area"
-          style={styles.scoreArea}
-          onPress={() => dispatch(incrementTeam1Score())}
-        >
-          <Text testID="team1-score" style={styles.score}>
-            {team1.score}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          testID="team1-decrement"
-          style={styles.decrementButton}
-          onPress={() => dispatch(decrementTeam1Score())}
-        >
-          <Text style={styles.buttonText}>-</Text>
-        </TouchableOpacity>
       </View>
 
       {/* Team 2 - Blue Side */}
       <View testID="team2-side" style={[styles.teamSide, styles.blueSide]}>
-        <TeamNameDisplay
+        <View style={styles.topSection}>
+          <TeamNameDisplay
+            teamId="team2"
+            name={team2.name}
+            isEditing={editingTeam === 'team2'}
+            onStartEdit={handleStartEdit}
+            onSaveName={handleSaveName}
+            onCancelEdit={handleCancelEdit}
+          />
+          <TouchableOpacity
+            testID="team2-score-circle"
+            style={styles.scoreArea}
+            onPress={() => dispatch(incrementTeam2Score())}
+          >
+            <Text testID="team2-score" style={styles.score}>
+              {team2.score}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            testID="team2-decrement"
+            style={styles.decrementButton}
+            onPress={() => dispatch(decrementTeam2Score())}
+          >
+            <Text style={styles.buttonText}>-</Text>
+          </TouchableOpacity>
+        </View>
+        <TeamWinsTally
           teamId="team2"
-          name={team2.name}
-          isEditing={editingTeam === 'team2'}
-          onStartEdit={handleStartEdit}
-          onSaveName={handleSaveName}
-          onCancelEdit={handleCancelEdit}
+          wins={gameWins.team2}
+          teamColor={team2.color}
         />
-        <TouchableOpacity
-          testID="team2-score-area"
-          style={styles.scoreArea}
-          onPress={() => dispatch(incrementTeam2Score())}
-        >
-          <Text testID="team2-score" style={styles.score}>
-            {team2.score}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          testID="team2-decrement"
-          style={styles.decrementButton}
-          onPress={() => dispatch(decrementTeam2Score())}
-        >
-          <Text style={styles.buttonText}>-</Text>
-        </TouchableOpacity>
       </View>
 
-      {/* Reset Icon - Centered */}
-      <TouchableOpacity
-        testID="reset-button"
-        style={styles.resetButton}
-        onPress={() => dispatch(resetScores())}
-      >
-        <Text style={styles.resetIcon}>↻</Text>
-      </TouchableOpacity>
+      {/* Middle Controls - Tally Controls and Reset Button */}
+      <View style={styles.middleControls}>
+        <TallyControls
+          team1Wins={gameWins.team1}
+          team2Wins={gameWins.team2}
+          onIncrementTeam1={() => dispatch(incrementTeam1Wins())}
+          onDecrementTeam1={() => dispatch(decrementTeam1Wins())}
+          onIncrementTeam2={() => dispatch(incrementTeam2Wins())}
+          onDecrementTeam2={() => dispatch(decrementTeam2Wins())}
+        />
+        <TouchableOpacity
+          testID="reset-button"
+          style={styles.resetButton}
+          onPress={() => dispatch(resetScores())}
+        >
+          <Text style={styles.resetIcon}>↻</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -107,9 +137,14 @@ const styles = StyleSheet.create({
   },
   teamSide: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
+  },
+  topSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
   redSide: {
     backgroundColor: '#FF0000',
@@ -155,17 +190,22 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
   },
-  resetButton: {
+  middleControls: {
     position: 'absolute',
     left: '50%',
-    top: '50%',
-    transform: [{ translateX: -35 }, { translateY: -35 }],
+    top: '45%',
+    transform: [{ translateX: -75 }, { translateY: -60 }],
+    alignItems: 'center',
+    width: 150,
+  },
+  resetButton: {
     width: 70,
     height: 70,
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 35,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 16,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

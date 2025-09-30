@@ -9,6 +9,11 @@ import gameReducer, {
   updateTeam2,
   setEditingTeam,
   updateTeamName,
+  incrementTeam1Wins,
+  incrementTeam2Wins,
+  decrementTeam1Wins,
+  decrementTeam2Wins,
+  resetGameWins,
 } from '../src/store/gameSlice';
 import { GameState } from '../src/types';
 
@@ -222,6 +227,101 @@ describe('gameSlice', () => {
       expect(state.winCondition).toBe(initialState.winCondition);
       expect(state.isGameActive).toBe(initialState.isGameActive);
       expect(state.winner).toBe(initialState.winner);
+    });
+  });
+
+  describe('Game Wins Tally State', () => {
+    test('should initialize with zero wins for both teams', () => {
+      const state = store.getState().game;
+      expect(state.gameWins).toBeDefined();
+      expect(state.gameWins.team1).toBe(0);
+      expect(state.gameWins.team2).toBe(0);
+    });
+
+    test('should increment team1 wins', () => {
+      store.dispatch(incrementTeam1Wins());
+      const state = store.getState().game;
+      expect(state.gameWins.team1).toBe(1);
+    });
+
+    test('should increment team2 wins', () => {
+      store.dispatch(incrementTeam2Wins());
+      const state = store.getState().game;
+      expect(state.gameWins.team2).toBe(1);
+    });
+
+    test('should decrement team1 wins when positive', () => {
+      store.dispatch(incrementTeam1Wins());
+      store.dispatch(incrementTeam1Wins());
+      store.dispatch(decrementTeam1Wins());
+
+      const state = store.getState().game;
+      expect(state.gameWins.team1).toBe(1);
+    });
+
+    test('should decrement team2 wins when positive', () => {
+      store.dispatch(incrementTeam2Wins());
+      store.dispatch(incrementTeam2Wins());
+      store.dispatch(decrementTeam2Wins());
+
+      const state = store.getState().game;
+      expect(state.gameWins.team2).toBe(1);
+    });
+
+    test('should not allow negative win counts for team1', () => {
+      store.dispatch(decrementTeam1Wins());
+      const state = store.getState().game;
+      expect(state.gameWins.team1).toBe(0);
+    });
+
+    test('should not allow negative win counts for team2', () => {
+      store.dispatch(decrementTeam2Wins());
+      const state = store.getState().game;
+      expect(state.gameWins.team2).toBe(0);
+    });
+
+    test('should reset game wins independently', () => {
+      store.dispatch(incrementTeam1Wins());
+      store.dispatch(incrementTeam2Wins());
+      store.dispatch(incrementTeam2Wins());
+      store.dispatch(resetGameWins());
+
+      const state = store.getState().game;
+      expect(state.gameWins.team1).toBe(0);
+      expect(state.gameWins.team2).toBe(0);
+    });
+
+    test('should preserve wins when scores are reset', () => {
+      // Set some scores and wins
+      store.dispatch(incrementTeam1Score());
+      store.dispatch(incrementTeam2Score());
+      store.dispatch(incrementTeam1Wins());
+      store.dispatch(incrementTeam2Wins());
+
+      // Reset scores only
+      store.dispatch(resetScores());
+
+      const state = store.getState().game;
+      expect(state.team1.score).toBe(0);
+      expect(state.team2.score).toBe(0);
+      expect(state.gameWins.team1).toBe(1);
+      expect(state.gameWins.team2).toBe(1);
+    });
+
+    test('should maintain wins independence from scoring', () => {
+      // Increment scores multiple times
+      store.dispatch(incrementTeam1Score());
+      store.dispatch(incrementTeam1Score());
+      store.dispatch(incrementTeam2Score());
+
+      // Increment wins
+      store.dispatch(incrementTeam1Wins());
+
+      const state = store.getState().game;
+      expect(state.team1.score).toBe(2);
+      expect(state.team2.score).toBe(1);
+      expect(state.gameWins.team1).toBe(1);
+      expect(state.gameWins.team2).toBe(0);
     });
   });
 });
