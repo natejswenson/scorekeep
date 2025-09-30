@@ -1,6 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+// Reduced margin for tighter vertical spacing in landscape mode
+const TALLY_MARGIN_TOP = 8;
+
 interface TeamWinsTallyProps {
   teamId: 'team1' | 'team2';
   wins: number;
@@ -41,7 +44,7 @@ const TeamWinsTally: React.FC<TeamWinsTallyProps> = ({
 const styles = StyleSheet.create({
   tallyContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: TALLY_MARGIN_TOP,
   },
   tallyLabel: {
     fontSize: 16,

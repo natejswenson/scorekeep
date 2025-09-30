@@ -125,7 +125,7 @@ describe('TeamWinsTally Component', () => {
       const container = getByTestId('team1-wins-container');
       expect(container).toHaveStyle({
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 8,
       });
     });
 
