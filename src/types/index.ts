@@ -11,6 +11,7 @@ export interface GameState {
   winCondition: number;
   isGameActive: boolean;
   winner: string | null;
+  editingTeam: 'team1' | 'team2' | null;
 }
 
 export interface AppState {

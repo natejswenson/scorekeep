@@ -8,17 +8,39 @@ import {
   decrementTeam1Score,
   decrementTeam2Score,
   resetScores,
+  setEditingTeam,
+  updateTeamName,
 } from '../store/gameSlice';
+import TeamNameDisplay from './TeamNameDisplay';
 
 const GameScreen: React.FC = () => {
-  const { team1, team2 } = useSelector((state: RootState) => state.game);
+  const { team1, team2, editingTeam } = useSelector((state: RootState) => state.game);
   const dispatch = useDispatch();
+
+  const handleStartEdit = (teamId: 'team1' | 'team2') => {
+    dispatch(setEditingTeam(teamId));
+  };
+
+  const handleSaveName = (teamId: 'team1' | 'team2', name: string) => {
+    dispatch(updateTeamName({ team: teamId, name }));
+  };
+
+  const handleCancelEdit = () => {
+    dispatch(setEditingTeam(null));
+  };
 
   return (
     <View style={styles.container}>
       {/* Team 1 - Red Side */}
       <View testID="team1-side" style={[styles.teamSide, styles.redSide]}>
-        <Text testID="team1-name" style={styles.teamName}>{team1.name}</Text>
+        <TeamNameDisplay
+          teamId="team1"
+          name={team1.name}
+          isEditing={editingTeam === 'team1'}
+          onStartEdit={handleStartEdit}
+          onSaveName={handleSaveName}
+          onCancelEdit={handleCancelEdit}
+        />
         <TouchableOpacity
           testID="team1-score-area"
           style={styles.scoreArea}
@@ -39,7 +61,14 @@ const GameScreen: React.FC = () => {
 
       {/* Team 2 - Blue Side */}
       <View testID="team2-side" style={[styles.teamSide, styles.blueSide]}>
-        <Text testID="team2-name" style={styles.teamName}>{team2.name}</Text>
+        <TeamNameDisplay
+          teamId="team2"
+          name={team2.name}
+          isEditing={editingTeam === 'team2'}
+          onStartEdit={handleStartEdit}
+          onSaveName={handleSaveName}
+          onCancelEdit={handleCancelEdit}
+        />
         <TouchableOpacity
           testID="team2-score-area"
           style={styles.scoreArea}
