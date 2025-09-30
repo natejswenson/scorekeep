@@ -82,7 +82,6 @@ const GameScreen: React.FC = () => {
         <TeamWinsTally
           teamId="team1"
           wins={gameWins.team1}
-          teamColor={team1.color}
         />
       </View>
 
@@ -115,7 +114,6 @@ const GameScreen: React.FC = () => {
         <TeamWinsTally
           teamId="team2"
           wins={gameWins.team2}
-          teamColor={team2.color}
         />
       </View>
 

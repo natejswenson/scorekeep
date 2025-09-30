@@ -9,7 +9,6 @@ describe('TeamWinsTally Component', () => {
         <TeamWinsTally
           teamId="team1"
           wins={3}
-          teamColor="#FF0000"
         />
       );
 
@@ -21,24 +20,22 @@ describe('TeamWinsTally Component', () => {
         <TeamWinsTally
           teamId="team2"
           wins={0}
-          teamColor="#0000FF"
         />
       );
 
       expect(getByTestId('team2-wins-label')).toHaveTextContent('Games Won');
     });
 
-    test('should render with team-specific styling', () => {
+    test('should render with white text for visibility', () => {
       const { getByTestId } = render(
         <TeamWinsTally
           teamId="team1"
           wins={1}
-          teamColor="#FF0000"
         />
       );
 
-      expect(getByTestId('team1-wins-label')).toHaveStyle({ color: '#FF0000' });
-      expect(getByTestId('team1-wins-count')).toHaveStyle({ color: '#FF0000' });
+      expect(getByTestId('team1-wins-label')).toHaveStyle({ color: '#FFFFFF' });
+      expect(getByTestId('team1-wins-count')).toHaveStyle({ color: '#FFFFFF' });
     });
 
     test('should display zero wins correctly', () => {
@@ -46,7 +43,6 @@ describe('TeamWinsTally Component', () => {
         <TeamWinsTally
           teamId="team1"
           wins={0}
-          teamColor="#FF0000"
         />
       );
 
@@ -58,7 +54,6 @@ describe('TeamWinsTally Component', () => {
         <TeamWinsTally
           teamId="team2"
           wins={99}
-          teamColor="#0000FF"
         />
       );
 
@@ -72,7 +67,6 @@ describe('TeamWinsTally Component', () => {
         <TeamWinsTally
           teamId="team1"
           wins={2}
-          teamColor="#FF0000"
         />
       );
 
@@ -86,7 +80,6 @@ describe('TeamWinsTally Component', () => {
         <TeamWinsTally
           teamId="team2"
           wins={2}
-          teamColor="#0000FF"
         />
       );
 
@@ -102,7 +95,6 @@ describe('TeamWinsTally Component', () => {
         <TeamWinsTally
           teamId="team1"
           wins={5}
-          teamColor="#FF0000"
         />
       );
 
@@ -114,7 +106,6 @@ describe('TeamWinsTally Component', () => {
         <TeamWinsTally
           teamId="team2"
           wins={1}
-          teamColor="#0000FF"
         />
       );
 
@@ -128,7 +119,6 @@ describe('TeamWinsTally Component', () => {
         <TeamWinsTally
           teamId="team1"
           wins={1}
-          teamColor="#FF0000"
         />
       );
 
@@ -144,7 +134,6 @@ describe('TeamWinsTally Component', () => {
         <TeamWinsTally
           teamId="team1"
           wins={1}
-          teamColor="#FF0000"
         />
       );
 

@@ -52,6 +52,8 @@ describe('Core Scoring', () => {
         winCondition: 10,
         isGameActive: true,
         winner: null,
+        editingTeam: null,
+        gameWins: { team1: 0, team2: 0 },
       },
     });
 
@@ -77,6 +79,8 @@ describe('Core Scoring', () => {
         winCondition: 10,
         isGameActive: true,
         winner: null,
+        editingTeam: null,
+        gameWins: { team1: 0, team2: 0 },
       },
     });
 
@@ -102,6 +106,8 @@ describe('Core Scoring', () => {
         winCondition: 10,
         isGameActive: true,
         winner: null,
+        editingTeam: null,
+        gameWins: { team1: 0, team2: 0 },
       },
     });
 
@@ -156,7 +162,7 @@ describe('Visual Design Specification', () => {
     expect(getByTestId('team2-score')).toHaveStyle({ color: '#FFFFFF' });
   });
 
-  test('should have centered reset icon', () => {
+  test('should have reset button in middle controls', () => {
     const store = createTestStore();
     const { getByTestId } = render(
       <Provider store={store}>
@@ -166,9 +172,10 @@ describe('Visual Design Specification', () => {
 
     const resetButton = getByTestId('reset-button');
     expect(resetButton).toHaveStyle({
-      position: 'absolute',
-      left: '50%',
-      top: '50%',
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      borderRadius: 35,
+      width: 70,
+      height: 70,
     });
   });
 
