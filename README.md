@@ -13,6 +13,7 @@ Whether you're playing beach volleyball at sunset 🌅, dominating the court at 
 ## ✨ Features
 
 - **🔴 Red vs 🔵 Blue** - Classic team colors that work in any lighting
+- **✏️ Custom Team Names** - Click the edit icon to rename teams from "Team 1" and "Team 2"
 - **👆 Tap to Score** - Large, easy-to-hit score areas (perfect for sweaty fingers)
 - **➖ Minus Buttons** - Because everyone makes mistakes (except that one ref 🙄)
 - **🔄 Reset Button** - Start fresh for the next set
@@ -25,10 +26,11 @@ Whether you're playing beach volleyball at sunset 🌅, dominating the court at 
 ### For Players (Just Want to Keep Score)
 
 1. Visit the app in your browser
-2. Tap the big score circles to add points
-3. Use the minus buttons if you messed up
-4. Hit the reset button between sets
-5. Get back to playing! 🏐
+2. Click the edit icons (✏️) to customize team names
+3. Tap the big score circles to add points
+4. Use the minus buttons if you messed up
+5. Hit the reset button between sets
+6. Get back to playing! 🏐
 
 ### For Developers (Want to Hack On It)
 
@@ -59,12 +61,18 @@ Then open your browser and head to `http://localhost:19006` - boom! 💥
 
 ## 🎮 How to Use
 
+### Team Customization
+- **Click the edit icon (✏️)** - Rename teams to whatever you want
+- **Enter to save** - Confirm your team name changes
+- **Escape to cancel** - Abort editing without saving
+
 ### Basic Scoring
 - **Tap the big circles** - Add points for each team
 - **Tap the minus buttons** - Remove points (we all make mistakes)
 - **Tap the reset button** - Clear the score and start over
 
 ### Perfect for Volleyball Because:
+- **Customizable teams** - Name your teams "Beach Bombers" vs "Net Ninjas"
 - **Large touch targets** - Easy to hit even with sandy/sweaty hands
 - **High contrast colors** - Red vs Blue works in bright sun or dim gym
 - **Simple interface** - No complicated menus to navigate mid-game
@@ -83,6 +91,8 @@ This app is for players, by players. No ads, no premium subscriptions, no "unloc
 - 🏅 Tournament brackets
 - 🎯 Serving rotation tracker
 - 📸 Score screenshots for bragging rights
+- 🎨 Custom team colors
+- 💾 Team name persistence across sessions
 
 ## 🤝 Contributing
 
