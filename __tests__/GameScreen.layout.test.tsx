@@ -40,7 +40,9 @@ describe('GameScreen Layout Optimization', () => {
       );
 
       const gamesWonContainer = getByTestId('team1-wins-container');
-      const styles = gamesWonContainer.props.style;
+      const styles = Array.isArray(gamesWonContainer.props.style)
+        ? Object.assign({}, ...gamesWonContainer.props.style)
+        : gamesWonContainer.props.style;
 
       // Expect reduced marginTop (8 instead of 20)
       expect(styles.marginTop).toBe(8);

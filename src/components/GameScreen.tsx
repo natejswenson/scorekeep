@@ -18,6 +18,7 @@ import {
 import TeamNameDisplay from './TeamNameDisplay';
 import TeamWinsTally from './TeamWinsTally';
 import TallyControls from './TallyControls';
+import { useIsLandscape } from '../hooks/useOrientation';
 
 // Layout constants for optimized spacing in landscape mode
 const LAYOUT_CONSTANTS = {
@@ -29,6 +30,7 @@ const LAYOUT_CONSTANTS = {
 const GameScreen: React.FC = () => {
   const { team1, team2, editingTeam, gameWins } = useSelector((state: RootState) => state.game);
   const dispatch = useDispatch();
+  const isLandscape = useIsLandscape();
 
   const handleStartEdit = (teamId: 'team1' | 'team2') => {
     dispatch(setEditingTeam(teamId));
@@ -89,6 +91,7 @@ const GameScreen: React.FC = () => {
         <TeamWinsTally
           teamId="team1"
           wins={gameWins.team1}
+          isLandscape={isLandscape}
         />
       </View>
 
@@ -121,6 +124,7 @@ const GameScreen: React.FC = () => {
         <TeamWinsTally
           teamId="team2"
           wins={gameWins.team2}
+          isLandscape={isLandscape}
         />
       </View>
 
