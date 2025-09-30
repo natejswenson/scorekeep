@@ -10,11 +10,17 @@ import {
   resetScores,
   setEditingTeam,
   updateTeamName,
+  incrementTeam1Wins,
+  incrementTeam2Wins,
+  decrementTeam1Wins,
+  decrementTeam2Wins,
 } from '../store/gameSlice';
 import TeamNameDisplay from './TeamNameDisplay';
+import TeamWinsTally from './TeamWinsTally';
+import TallyControls from './TallyControls';
 
 const GameScreen: React.FC = () => {
-  const { team1, team2, editingTeam } = useSelector((state: RootState) => state.game);
+  const { team1, team2, editingTeam, gameWins } = useSelector((state: RootState) => state.game);
   const dispatch = useDispatch();
 
   const handleStartEdit = (teamId: 'team1' | 'team2') => {
@@ -27,6 +33,22 @@ const GameScreen: React.FC = () => {
 
   const handleCancelEdit = () => {
     dispatch(setEditingTeam(null));
+  };
+
+  const handleIncrementTeam1Wins = () => {
+    dispatch(incrementTeam1Wins());
+  };
+
+  const handleIncrementTeam2Wins = () => {
+    dispatch(incrementTeam2Wins());
+  };
+
+  const handleDecrementTeam1Wins = () => {
+    dispatch(decrementTeam1Wins());
+  };
+
+  const handleDecrementTeam2Wins = () => {
+    dispatch(decrementTeam2Wins());
   };
 
   return (
@@ -57,6 +79,10 @@ const GameScreen: React.FC = () => {
         >
           <Text style={styles.buttonText}>-</Text>
         </TouchableOpacity>
+        <TeamWinsTally
+          teamId="team1"
+          wins={gameWins.team1}
+        />
       </View>
 
       {/* Team 2 - Blue Side */}
@@ -85,16 +111,30 @@ const GameScreen: React.FC = () => {
         >
           <Text style={styles.buttonText}>-</Text>
         </TouchableOpacity>
+        <TeamWinsTally
+          teamId="team2"
+          wins={gameWins.team2}
+        />
       </View>
 
-      {/* Reset Icon - Centered */}
-      <TouchableOpacity
-        testID="reset-button"
-        style={styles.resetButton}
-        onPress={() => dispatch(resetScores())}
-      >
-        <Text style={styles.resetIcon}>↻</Text>
-      </TouchableOpacity>
+      {/* Middle Controls - TallyControls and Reset Button */}
+      <View style={styles.middleControls}>
+        <TallyControls
+          team1Wins={gameWins.team1}
+          team2Wins={gameWins.team2}
+          onIncrementTeam1={handleIncrementTeam1Wins}
+          onDecrementTeam1={handleDecrementTeam1Wins}
+          onIncrementTeam2={handleIncrementTeam2Wins}
+          onDecrementTeam2={handleDecrementTeam2Wins}
+        />
+        <TouchableOpacity
+          testID="reset-button"
+          style={styles.resetButton}
+          onPress={() => dispatch(resetScores())}
+        >
+          <Text style={styles.resetIcon}>↻</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -107,7 +147,7 @@ const styles = StyleSheet.create({
   },
   teamSide: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
   },
@@ -155,11 +195,15 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
   },
-  resetButton: {
+  middleControls: {
     position: 'absolute',
     left: '50%',
-    top: '50%',
-    transform: [{ translateX: -35 }, { translateY: -35 }],
+    top: '45%',
+    transform: [{ translateX: -75 }, { translateY: -50 }],
+    alignItems: 'center',
+    width: 150,
+  },
+  resetButton: {
     width: 70,
     height: 70,
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -174,6 +218,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    marginTop: 15,
   },
   resetIcon: {
     fontSize: 32,
