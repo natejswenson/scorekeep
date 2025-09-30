@@ -7,6 +7,8 @@ import gameReducer, {
   resetScores,
   updateTeam1,
   updateTeam2,
+  setEditingTeam,
+  updateTeamName,
 } from '../src/store/gameSlice';
 import { GameState } from '../src/types';
 
@@ -116,6 +118,110 @@ describe('gameSlice', () => {
       const state = store.getState().game;
       expect(state.team2.name).toBe('Team 2'); // Should maintain original name
       expect(state.team2.color).toBe('#PURPLE');
+    });
+  });
+
+  describe('editing state management', () => {
+    test('should set editing team to team1', () => {
+      store.dispatch(setEditingTeam('team1'));
+      const state = store.getState().game;
+      expect(state.editingTeam).toBe('team1');
+    });
+
+    test('should set editing team to team2', () => {
+      store.dispatch(setEditingTeam('team2'));
+      const state = store.getState().game;
+      expect(state.editingTeam).toBe('team2');
+    });
+
+    test('should clear editing team when set to null', () => {
+      store.dispatch(setEditingTeam('team1'));
+      store.dispatch(setEditingTeam(null));
+      const state = store.getState().game;
+      expect(state.editingTeam).toBe(null);
+    });
+
+    test('should only allow editing one team at a time', () => {
+      store.dispatch(setEditingTeam('team1'));
+      store.dispatch(setEditingTeam('team2'));
+      const state = store.getState().game;
+      expect(state.editingTeam).toBe('team2');
+    });
+  });
+
+  describe('team name update actions', () => {
+    test('should update team1 name and clear editing state', () => {
+      store.dispatch(setEditingTeam('team1'));
+      store.dispatch(updateTeamName({ team: 'team1', name: 'New Team 1' }));
+
+      const state = store.getState().game;
+      expect(state.team1.name).toBe('New Team 1');
+      expect(state.editingTeam).toBe(null);
+    });
+
+    test('should update team2 name and clear editing state', () => {
+      store.dispatch(setEditingTeam('team2'));
+      store.dispatch(updateTeamName({ team: 'team2', name: 'New Team 2' }));
+
+      const state = store.getState().game;
+      expect(state.team2.name).toBe('New Team 2');
+      expect(state.editingTeam).toBe(null);
+    });
+
+    test('should trim whitespace from team names', () => {
+      store.dispatch(updateTeamName({ team: 'team1', name: '  Trimmed Team  ' }));
+
+      const state = store.getState().game;
+      expect(state.team1.name).toBe('Trimmed Team');
+    });
+
+    test('should reject empty team names', () => {
+      const originalName = store.getState().game.team1.name;
+      store.dispatch(updateTeamName({ team: 'team1', name: '   ' }));
+
+      const state = store.getState().game;
+      expect(state.team1.name).toBe(originalName);
+    });
+
+    test('should reject team names longer than 20 characters', () => {
+      const originalName = store.getState().game.team1.name;
+      const longName = 'This is a very long team name that exceeds the limit';
+      store.dispatch(updateTeamName({ team: 'team1', name: longName }));
+
+      const state = store.getState().game;
+      expect(state.team1.name).toBe(originalName);
+    });
+
+    test('should preserve team scores when updating names', () => {
+      // Set some scores first
+      store.dispatch(incrementTeam1Score());
+      store.dispatch(incrementTeam2Score());
+      store.dispatch(incrementTeam2Score());
+
+      // Update team names
+      store.dispatch(updateTeamName({ team: 'team1', name: 'Scorers' }));
+      store.dispatch(updateTeamName({ team: 'team2', name: 'Champions' }));
+
+      const state = store.getState().game;
+      expect(state.team1.score).toBe(1);
+      expect(state.team2.score).toBe(2);
+      expect(state.team1.name).toBe('Scorers');
+      expect(state.team2.name).toBe('Champions');
+    });
+
+    test('should maintain game state when updating team names', () => {
+      // Set some game state
+      store.dispatch(incrementTeam1Score());
+      const initialState = store.getState().game;
+
+      // Update team name
+      store.dispatch(updateTeamName({ team: 'team1', name: 'Updated Team' }));
+
+      const state = store.getState().game;
+      expect(state.scoreIncrement).toBe(initialState.scoreIncrement);
+      expect(state.winCondition).toBe(initialState.winCondition);
+      expect(state.isGameActive).toBe(initialState.isGameActive);
+      expect(state.winner).toBe(initialState.winner);
     });
   });
 });
