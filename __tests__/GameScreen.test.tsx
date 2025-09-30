@@ -171,4 +171,87 @@ describe('Visual Design Specification', () => {
       top: '50%',
     });
   });
+
+  describe('Team Name Editing Integration', () => {
+    test('should enter edit mode when edit icon is pressed', () => {
+      const store = createTestStore();
+      const { getByTestId } = render(
+        <Provider store={store}>
+          <GameScreen />
+        </Provider>
+      );
+
+      fireEvent.press(getByTestId('team1-edit-icon'));
+      expect(getByTestId('team1-name-input')).toBeTruthy();
+    });
+
+    test('should save team name when input loses focus', () => {
+      const store = createTestStore();
+      const { getByTestId } = render(
+        <Provider store={store}>
+          <GameScreen />
+        </Provider>
+      );
+
+      // Enter edit mode
+      fireEvent.press(getByTestId('team1-edit-icon'));
+
+      // Change name and blur
+      const input = getByTestId('team1-name-input');
+      fireEvent.changeText(input, 'New Team Name');
+      fireEvent(input, 'blur');
+
+      // Should display new name
+      expect(getByTestId('team1-name')).toHaveTextContent('New Team Name');
+    });
+
+    test('should cancel edit mode when escape is pressed', () => {
+      const store = createTestStore();
+      const { getByTestId, queryByTestId } = render(
+        <Provider store={store}>
+          <GameScreen />
+        </Provider>
+      );
+
+      // Enter edit mode
+      fireEvent.press(getByTestId('team2-edit-icon'));
+      expect(getByTestId('team2-name-input')).toBeTruthy();
+
+      // Press escape
+      const input = getByTestId('team2-name-input');
+      fireEvent(input, 'keyPress', { nativeEvent: { key: 'Escape' } });
+
+      // Should exit edit mode
+      expect(queryByTestId('team2-name-input')).toBeNull();
+      expect(getByTestId('team2-name')).toBeTruthy();
+    });
+
+    test('should preserve scores when editing team names', () => {
+      const store = createTestStore();
+      const { getByTestId } = render(
+        <Provider store={store}>
+          <GameScreen />
+        </Provider>
+      );
+
+      // Set some scores
+      fireEvent.press(getByTestId('team1-score-area'));
+      fireEvent.press(getByTestId('team2-score-area'));
+      fireEvent.press(getByTestId('team2-score-area'));
+
+      expect(getByTestId('team1-score')).toHaveTextContent('1');
+      expect(getByTestId('team2-score')).toHaveTextContent('2');
+
+      // Edit team name
+      fireEvent.press(getByTestId('team1-edit-icon'));
+      const input = getByTestId('team1-name-input');
+      fireEvent.changeText(input, 'Scorers');
+      fireEvent(input, 'blur');
+
+      // Scores should be preserved
+      expect(getByTestId('team1-score')).toHaveTextContent('1');
+      expect(getByTestId('team2-score')).toHaveTextContent('2');
+      expect(getByTestId('team1-name')).toHaveTextContent('Scorers');
+    });
+  });
 });

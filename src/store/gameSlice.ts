@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { GameState, Team } from '../types';
 
+const MAX_TEAM_NAME_LENGTH = 20;
+
 const initialState: GameState = {
   team1: {
     name: 'Team 1',
@@ -16,6 +18,7 @@ const initialState: GameState = {
   winCondition: 10,
   isGameActive: true,
   winner: null,
+  editingTeam: null,
 };
 
 export const gameSlice = createSlice({
@@ -50,6 +53,21 @@ export const gameSlice = createSlice({
     updateTeam2: (state, action: PayloadAction<Partial<Team>>) => {
       state.team2 = { ...state.team2, ...action.payload };
     },
+    setEditingTeam: (state, action: PayloadAction<'team1' | 'team2' | null>) => {
+      state.editingTeam = action.payload;
+    },
+    updateTeamName: (state, action: PayloadAction<{ team: 'team1' | 'team2', name: string }>) => {
+      const { team, name } = action.payload;
+      const trimmedName = name.trim();
+
+      // Validate name length and content
+      if (trimmedName.length > 0 && trimmedName.length <= MAX_TEAM_NAME_LENGTH) {
+        state[team].name = trimmedName;
+      }
+
+      // Clear editing state regardless of validation
+      state.editingTeam = null;
+    },
   },
 });
 
@@ -61,6 +79,8 @@ export const {
   resetScores,
   updateTeam1,
   updateTeam2,
+  setEditingTeam,
+  updateTeamName,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
