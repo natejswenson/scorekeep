@@ -19,6 +19,13 @@ import TeamNameDisplay from './TeamNameDisplay';
 import TeamWinsTally from './TeamWinsTally';
 import TallyControls from './TallyControls';
 
+// Layout constants for optimized spacing in landscape mode
+const LAYOUT_CONSTANTS = {
+  SCORE_AREA_MARGIN_BOTTOM: 10, // Reduced from 40 to bring elements closer
+  TOP_CONTROLS_POSITION: '8%' as const, // Tally controls positioned at top
+  MIDDLE_CONTROLS_POSITION: '45%' as const, // Reset button stays in middle
+};
+
 const GameScreen: React.FC = () => {
   const { team1, team2, editingTeam, gameWins } = useSelector((state: RootState) => state.game);
   const dispatch = useDispatch();
@@ -117,8 +124,8 @@ const GameScreen: React.FC = () => {
         />
       </View>
 
-      {/* Middle Controls - TallyControls and Reset Button */}
-      <View style={styles.middleControls}>
+      {/* Top Controls - TallyControls at top of screen */}
+      <View testID="top-controls-container" style={styles.topControls}>
         <TallyControls
           team1Wins={gameWins.team1}
           team2Wins={gameWins.team2}
@@ -127,6 +134,10 @@ const GameScreen: React.FC = () => {
           onIncrementTeam2={handleIncrementTeam2Wins}
           onDecrementTeam2={handleDecrementTeam2Wins}
         />
+      </View>
+
+      {/* Middle Controls - Reset Button in middle area */}
+      <View testID="middle-controls-container" style={styles.middleControls}>
         <TouchableOpacity
           testID="reset-button"
           style={styles.resetButton}
@@ -171,7 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: LAYOUT_CONSTANTS.SCORE_AREA_MARGIN_BOTTOM,
     borderWidth: 3,
     borderColor: '#FFFFFF',
   },
@@ -195,13 +206,21 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
   },
-  middleControls: {
+  topControls: {
     position: 'absolute',
     left: '50%',
-    top: '45%',
+    top: LAYOUT_CONSTANTS.TOP_CONTROLS_POSITION,
     transform: [{ translateX: -75 }, { translateY: -50 }],
     alignItems: 'center',
     width: 150,
+    zIndex: 10, // Ensure tally controls appear above other elements
+  },
+  middleControls: {
+    position: 'absolute',
+    left: '50%',
+    top: LAYOUT_CONSTANTS.MIDDLE_CONTROLS_POSITION,
+    transform: [{ translateX: -35 }, { translateY: -35 }],
+    alignItems: 'center',
   },
   resetButton: {
     width: 70,
@@ -218,7 +237,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginTop: 15,
   },
   resetIcon: {
     fontSize: 32,

@@ -16,6 +16,7 @@ Whether you're playing beach volleyball at sunset 🌅, dominating the court at 
 - **✏️ Custom Team Names** - Click the edit icon to rename teams from "Team 1" and "Team 2"
 - **🏆 Game Wins Tracker** - Keep track of multiple games with tallies for each team
 - **🎯 Total Game Counter** - See which game you're on (Team 1 wins + Team 2 wins + 1)
+- **📱 Landscape Optimized** - Layout designed for phones in landscape mode with tally controls at top
 - **👆 Tap to Score** - Large, easy-to-hit score areas (perfect for sweaty fingers)
 - **➖ Minus Buttons** - Because everyone makes mistakes (except that one ref 🙄)
 - **🔄 Reset Button** - Start fresh for the next set (game wins stay intact!)
@@ -31,10 +32,11 @@ Whether you're playing beach volleyball at sunset 🌅, dominating the court at 
 2. Click the edit icons (✏️) to customize team names
 3. Tap the big score circles to add points
 4. Use the minus buttons if you messed up
-5. Hit the reset button between sets (keeps game wins!)
-6. Use the +/- controls in the middle to adjust game wins
-7. See the total game counter to track which game you're on
-8. Get back to playing! 🏐
+5. Hit the reset button in the middle to clear scores (keeps game wins!)
+6. Use the +/- controls at the top (between team names) to adjust game wins
+7. See the total game counter at the top to track which game you're on
+8. Rotate your phone to landscape for the best experience! 📱
+9. Get back to playing! 🏐
 
 ### For Developers (Want to Hack On It)
 
@@ -78,6 +80,7 @@ Then open your browser and head to `http://localhost:19006` - boom! 💥
 ### Perfect for Volleyball Because:
 - **Customizable teams** - Name your teams "Beach Bombers" vs "Net Ninjas"
 - **Game series tracking** - Keep tallies across multiple games automatically
+- **Landscape optimized** - Tighter layout fits better on phones held sideways
 - **Large touch targets** - Easy to hit even with sandy/sweaty hands
 - **High contrast colors** - Red vs Blue works in bright sun or dim gym
 - **Simple interface** - No complicated menus to navigate mid-game
