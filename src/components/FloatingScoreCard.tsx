@@ -160,11 +160,11 @@ const styles = StyleSheet.create({
     elevation: 15,
   },
   cardTopLeft: {
-    top: '3%',
+    top: '5%',
     left: '7.5%',
   },
   cardBottomRight: {
-    bottom: '3%',
+    bottom: '5%',
     right: '7.5%',
   },
   scoreSection: {
