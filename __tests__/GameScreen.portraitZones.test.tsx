@@ -280,9 +280,10 @@ describe('Portrait Mode Zone Boundaries - RED PHASE', () => {
         ? Object.assign({}, ...scoreText.props.style)
         : scoreText.props.style;
 
-      // On large screen, should approach maximum font size (240px)
-      // With 80% card ratio and 55% font ratio, actual will be less but close
-      expect(style.fontSize).toBeGreaterThan(200);
+      // On large screen, font size is calculated as:
+      // zoneHeight (512) * CARD_MAX_HEIGHT_RATIO (0.70) * SCORE_FONT_RATIO (0.45) = 161.28
+      // This ensures proper containment with all card content
+      expect(style.fontSize).toBeGreaterThan(150);
       expect(style.fontSize).toBeLessThanOrEqual(240);
     });
   });

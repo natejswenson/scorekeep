@@ -30,24 +30,25 @@ const FloatingScoreCard: React.FC<FloatingScoreCardProps> = ({
   onDecrementWins,
   testIdPrefix,
 }) => {
-  const { safeFontSize, getMaxHeightPercent } = usePortraitLayout();
+  const { safeFontSize, getMaxHeightPercent, getCardPosition } = usePortraitLayout();
 
-  const cardStyle = position === 'top-left' ? styles.cardTopLeft : styles.cardBottomRight;
   const isBottomCard = position === 'bottom-right';
+  const positionStyles = getCardPosition(isBottomCard ? 'bottom' : 'top');
 
   // Dynamic styles for responsive sizing
   const dynamicStyles = {
     card: {
       maxHeight: getMaxHeightPercent() as DimensionValue,
+      ...positionStyles,
     },
     scoreText: {
       fontSize: safeFontSize,
-      lineHeight: safeFontSize,
+      lineHeight: safeFontSize * 1.1, // Slightly more room to prevent cutoff
     },
   };
 
   return (
-    <View testID={`${testIdPrefix}-card`} style={[styles.card, cardStyle, dynamicStyles.card, { backgroundColor }]}>
+    <View testID={`${testIdPrefix}-card`} style={[styles.card, dynamicStyles.card, { backgroundColor }]}>
       {/* Conditional order: bottom card shows games won first, top card shows score first */}
       {isBottomCard ? (
         <>
@@ -166,26 +167,19 @@ const styles = StyleSheet.create({
     width: '85%',
     maxWidth: 360,
     borderRadius: 20,
-    padding: 12, // Reduced from 20 to minimize extra space
+    padding: 16, // Balanced padding for visual breathing room
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.35,
     shadowRadius: 20,
     elevation: 15,
   },
-  cardTopLeft: {
-    top: '7.5%', // Increased from 5% to better center in zone
-    left: '7.5%',
-  },
-  cardBottomRight: {
-    bottom: '7.5%', // Increased from 5% to better center in zone
-    right: '7.5%',
-  },
   scoreSection: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8, // Reduced from 12 to tighten layout
+    marginBottom: 10,
+    flexShrink: 1, // Allow section to shrink if needed
   },
   scoreButton: {
     paddingHorizontal: 4,
@@ -213,10 +207,11 @@ const styles = StyleSheet.create({
   divider: {
     height: 1.5,
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    marginVertical: 8, // Reduced from 12 to tighten layout
+    marginVertical: 10,
   },
   gamesSection: {
     alignItems: 'center',
+    flexShrink: 0, // Prevent games section from shrinking
   },
   gamesControls: {
     flexDirection: 'row',
