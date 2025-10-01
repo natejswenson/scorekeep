@@ -43,7 +43,7 @@ const FloatingScoreCard: React.FC<FloatingScoreCardProps> = ({
     },
     scoreText: {
       fontSize: safeFontSize,
-      lineHeight: safeFontSize * 1.1, // Slightly more room to prevent cutoff
+      lineHeight: safeFontSize * 1.05, // Tight but clean lineHeight
     },
   };
 
@@ -164,10 +164,10 @@ const FloatingScoreCard: React.FC<FloatingScoreCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     position: 'absolute',
-    width: '85%',
-    maxWidth: 360,
+    width: '82%', // Slightly narrower for better visual proportion
+    maxWidth: 340,
     borderRadius: 20,
-    padding: 16, // Balanced padding for visual breathing room
+    padding: 20, // Adequate padding for visual breathing room
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.35,
@@ -178,11 +178,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
     flexShrink: 1, // Allow section to shrink if needed
   },
   scoreButton: {
-    paddingHorizontal: 4,
+    paddingHorizontal: 8,
   },
   scoreText: {
     fontSize: 240,
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 1.5,
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    marginVertical: 10,
+    marginVertical: 12,
   },
   gamesSection: {
     alignItems: 'center',
@@ -216,35 +216,35 @@ const styles = StyleSheet.create({
   gamesControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   gamesText: {
-    fontSize: 28,
+    fontSize: 32, // Larger for better visual balance
     fontWeight: '700',
     color: '#FFFFFF',
-    marginHorizontal: 12,
-    minWidth: 36,
+    marginHorizontal: 16,
+    minWidth: 40,
     textAlign: 'center',
   },
   smallButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: 'rgba(0, 0, 0, 0.25)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   smallButtonText: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '700',
     color: '#FFFFFF',
   },
   gamesLabel: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '700',
     color: '#FFFFFF',
     letterSpacing: 1.5,
-    opacity: 0.6,
+    opacity: 0.65,
   },
 });
 
