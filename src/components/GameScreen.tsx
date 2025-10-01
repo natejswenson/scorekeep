@@ -18,6 +18,7 @@ import {
 import TeamNameDisplay from './TeamNameDisplay';
 import TeamWinsTally from './TeamWinsTally';
 import TallyControls from './TallyControls';
+import FloatingScoreCard from './FloatingScoreCard';
 import { useIsLandscape } from '../hooks/useOrientation';
 
 // Layout constants for optimized spacing in landscape mode
@@ -63,6 +64,64 @@ const GameScreen: React.FC = () => {
     dispatch(decrementTeam2Wins());
   };
 
+  // Use floating cards layout for portrait, traditional layout for landscape
+  if (!isLandscape) {
+    return (
+      <View style={styles.portraitContainer}>
+        {/* Split background - red top, blue bottom */}
+        <View style={styles.topBackground} />
+        <View style={styles.bottomBackground} />
+
+        {/* Floating Card - Team 1 (Top Left) */}
+        <FloatingScoreCard
+          score={team1.score}
+          gamesWon={gameWins.team1}
+          backgroundColor="#FF0000"
+          position="top-left"
+          onIncrementScore={() => dispatch(incrementTeam1Score())}
+          onDecrementScore={() => dispatch(decrementTeam1Score())}
+          onIncrementWins={handleIncrementTeam1Wins}
+          onDecrementWins={handleDecrementTeam1Wins}
+          testIdPrefix="team1"
+        />
+
+        {/* Floating Card - Team 2 (Bottom Right) */}
+        <FloatingScoreCard
+          score={team2.score}
+          gamesWon={gameWins.team2}
+          backgroundColor="#0000FF"
+          position="bottom-right"
+          onIncrementScore={() => dispatch(incrementTeam2Score())}
+          onDecrementScore={() => dispatch(decrementTeam2Score())}
+          onIncrementWins={handleIncrementTeam2Wins}
+          onDecrementWins={handleDecrementTeam2Wins}
+          testIdPrefix="team2"
+        />
+
+        {/* Center Reset Button */}
+        <View testID="middle-controls-container" style={styles.portraitResetContainer}>
+          <TouchableOpacity
+            testID="reset-button"
+            style={styles.portraitResetButton}
+            onPress={() => dispatch(resetScores())}
+          >
+            <Text style={styles.portraitResetIcon}>↻</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Top Tally */}
+        <View testID="top-controls-container" style={styles.portraitTopControls}>
+          <View style={styles.tallyBadge}>
+            <Text style={styles.tallyText}>
+              {gameWins.team1} - {gameWins.team2}
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  // Landscape: Traditional side-by-side layout
   return (
     <View style={styles.container}>
       {/* Team 1 - Red Side */}
@@ -251,6 +310,78 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: '#333333',
     fontWeight: 'bold',
+  },
+  // Portrait-specific styles
+  portraitContainer: {
+    flex: 1,
+  },
+  topBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '50%',
+    backgroundColor: '#FF0000',
+  },
+  bottomBackground: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '50%',
+    backgroundColor: '#0000FF',
+  },
+  portraitResetContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -28 }, { translateY: -28 }],
+    zIndex: 5,
+  },
+  portraitResetButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 2,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  portraitResetIcon: {
+    fontSize: 24,
+    color: '#333',
+    fontWeight: '600',
+  },
+  portraitTopControls: {
+    position: 'absolute',
+    top: 24,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  tallyBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  tallyText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#333',
+    letterSpacing: 1,
   },
 });
 
