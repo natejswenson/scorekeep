@@ -60,18 +60,17 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      // In portrait, Games Won should not have absolute positioning
-      const team1Wins = getByTestId('team1-wins-container');
-      const styles = Array.isArray(team1Wins.props.style)
-        ? Object.assign({}, ...team1Wins.props.style)
-        : team1Wins.props.style;
+      // In portrait, floating cards should be rendered instead of team sides
+      const team1Card = getByTestId('team1-card');
+      const team2Card = getByTestId('team2-card');
 
-      expect(styles.position).not.toBe('absolute');
+      expect(team1Card).toBeTruthy();
+      expect(team2Card).toBeTruthy();
     });
   });
 
-  describe('Tally Position in Portrait', () => {
-    test('should position Games Won at bottom of team sections', () => {
+  describe('Floating Cards in Portrait', () => {
+    test('should render floating cards positioned correctly', () => {
       useWindowDimensions.mockReturnValue({ width: 400, height: 800 });
 
       const store = createTestStore();
@@ -81,16 +80,22 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      const team1Side = getByTestId('team1-side');
-      const styles = Array.isArray(team1Side.props.style)
-        ? Object.assign({}, ...team1Side.props.style)
-        : team1Side.props.style;
+      const team1Card = getByTestId('team1-card');
+      const team2Card = getByTestId('team2-card');
 
-      // In portrait, team side should use space-between to push tally to bottom
-      expect(styles.justifyContent).toBe('space-between');
+      // Both cards should have absolute positioning for floating effect
+      const team1Styles = Array.isArray(team1Card.props.style)
+        ? Object.assign({}, ...team1Card.props.style)
+        : team1Card.props.style;
+      const team2Styles = Array.isArray(team2Card.props.style)
+        ? Object.assign({}, ...team2Card.props.style)
+        : team2Card.props.style;
+
+      expect(team1Styles.position).toBe('absolute');
+      expect(team2Styles.position).toBe('absolute');
     });
 
-    test('should maintain vertical layout in portrait', () => {
+    test('should display scores and game wins in floating cards', () => {
       useWindowDimensions.mockReturnValue({ width: 400, height: 800 });
 
       const store = createTestStore();
@@ -100,12 +105,16 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      const team1Side = getByTestId('team1-side');
-      const styles = Array.isArray(team1Side.props.style)
-        ? Object.assign({}, ...team1Side.props.style)
-        : team1Side.props.style;
+      // Verify scores are displayed in cards
+      const team1Score = getByTestId('team1-score');
+      const team2Score = getByTestId('team2-score');
+      const team1Wins = getByTestId('team1-wins');
+      const team2Wins = getByTestId('team2-wins');
 
-      expect(styles.flexDirection).toBe(undefined); // Default is column
+      expect(team1Score).toBeTruthy();
+      expect(team2Score).toBeTruthy();
+      expect(team1Wins).toBeTruthy();
+      expect(team2Wins).toBeTruthy();
     });
   });
 
