@@ -27,8 +27,8 @@ describe('GameScreen Layout Optimization', () => {
       const scoreArea = getByTestId('team1-score-area');
       const styles = scoreArea.props.style;
 
-      // Expect reduced marginBottom (10 instead of 40)
-      expect(styles.marginBottom).toBe(10);
+      // Score area should have no marginBottom since overlap is controlled by button's negative marginTop
+      expect(styles.marginBottom).toBeUndefined();
     });
 
     test('should position Games Won section higher in viewport', () => {
