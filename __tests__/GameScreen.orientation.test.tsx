@@ -202,7 +202,7 @@ describe('GameScreen Orientation Handling', () => {
       const tallyControls = getByTestId('tally-controls-container');
       expect(tallyControls).toBeTruthy();
 
-      const team1Increment = getByTestId('team1-increment-button');
+      const team1Increment = getByTestId('team1-wins-increment-button');
       expect(team1Increment).toBeTruthy();
     });
 

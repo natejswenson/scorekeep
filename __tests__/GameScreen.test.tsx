@@ -319,12 +319,12 @@ describe('Visual Design Specification', () => {
       );
 
       // Increment team1 wins
-      fireEvent.press(getByTestId('team1-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
       expect(getByTestId('team1-wins-count')).toHaveTextContent('1');
       expect(getByTestId('total-game-counter')).toHaveTextContent('2'); // 1 + 0 + 1
 
       // Increment team2 wins
-      fireEvent.press(getByTestId('team2-increment-button'));
+      fireEvent.press(getByTestId('team2-wins-increment-button'));
       expect(getByTestId('team2-wins-count')).toHaveTextContent('1');
       expect(getByTestId('total-game-counter')).toHaveTextContent('3'); // 1 + 1 + 1
     });
@@ -350,12 +350,12 @@ describe('Visual Design Specification', () => {
       );
 
       // Decrement team1 wins
-      fireEvent.press(getByTestId('team1-decrement-button'));
+      fireEvent.press(getByTestId('team1-wins-decrement-button'));
       expect(getByTestId('team1-wins-count')).toHaveTextContent('1');
       expect(getByTestId('total-game-counter')).toHaveTextContent('3'); // 1 + 1 + 1
 
       // Decrement team2 wins
-      fireEvent.press(getByTestId('team2-decrement-button'));
+      fireEvent.press(getByTestId('team2-wins-decrement-button'));
       expect(getByTestId('team2-wins-count')).toHaveTextContent('0');
       expect(getByTestId('total-game-counter')).toHaveTextContent('2'); // 1 + 0 + 1
     });
@@ -407,8 +407,8 @@ describe('Visual Design Specification', () => {
       fireEvent.press(getByTestId('team1-decrement'));
 
       // Perform tally operations
-      fireEvent.press(getByTestId('team1-increment-button'));
-      fireEvent.press(getByTestId('team2-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
+      fireEvent.press(getByTestId('team2-wins-increment-button'));
 
       // Check that both systems work independently
       expect(getByTestId('team1-score')).toHaveTextContent('0'); // 1 - 1 = 0
@@ -432,7 +432,7 @@ describe('Visual Design Specification', () => {
       fireEvent(input, 'blur');
 
       // Increment wins
-      fireEvent.press(getByTestId('team1-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
 
       // Both features should work
       expect(getByTestId('team1-name')).toHaveTextContent('Winners');
