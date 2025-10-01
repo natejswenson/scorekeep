@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, DimensionValue } from 'react-native';
+import { usePortraitLayout } from '../hooks/usePortraitLayout';
 
 interface FloatingScoreCardProps {
   score: number;
@@ -16,6 +17,7 @@ interface FloatingScoreCardProps {
 /**
  * FloatingScoreCard - A minimalist card component for displaying team score
  * Features large typography, inline controls, and clean design
+ * Dynamically sizes to fit within portrait mode zones using usePortraitLayout hook
  */
 const FloatingScoreCard: React.FC<FloatingScoreCardProps> = ({
   score,
@@ -28,12 +30,24 @@ const FloatingScoreCard: React.FC<FloatingScoreCardProps> = ({
   onDecrementWins,
   testIdPrefix,
 }) => {
-  const cardStyle = position === 'top-left' ? styles.cardTopLeft : styles.cardBottomRight;
+  const { safeFontSize, getMaxHeightPercent } = usePortraitLayout();
 
+  const cardStyle = position === 'top-left' ? styles.cardTopLeft : styles.cardBottomRight;
   const isBottomCard = position === 'bottom-right';
 
+  // Dynamic styles for responsive sizing
+  const dynamicStyles = {
+    card: {
+      maxHeight: getMaxHeightPercent() as DimensionValue,
+    },
+    scoreText: {
+      fontSize: safeFontSize,
+      lineHeight: safeFontSize,
+    },
+  };
+
   return (
-    <View testID={`${testIdPrefix}-card`} style={[styles.card, cardStyle, { backgroundColor }]}>
+    <View testID={`${testIdPrefix}-card`} style={[styles.card, cardStyle, dynamicStyles.card, { backgroundColor }]}>
       {/* Conditional order: bottom card shows games won first, top card shows score first */}
       {isBottomCard ? (
         <>
@@ -73,7 +87,7 @@ const FloatingScoreCard: React.FC<FloatingScoreCardProps> = ({
               onPress={onIncrementScore}
               style={styles.scoreButton}
             >
-              <Text testID={`${testIdPrefix}-score`} style={styles.scoreText}>
+              <Text testID={`${testIdPrefix}-score`} style={[styles.scoreText, dynamicStyles.scoreText]}>
                 {score}
               </Text>
             </TouchableOpacity>
@@ -97,7 +111,7 @@ const FloatingScoreCard: React.FC<FloatingScoreCardProps> = ({
               onPress={onIncrementScore}
               style={styles.scoreButton}
             >
-              <Text testID={`${testIdPrefix}-score`} style={styles.scoreText}>
+              <Text testID={`${testIdPrefix}-score`} style={[styles.scoreText, dynamicStyles.scoreText]}>
                 {score}
               </Text>
             </TouchableOpacity>

@@ -52,34 +52,38 @@ const GameScreen: React.FC = () => {
     return (
       <View style={styles.portraitContainer}>
         {/* Split background - red top, blue bottom */}
-        <View style={styles.topBackground} />
-        <View style={styles.bottomBackground} />
+        <View testID="top-background" style={styles.topBackground} />
+        <View testID="bottom-background" style={styles.bottomBackground} />
 
-        {/* Floating Card - Team 1 (Top Left) */}
-        <FloatingScoreCard
-          score={team1.score}
-          gamesWon={gameWins.team1}
-          backgroundColor="#FF0000"
-          position="top-left"
-          onIncrementScore={() => dispatch(incrementTeam1Score())}
-          onDecrementScore={() => dispatch(decrementTeam1Score())}
-          onIncrementWins={handleIncrementTeam1Wins}
-          onDecrementWins={handleDecrementTeam1Wins}
-          testIdPrefix="team1"
-        />
+        {/* Red Zone - Top Half */}
+        <View testID="red-zone" style={styles.redZone}>
+          <FloatingScoreCard
+            score={team1.score}
+            gamesWon={gameWins.team1}
+            backgroundColor="#FF0000"
+            position="top-left"
+            onIncrementScore={() => dispatch(incrementTeam1Score())}
+            onDecrementScore={() => dispatch(decrementTeam1Score())}
+            onIncrementWins={handleIncrementTeam1Wins}
+            onDecrementWins={handleDecrementTeam1Wins}
+            testIdPrefix="team1"
+          />
+        </View>
 
-        {/* Floating Card - Team 2 (Bottom Right) */}
-        <FloatingScoreCard
-          score={team2.score}
-          gamesWon={gameWins.team2}
-          backgroundColor="#0000FF"
-          position="bottom-right"
-          onIncrementScore={() => dispatch(incrementTeam2Score())}
-          onDecrementScore={() => dispatch(decrementTeam2Score())}
-          onIncrementWins={handleIncrementTeam2Wins}
-          onDecrementWins={handleDecrementTeam2Wins}
-          testIdPrefix="team2"
-        />
+        {/* Blue Zone - Bottom Half */}
+        <View testID="blue-zone" style={styles.blueZone}>
+          <FloatingScoreCard
+            score={team2.score}
+            gamesWon={gameWins.team2}
+            backgroundColor="#0000FF"
+            position="bottom-right"
+            onIncrementScore={() => dispatch(incrementTeam2Score())}
+            onDecrementScore={() => dispatch(decrementTeam2Score())}
+            onIncrementWins={handleIncrementTeam2Wins}
+            onDecrementWins={handleDecrementTeam2Wins}
+            testIdPrefix="team2"
+          />
+        </View>
 
         {/* Center Reset Button */}
         <View testID="middle-controls-container" style={styles.portraitResetContainer}>
@@ -338,6 +342,22 @@ const styles = StyleSheet.create({
     right: 0,
     height: '50%',
     backgroundColor: '#0000FF',
+  },
+  redZone: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '50%',
+    overflow: 'hidden', // Prevent card overflow into blue zone
+  },
+  blueZone: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '50%',
+    overflow: 'hidden', // Prevent card overflow into red zone
   },
   portraitResetContainer: {
     position: 'absolute',
