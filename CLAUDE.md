@@ -75,10 +75,12 @@ The project follows Test-Driven Development principles as outlined in SPEC.md. A
 ### File Organization
 ```
 src/
-├── components/     # React components
-├── store/         # Redux store and slices
-├── types/         # TypeScript type definitions
-└── test-utils/    # Testing utilities and setup
+├── components/        # React components
+├── constants/         # Layout constants and configuration
+├── hooks/            # Custom React hooks (useOrientation, usePortraitLayout)
+├── store/            # Redux store and slices
+├── types/            # TypeScript type definitions
+└── test-utils/       # Testing utilities and setup
 ```
 
 ### Mobile-First Design
@@ -86,3 +88,10 @@ src/
 - High contrast colors work in various lighting conditions
 - No complicated menus or navigation during gameplay
 - Cross-platform compatibility (iOS, Android, Web)
+- **Portrait Mode**: Floating score cards with zone-based layout
+  - Red zone (top 50%) and blue zone (bottom 50%) enforce boundary separation
+  - Dynamic card sizing: maxHeight = 85% of zone height
+  - Responsive font scaling: 60% of card height (clamped 120px-240px)
+  - Cards never cross the 50% midline boundary
+  - Layout hook (`usePortraitLayout`) provides centralized dimension calculations
+  - Layout constants in `src/constants/layout.ts`

@@ -17,7 +17,8 @@ Whether you're playing beach volleyball at sunset 🌅, dominating the court at 
 - **🏆 Game Wins Tracker** - Keep track of multiple games with tallies for each team
 - **🎯 Total Game Counter** - See which game you're on (Team 1 wins + Team 2 wins + 1)
 - **📱 Landscape Optimized** - Layout adapts to orientation with tally controls at top and game wins positioned on sides
-- **🔄 Auto-Responsive** - Games Won tallies automatically reposition based on device orientation
+- **🎨 Portrait Mode** - Floating score cards with dynamic sizing that adapts to any screen size
+- **🔄 Auto-Responsive** - Layout automatically adjusts to keep cards within their team zones on all devices
 - **👆 Tap to Score** - Large, easy-to-hit score areas (perfect for sweaty fingers)
 - **➖ Minus Buttons** - Because everyone makes mistakes (except that one ref 🙄)
 - **🔄 Reset Button** - Start fresh for the next set (game wins stay intact!)
@@ -82,8 +83,10 @@ Then open your browser and head to `http://localhost:19006` - boom! 💥
 - **Customizable teams** - Name your teams "Beach Bombers" vs "Net Ninjas"
 - **Game series tracking** - Keep tallies across multiple games automatically
 - **Smart orientation** - Layout automatically adapts when you rotate your phone
-  - Portrait: Games Won at bottom of each team
+  - Portrait: Floating score cards that stay within their zones on any screen size
   - Landscape: Games Won on left/right sides for better space usage
+- **Dynamic sizing** - Cards and fonts scale responsively from small phones to large tablets
+- **Zone boundaries** - Red team stays in red zone, blue team stays in blue zone (no overlap!)
 - **Large touch targets** - Easy to hit even with sandy/sweaty hands
 - **High contrast colors** - Red vs Blue works in bright sun or dim gym
 - **Simple interface** - No complicated menus to navigate mid-game
