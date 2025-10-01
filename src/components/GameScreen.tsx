@@ -8,16 +8,11 @@ import {
   decrementTeam1Score,
   decrementTeam2Score,
   resetScores,
-  setEditingTeam,
-  updateTeamName,
   incrementTeam1Wins,
   incrementTeam2Wins,
   decrementTeam1Wins,
   decrementTeam2Wins,
 } from '../store/gameSlice';
-import TeamNameDisplay from './TeamNameDisplay';
-import TeamWinsTally from './TeamWinsTally';
-import TallyControls from './TallyControls';
 import FloatingScoreCard from './FloatingScoreCard';
 import { useIsLandscape } from '../hooks/useOrientation';
 
@@ -32,21 +27,9 @@ const LAYOUT_CONSTANTS = {
 };
 
 const GameScreen: React.FC = () => {
-  const { team1, team2, editingTeam, gameWins } = useSelector((state: RootState) => state.game);
+  const { team1, team2, gameWins } = useSelector((state: RootState) => state.game);
   const dispatch = useDispatch();
   const isLandscape = useIsLandscape();
-
-  const handleStartEdit = (teamId: 'team1' | 'team2') => {
-    dispatch(setEditingTeam(teamId));
-  };
-
-  const handleSaveName = (teamId: 'team1' | 'team2', name: string) => {
-    dispatch(updateTeamName({ team: teamId, name }));
-  };
-
-  const handleCancelEdit = () => {
-    dispatch(setEditingTeam(null));
-  };
 
   const handleIncrementTeam1Wins = () => {
     dispatch(incrementTeam1Wins());
@@ -121,95 +104,114 @@ const GameScreen: React.FC = () => {
     );
   }
 
-  // Landscape: Traditional side-by-side layout
+  // Landscape: Minimalist side-by-side layout
   return (
     <View style={styles.container}>
       {/* Team 1 - Red Side */}
       <View testID="team1-side" style={[styles.teamSide, styles.redSide]}>
-        <TeamNameDisplay
-          teamId="team1"
-          name={team1.name}
-          isEditing={editingTeam === 'team1'}
-          onStartEdit={handleStartEdit}
-          onSaveName={handleSaveName}
-          onCancelEdit={handleCancelEdit}
-        />
         <TouchableOpacity
           testID="team1-score-area"
-          style={styles.scoreArea}
+          style={styles.landscapeScoreButton}
           onPress={() => dispatch(incrementTeam1Score())}
         >
-          <Text testID="team1-score" style={styles.score}>
+          <Text testID="team1-score" style={styles.landscapeScore}>
             {team1.score}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           testID="team1-decrement"
-          style={styles.decrementButton}
+          style={styles.landscapeDecrementButton}
           onPress={() => dispatch(decrementTeam1Score())}
         >
-          <Text style={styles.buttonText}>-</Text>
+          <Text style={styles.landscapeControlText}>−</Text>
         </TouchableOpacity>
-        <TeamWinsTally
-          teamId="team1"
-          wins={gameWins.team1}
-          isLandscape={isLandscape}
-          onIncrement={handleIncrementTeam1Wins}
-          onDecrement={handleDecrementTeam1Wins}
-        />
+        <View style={styles.landscapeGamesSection}>
+          <View style={styles.landscapeGamesControls}>
+            <TouchableOpacity
+              testID="team1-wins-decrement"
+              onPress={handleDecrementTeam1Wins}
+              style={styles.landscapeSmallButton}
+            >
+              <Text style={styles.landscapeSmallButtonText}>−</Text>
+            </TouchableOpacity>
+
+            <Text testID="team1-wins" style={styles.landscapeGamesText}>
+              {gameWins.team1}
+            </Text>
+
+            <TouchableOpacity
+              testID="team1-wins-increment"
+              onPress={handleIncrementTeam1Wins}
+              style={styles.landscapeSmallButton}
+            >
+              <Text style={styles.landscapeSmallButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.landscapeGamesLabel}>GAMES WON</Text>
+        </View>
       </View>
 
       {/* Team 2 - Blue Side */}
       <View testID="team2-side" style={[styles.teamSide, styles.blueSide]}>
-        <TeamNameDisplay
-          teamId="team2"
-          name={team2.name}
-          isEditing={editingTeam === 'team2'}
-          onStartEdit={handleStartEdit}
-          onSaveName={handleSaveName}
-          onCancelEdit={handleCancelEdit}
-        />
         <TouchableOpacity
           testID="team2-score-area"
-          style={styles.scoreArea}
+          style={styles.landscapeScoreButton}
           onPress={() => dispatch(incrementTeam2Score())}
         >
-          <Text testID="team2-score" style={styles.score}>
+          <Text testID="team2-score" style={styles.landscapeScore}>
             {team2.score}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           testID="team2-decrement"
-          style={styles.decrementButton}
+          style={styles.landscapeDecrementButton}
           onPress={() => dispatch(decrementTeam2Score())}
         >
-          <Text style={styles.buttonText}>-</Text>
+          <Text style={styles.landscapeControlText}>−</Text>
         </TouchableOpacity>
-        <TeamWinsTally
-          teamId="team2"
-          wins={gameWins.team2}
-          isLandscape={isLandscape}
-          onIncrement={handleIncrementTeam2Wins}
-          onDecrement={handleDecrementTeam2Wins}
-        />
+        <View style={styles.landscapeGamesSection}>
+          <View style={styles.landscapeGamesControls}>
+            <TouchableOpacity
+              testID="team2-wins-decrement"
+              onPress={handleDecrementTeam2Wins}
+              style={styles.landscapeSmallButton}
+            >
+              <Text style={styles.landscapeSmallButtonText}>−</Text>
+            </TouchableOpacity>
+
+            <Text testID="team2-wins" style={styles.landscapeGamesText}>
+              {gameWins.team2}
+            </Text>
+
+            <TouchableOpacity
+              testID="team2-wins-increment"
+              onPress={handleIncrementTeam2Wins}
+              style={styles.landscapeSmallButton}
+            >
+              <Text style={styles.landscapeSmallButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.landscapeGamesLabel}>GAMES WON</Text>
+        </View>
       </View>
 
-      {/* Top Controls - Total Game Counter */}
+      {/* Top Controls - Tally Badge */}
       <View testID="top-controls-container" style={styles.topControls}>
-        <TallyControls
-          team1Wins={gameWins.team1}
-          team2Wins={gameWins.team2}
-        />
+        <View testID="landscape-tally-badge" style={styles.landscapeTallyBadge}>
+          <Text style={styles.landscapeTallyText}>
+            {gameWins.team1} - {gameWins.team2}
+          </Text>
+        </View>
       </View>
 
       {/* Middle Controls - Reset Button in middle area */}
       <View testID="middle-controls-container" style={styles.middleControls}>
         <TouchableOpacity
           testID="reset-button"
-          style={styles.resetButton}
+          style={styles.landscapeResetButton}
           onPress={() => dispatch(resetScores())}
         >
-          <Text style={styles.resetIcon}>↻</Text>
+          <Text style={styles.landscapeResetIcon}>↻</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -226,7 +228,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 40,
+    paddingBottom: 40,
   },
   redSide: {
     backgroundColor: '#FF0000',
@@ -277,7 +281,7 @@ const styles = StyleSheet.create({
   topControls: {
     position: 'absolute',
     left: '50%',
-    top: LAYOUT_CONSTANTS.TOP_CONTROLS_POSITION,
+    top: '25%',
     transform: [{ translateX: -75 }, { translateY: -50 }],
     alignItems: 'center',
     width: 150,
@@ -382,6 +386,106 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#333',
     letterSpacing: 1,
+  },
+  // Landscape-specific styles
+  landscapeScoreButton: {
+    paddingHorizontal: 4,
+  },
+  landscapeScore: {
+    fontSize: 240,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    lineHeight: 240,
+    textAlign: 'center',
+  },
+  landscapeDecrementButton: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: -27, // Overlap with score for tighter grouping
+  },
+  landscapeControlText: {
+    fontSize: 36,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  landscapeGamesSection: {
+    alignItems: 'center',
+    marginTop: 'auto',
+    marginBottom: '15%',
+  },
+  landscapeGamesControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  landscapeGamesText: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginHorizontal: 12,
+    minWidth: 36,
+    textAlign: 'center',
+  },
+  landscapeSmallButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  landscapeSmallButtonText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  landscapeGamesLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: 1.5,
+    opacity: 0.6,
+  },
+  landscapeTallyBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  landscapeTallyText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#333',
+    letterSpacing: 1,
+  },
+  landscapeResetButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 2,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  landscapeResetIcon: {
+    fontSize: 24,
+    color: '#333',
+    fontWeight: '600',
   },
 });
 
