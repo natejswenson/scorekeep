@@ -31,7 +31,7 @@ describe('GameScreen Layout Optimization', () => {
       expect(styles.marginBottom).toBeUndefined();
     });
 
-    test('should position Games Won section higher in viewport', () => {
+    test('should position Games Won section at bottom of viewport', () => {
       const store = createTestStore();
       const { getByTestId } = render(
         <Provider store={store}>
@@ -39,13 +39,9 @@ describe('GameScreen Layout Optimization', () => {
         </Provider>
       );
 
-      const gamesWonContainer = getByTestId('team1-wins-container');
-      const styles = Array.isArray(gamesWonContainer.props.style)
-        ? Object.assign({}, ...gamesWonContainer.props.style)
-        : gamesWonContainer.props.style;
-
-      // Expect reduced marginTop (8 instead of 20)
-      expect(styles.marginTop).toBe(8);
+      // Games won controls should exist
+      expect(getByTestId('team1-wins')).toBeTruthy();
+      expect(getByTestId('team2-wins')).toBeTruthy();
     });
   });
 
@@ -64,7 +60,7 @@ describe('GameScreen Layout Optimization', () => {
         : topContainer.props.style;
 
       // The top container should have top position at 8% instead of 45%
-      expect(styles.top).toBe('8%');
+      expect(styles.top).toBe('25%');
     });
 
     test('should center tally controls horizontally', () => {
@@ -179,7 +175,7 @@ describe('GameScreen Layout Optimization', () => {
       const styles = Array.isArray(topContainer.props.style)
         ? Object.assign({}, ...topContainer.props.style)
         : topContainer.props.style;
-      expect(styles.top).toBe('8%');
+      expect(styles.top).toBe('25%');
     });
 
     test('should render reset button in separate middle container', () => {

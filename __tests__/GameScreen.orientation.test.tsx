@@ -198,7 +198,7 @@ describe('GameScreen Orientation Handling', () => {
       expect(scoreText.props.children).toBe(0);
     });
 
-    test('should not affect tally controls in landscape', () => {
+    test('should not affect tally badge in landscape', () => {
       useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
 
       const store = createTestStore();
@@ -208,10 +208,10 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      const tallyControls = getByTestId('tally-controls-container');
-      expect(tallyControls).toBeTruthy();
+      const tallyBadge = getByTestId('landscape-tally-badge');
+      expect(tallyBadge).toBeTruthy();
 
-      const team1Increment = getByTestId('team1-wins-increment-button');
+      const team1Increment = getByTestId('team1-wins-increment');
       expect(team1Increment).toBeTruthy();
     });
 

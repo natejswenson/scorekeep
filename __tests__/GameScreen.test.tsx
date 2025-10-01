@@ -307,7 +307,7 @@ describe('Visual Design Specification', () => {
         </Provider>
       );
 
-      expect(getByTestId('total-game-counter')).toHaveTextContent('3'); // 1 + 1 + 1
+      expect(getByTestId('landscape-tally-badge')).toHaveTextContent('3'); // 1 + 1 + 1
     });
 
     test('should increment team wins when tally controls are used', () => {
@@ -319,14 +319,14 @@ describe('Visual Design Specification', () => {
       );
 
       // Increment team1 wins
-      fireEvent.press(getByTestId('team1-wins-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment'));
       expect(getByTestId('team1-wins-count')).toHaveTextContent('1');
-      expect(getByTestId('total-game-counter')).toHaveTextContent('2'); // 1 + 0 + 1
+      expect(getByTestId('landscape-tally-badge')).toHaveTextContent('2'); // 1 + 0 + 1
 
       // Increment team2 wins
-      fireEvent.press(getByTestId('team2-wins-increment-button'));
+      fireEvent.press(getByTestId('team2-wins-increment'));
       expect(getByTestId('team2-wins-count')).toHaveTextContent('1');
-      expect(getByTestId('total-game-counter')).toHaveTextContent('3'); // 1 + 1 + 1
+      expect(getByTestId('landscape-tally-badge')).toHaveTextContent('3'); // 1 + 1 + 1
     });
 
     test('should decrement team wins when decrement buttons are used', () => {
@@ -350,14 +350,14 @@ describe('Visual Design Specification', () => {
       );
 
       // Decrement team1 wins
-      fireEvent.press(getByTestId('team1-wins-decrement-button'));
+      fireEvent.press(getByTestId('team1-wins-decrement'));
       expect(getByTestId('team1-wins-count')).toHaveTextContent('1');
-      expect(getByTestId('total-game-counter')).toHaveTextContent('3'); // 1 + 1 + 1
+      expect(getByTestId('landscape-tally-badge')).toHaveTextContent('3'); // 1 + 1 + 1
 
       // Decrement team2 wins
-      fireEvent.press(getByTestId('team2-wins-decrement-button'));
+      fireEvent.press(getByTestId('team2-wins-decrement'));
       expect(getByTestId('team2-wins-count')).toHaveTextContent('0');
-      expect(getByTestId('total-game-counter')).toHaveTextContent('2'); // 1 + 0 + 1
+      expect(getByTestId('landscape-tally-badge')).toHaveTextContent('2'); // 1 + 0 + 1
     });
 
     test('should preserve game wins when scores are reset', () => {
@@ -390,7 +390,7 @@ describe('Visual Design Specification', () => {
       // Game wins should be preserved
       expect(getByTestId('team1-wins-count')).toHaveTextContent('2');
       expect(getByTestId('team2-wins-count')).toHaveTextContent('1');
-      expect(getByTestId('total-game-counter')).toHaveTextContent('4'); // 2 + 1 + 1
+      expect(getByTestId('landscape-tally-badge')).toHaveTextContent('4'); // 2 + 1 + 1
     });
 
     test('should maintain independence between scoring and tally systems', () => {
@@ -407,8 +407,8 @@ describe('Visual Design Specification', () => {
       fireEvent.press(getByTestId('team1-decrement'));
 
       // Perform tally operations
-      fireEvent.press(getByTestId('team1-wins-increment-button'));
-      fireEvent.press(getByTestId('team2-wins-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment'));
+      fireEvent.press(getByTestId('team2-wins-increment'));
 
       // Check that both systems work independently
       expect(getByTestId('team1-score')).toHaveTextContent('0'); // 1 - 1 = 0
@@ -432,7 +432,7 @@ describe('Visual Design Specification', () => {
       fireEvent(input, 'blur');
 
       // Increment wins
-      fireEvent.press(getByTestId('team1-wins-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment'));
 
       // Both features should work
       expect(getByTestId('team1-name')).toHaveTextContent('Winners');
