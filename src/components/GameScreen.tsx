@@ -284,16 +284,19 @@ const GameScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  // Landscape layout container
   container: {
     flex: 1,
     flexDirection: 'row',
     position: 'relative',
   },
+  // Team side containers in landscape mode
+  // No horizontal padding to ensure background colors extend edge-to-edge
+  // Content is centered using alignItems: 'center'
   teamSide: {
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
     paddingTop: 40,
     paddingBottom: 40,
   },
@@ -386,6 +389,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     position: 'relative',
   },
+  // Portrait team side containers
+  // paddingHorizontal is acceptable here as top/bottom backgrounds extend to edges
   portraitTeamSide: {
     flex: 1,
     justifyContent: 'space-between',
