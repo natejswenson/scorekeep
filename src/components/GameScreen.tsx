@@ -25,6 +25,9 @@ const LAYOUT_CONSTANTS = {
   SCORE_AREA_MARGIN_BOTTOM: 10, // Reduced from 40 to bring elements closer
   TOP_CONTROLS_POSITION: '8%' as const, // Tally controls positioned at top
   MIDDLE_CONTROLS_POSITION: '45%' as const, // Reset button stays in middle
+  DECREMENT_BUTTON_SIZE: 60,
+  BUTTON_OVERLAP_PERCENTAGE: 0.45, // 45% overlap for tighter visual grouping
+  BUTTON_OVERLAP_OFFSET: -27, // -(60 * 0.45) = -27px overlap
 };
 
 const GameScreen: React.FC = () => {
@@ -186,9 +189,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: LAYOUT_CONSTANTS.SCORE_AREA_MARGIN_BOTTOM,
     borderWidth: 3,
     borderColor: '#FFFFFF',
+    zIndex: 2, // Higher z-index to appear above decrement button
   },
   score: {
     fontSize: 72,
@@ -196,14 +199,16 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   decrementButton: {
-    width: 60,
-    height: 60,
+    width: LAYOUT_CONSTANTS.DECREMENT_BUTTON_SIZE,
+    height: LAYOUT_CONSTANTS.DECREMENT_BUTTON_SIZE,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    borderRadius: 30,
+    borderRadius: LAYOUT_CONSTANTS.DECREMENT_BUTTON_SIZE / 2,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
     borderColor: '#FFFFFF',
+    zIndex: 1, // Lower z-index to appear behind score circle
+    marginTop: LAYOUT_CONSTANTS.BUTTON_OVERLAP_OFFSET, // Negative margin for 20% overlap
   },
   buttonText: {
     color: '#FFFFFF',
