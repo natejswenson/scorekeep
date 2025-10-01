@@ -47,8 +47,8 @@ describe('Game Wins Integration', () => {
       // Set some scores and wins
       fireEvent.press(getByTestId('team1-score-area'));
       fireEvent.press(getByTestId('team2-score-area'));
-      fireEvent.press(getByTestId('team1-increment-button'));
-      fireEvent.press(getByTestId('team2-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
+      fireEvent.press(getByTestId('team2-wins-increment-button'));
 
       // Reset scores
       fireEvent.press(getByTestId('reset-button'));
@@ -83,11 +83,11 @@ describe('Game Wins Integration', () => {
         </Provider>
       );
 
-      fireEvent.press(getByTestId('team1-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
       expect(getByTestId('team1-wins-count')).toHaveTextContent('1');
 
-      fireEvent.press(getByTestId('team2-increment-button'));
-      fireEvent.press(getByTestId('team2-increment-button'));
+      fireEvent.press(getByTestId('team2-wins-increment-button'));
+      fireEvent.press(getByTestId('team2-wins-increment-button'));
       expect(getByTestId('team2-wins-count')).toHaveTextContent('2');
     });
   });
@@ -116,11 +116,11 @@ describe('Game Wins Integration', () => {
       expect(getByTestId('total-game-counter')).toHaveTextContent('1');
 
       // After incrementing: 1 + 0 + 1 = 2
-      fireEvent.press(getByTestId('team1-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
       expect(getByTestId('total-game-counter')).toHaveTextContent('2');
 
       // After incrementing both: 1 + 1 + 1 = 3
-      fireEvent.press(getByTestId('team2-increment-button'));
+      fireEvent.press(getByTestId('team2-wins-increment-button'));
       expect(getByTestId('total-game-counter')).toHaveTextContent('3');
     });
   });
@@ -134,7 +134,7 @@ describe('Game Wins Integration', () => {
         </Provider>
       );
 
-      fireEvent.press(getByTestId('team1-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
       expect(getByTestId('team1-wins-count')).toHaveTextContent('1');
     });
 
@@ -146,9 +146,9 @@ describe('Game Wins Integration', () => {
         </Provider>
       );
 
-      fireEvent.press(getByTestId('team1-increment-button'));
-      fireEvent.press(getByTestId('team1-increment-button'));
-      fireEvent.press(getByTestId('team1-decrement-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-decrement-button'));
       expect(getByTestId('team1-wins-count')).toHaveTextContent('1');
     });
 
@@ -160,7 +160,7 @@ describe('Game Wins Integration', () => {
         </Provider>
       );
 
-      fireEvent.press(getByTestId('team1-decrement-button'));
+      fireEvent.press(getByTestId('team1-wins-decrement-button'));
       expect(getByTestId('team1-wins-count')).toHaveTextContent('0');
     });
   });
@@ -181,7 +181,7 @@ describe('Game Wins Integration', () => {
       fireEvent(input, 'blur');
 
       // Verify tally functionality still works
-      fireEvent.press(getByTestId('team1-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
       expect(getByTestId('team1-wins-count')).toHaveTextContent('1');
 
       const state = store.getState().game;
@@ -200,7 +200,7 @@ describe('Game Wins Integration', () => {
       fireEvent.press(getByTestId('team1-score-area'));
 
       // Increment wins
-      fireEvent.press(getByTestId('team1-increment-button'));
+      fireEvent.press(getByTestId('team1-wins-increment-button'));
 
       const state = store.getState().game;
       expect(state.team1.score).toBe(1);

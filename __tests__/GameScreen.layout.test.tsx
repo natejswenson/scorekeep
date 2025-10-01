@@ -130,8 +130,8 @@ describe('GameScreen Layout Optimization', () => {
         </Provider>
       );
 
-      const team1Increment = getByTestId('team1-increment-button');
-      const team1Decrement = getByTestId('team1-decrement-button');
+      const team1Increment = getByTestId('team1-wins-increment-button');
+      const team1Decrement = getByTestId('team1-wins-decrement-button');
       const resetButton = getByTestId('reset-button');
 
       // Check touch targets are at least 44px
@@ -151,11 +151,11 @@ describe('GameScreen Layout Optimization', () => {
         </Provider>
       );
 
-      const team1Increment = getByTestId('team1-increment-button');
-      const team1Decrement = getByTestId('team1-decrement-button');
+      const team1Increment = getByTestId('team1-wins-increment-button');
+      const team1Decrement = getByTestId('team1-wins-decrement-button');
 
-      expect(team1Increment.props.accessibilityLabel).toBe('Increment team 1 wins');
-      expect(team1Decrement.props.accessibilityLabel).toBe('Decrement team 1 wins');
+      expect(team1Increment.props.accessibilityLabel).toBe('Increment team 1 games won');
+      expect(team1Decrement.props.accessibilityLabel).toBe('Decrement team 1 games won');
     });
   });
 

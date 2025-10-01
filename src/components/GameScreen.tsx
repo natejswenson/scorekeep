@@ -132,15 +132,11 @@ const GameScreen: React.FC = () => {
         />
       </View>
 
-      {/* Top Controls - TallyControls at top of screen */}
+      {/* Top Controls - Total Game Counter */}
       <View testID="top-controls-container" style={styles.topControls}>
         <TallyControls
           team1Wins={gameWins.team1}
           team2Wins={gameWins.team2}
-          onIncrementTeam1={handleIncrementTeam1Wins}
-          onDecrementTeam1={handleDecrementTeam1Wins}
-          onIncrementTeam2={handleIncrementTeam2Wins}
-          onDecrementTeam2={handleDecrementTeam2Wins}
         />
       </View>
 
