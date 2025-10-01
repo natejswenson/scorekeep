@@ -54,17 +54,17 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      // In portrait, floating cards should be rendered instead of team sides
-      const team1Card = getByTestId('team1-card');
-      const team2Card = getByTestId('team2-card');
+      // In portrait, team sides are rendered with vertical split
+      const team1Side = getByTestId('team1-side');
+      const team2Side = getByTestId('team2-side');
 
-      expect(team1Card).toBeTruthy();
-      expect(team2Card).toBeTruthy();
+      expect(team1Side).toBeTruthy();
+      expect(team2Side).toBeTruthy();
     });
   });
 
-  describe('Floating Cards in Portrait', () => {
-    test('should render floating cards positioned correctly', () => {
+  describe('Vertical Split Layout in Portrait', () => {
+    test('should render team sides with vertical split', () => {
       useWindowDimensions.mockReturnValue({ width: 400, height: 800 });
 
       const store = createTestStore();
@@ -74,22 +74,15 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      const team1Card = getByTestId('team1-card');
-      const team2Card = getByTestId('team2-card');
+      const team1Side = getByTestId('team1-side');
+      const team2Side = getByTestId('team2-side');
 
-      // Both cards should have absolute positioning for floating effect
-      const team1Styles = Array.isArray(team1Card.props.style)
-        ? Object.assign({}, ...team1Card.props.style)
-        : team1Card.props.style;
-      const team2Styles = Array.isArray(team2Card.props.style)
-        ? Object.assign({}, ...team2Card.props.style)
-        : team2Card.props.style;
-
-      expect(team1Styles.position).toBe('absolute');
-      expect(team2Styles.position).toBe('absolute');
+      // Both team sides should render
+      expect(team1Side).toBeTruthy();
+      expect(team2Side).toBeTruthy();
     });
 
-    test('should display scores and game wins in floating cards', () => {
+    test('should display scores and game wins in portrait', () => {
       useWindowDimensions.mockReturnValue({ width: 400, height: 800 });
 
       const store = createTestStore();
@@ -99,7 +92,7 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      // Verify scores are displayed in cards
+      // Verify scores are displayed
       const team1Score = getByTestId('team1-score');
       const team2Score = getByTestId('team2-score');
       const team1Wins = getByTestId('team1-wins');

@@ -13,7 +13,6 @@ import {
   decrementTeam1Wins,
   decrementTeam2Wins,
 } from '../store/gameSlice';
-import FloatingScoreCard from './FloatingScoreCard';
 import { useIsLandscape } from '../hooks/useOrientation';
 
 // Layout constants for optimized spacing in landscape mode
@@ -47,46 +46,113 @@ const GameScreen: React.FC = () => {
     dispatch(decrementTeam2Wins());
   };
 
-  // Use floating cards layout for portrait, traditional layout for landscape
+  // Portrait: Vertical split layout (matches landscape but rotated 90 degrees)
   if (!isLandscape) {
     return (
       <View style={styles.portraitContainer}>
-        {/* Split background - red top, blue bottom */}
-        <View testID="top-background" style={styles.topBackground} />
-        <View testID="bottom-background" style={styles.bottomBackground} />
+        {/* Team 1 - Red Top Half */}
+        <View testID="team1-side" style={[styles.portraitTeamSide, styles.portraitRedSide]}>
+          <TouchableOpacity
+            testID="team1-score-area"
+            style={styles.portraitScoreButton}
+            onPress={() => dispatch(incrementTeam1Score())}
+          >
+            <Text testID="team1-score" style={styles.portraitScore}>
+              {team1.score}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            testID="team1-decrement"
+            style={styles.portraitDecrementButton}
+            onPress={() => dispatch(decrementTeam1Score())}
+          >
+            <Text style={styles.portraitControlText}>−</Text>
+          </TouchableOpacity>
+          <View style={styles.portraitGamesSection}>
+            <View style={styles.portraitGamesControls}>
+              <TouchableOpacity
+                testID="team1-wins-decrement"
+                accessibilityLabel="Decrement team 1 games won"
+                onPress={handleDecrementTeam1Wins}
+                style={styles.portraitSmallButton}
+              >
+                <Text style={styles.portraitSmallButtonText}>−</Text>
+              </TouchableOpacity>
 
-        {/* Red Zone - Top Half */}
-        <View testID="red-zone" style={styles.redZone}>
-          <FloatingScoreCard
-            score={team1.score}
-            gamesWon={gameWins.team1}
-            backgroundColor="#FF0000"
-            position="top-left"
-            onIncrementScore={() => dispatch(incrementTeam1Score())}
-            onDecrementScore={() => dispatch(decrementTeam1Score())}
-            onIncrementWins={handleIncrementTeam1Wins}
-            onDecrementWins={handleDecrementTeam1Wins}
-            testIdPrefix="team1"
-          />
+              <Text testID="team1-wins" style={styles.portraitGamesText}>
+                {gameWins.team1}
+              </Text>
+
+              <TouchableOpacity
+                testID="team1-wins-increment"
+                accessibilityLabel="Increment team 1 games won"
+                onPress={handleIncrementTeam1Wins}
+                style={styles.portraitSmallButton}
+              >
+                <Text style={styles.portraitSmallButtonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.portraitGamesLabel}>GAMES WON</Text>
+          </View>
         </View>
 
-        {/* Blue Zone - Bottom Half */}
-        <View testID="blue-zone" style={styles.blueZone}>
-          <FloatingScoreCard
-            score={team2.score}
-            gamesWon={gameWins.team2}
-            backgroundColor="#0000FF"
-            position="bottom-right"
-            onIncrementScore={() => dispatch(incrementTeam2Score())}
-            onDecrementScore={() => dispatch(decrementTeam2Score())}
-            onIncrementWins={handleIncrementTeam2Wins}
-            onDecrementWins={handleDecrementTeam2Wins}
-            testIdPrefix="team2"
-          />
+        {/* Team 2 - Blue Bottom Half */}
+        <View testID="team2-side" style={[styles.portraitTeamSide, styles.portraitBlueSide]}>
+          <TouchableOpacity
+            testID="team2-score-area"
+            style={styles.portraitScoreButton}
+            onPress={() => dispatch(incrementTeam2Score())}
+          >
+            <Text testID="team2-score" style={styles.portraitScore}>
+              {team2.score}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            testID="team2-decrement"
+            style={styles.portraitDecrementButton}
+            onPress={() => dispatch(decrementTeam2Score())}
+          >
+            <Text style={styles.portraitControlText}>−</Text>
+          </TouchableOpacity>
+          <View style={styles.portraitGamesSection}>
+            <View style={styles.portraitGamesControls}>
+              <TouchableOpacity
+                testID="team2-wins-decrement"
+                accessibilityLabel="Decrement team 2 games won"
+                onPress={handleDecrementTeam2Wins}
+                style={styles.portraitSmallButton}
+              >
+                <Text style={styles.portraitSmallButtonText}>−</Text>
+              </TouchableOpacity>
+
+              <Text testID="team2-wins" style={styles.portraitGamesText}>
+                {gameWins.team2}
+              </Text>
+
+              <TouchableOpacity
+                testID="team2-wins-increment"
+                accessibilityLabel="Increment team 2 games won"
+                onPress={handleIncrementTeam2Wins}
+                style={styles.portraitSmallButton}
+              >
+                <Text style={styles.portraitSmallButtonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.portraitGamesLabel}>GAMES WON</Text>
+          </View>
         </View>
 
-        {/* Center Reset Button */}
-        <View testID="middle-controls-container" style={styles.portraitResetContainer}>
+        {/* Top Controls - Tally Badge */}
+        <View testID="top-controls-container" style={styles.portraitTopControls}>
+          <View testID="portrait-tally-badge" style={styles.portraitTallyBadge}>
+            <Text style={styles.portraitTallyText}>
+              {gameWins.team1} - {gameWins.team2}
+            </Text>
+          </View>
+        </View>
+
+        {/* Middle Controls - Reset Button at midline */}
+        <View testID="middle-controls-container" style={styles.portraitMiddleControls}>
           <TouchableOpacity
             testID="reset-button"
             style={styles.portraitResetButton}
@@ -94,15 +160,6 @@ const GameScreen: React.FC = () => {
           >
             <Text style={styles.portraitResetIcon}>↻</Text>
           </TouchableOpacity>
-        </View>
-
-        {/* Top Tally */}
-        <View testID="top-controls-container" style={styles.portraitTopControls}>
-          <View style={styles.tallyBadge}>
-            <Text style={styles.tallyText}>
-              {gameWins.team1} - {gameWins.team2}
-            </Text>
-          </View>
         </View>
       </View>
     );
@@ -323,47 +380,119 @@ const styles = StyleSheet.create({
     color: '#333333',
     fontWeight: 'bold',
   },
-  // Portrait-specific styles
+  // Portrait-specific styles (vertical split - matches landscape but rotated 90 degrees)
   portraitContainer: {
     flex: 1,
+    flexDirection: 'column',
+    position: 'relative',
   },
-  topBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: '50%',
+  portraitTeamSide: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 40,
+    paddingBottom: 40,
+  },
+  portraitRedSide: {
     backgroundColor: '#FF0000',
   },
-  bottomBackground: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '50%',
+  portraitBlueSide: {
     backgroundColor: '#0000FF',
   },
-  redZone: {
+  portraitScoreButton: {
+    paddingHorizontal: 4,
+  },
+  portraitScore: {
+    fontSize: 240,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    lineHeight: 240,
+    textAlign: 'center',
+  },
+  portraitDecrementButton: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: -27, // Overlap with score for tighter grouping
+  },
+  portraitControlText: {
+    fontSize: 36,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  portraitGamesSection: {
+    alignItems: 'center',
+    marginTop: 'auto',
+    marginBottom: '15%',
+  },
+  portraitGamesControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  portraitGamesText: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginHorizontal: 12,
+    minWidth: 36,
+    textAlign: 'center',
+  },
+  portraitSmallButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  portraitSmallButtonText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  portraitGamesLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: 1.5,
+    opacity: 0.6,
+  },
+  portraitTopControls: {
     position: 'absolute',
-    top: 0,
+    top: 24,
     left: 0,
     right: 0,
-    height: '50%',
-    overflow: 'hidden', // Prevent card overflow into blue zone
+    alignItems: 'center',
+    zIndex: 10,
   },
-  blueZone: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '50%',
-    overflow: 'hidden', // Prevent card overflow into red zone
+  portraitTallyBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  portraitResetContainer: {
+  portraitTallyText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#333',
+    letterSpacing: 1,
+  },
+  portraitMiddleControls: {
     position: 'absolute',
-    top: '50%',
     left: '50%',
+    top: '50%',
     transform: [{ translateX: -28 }, { translateY: -28 }],
+    alignItems: 'center',
     zIndex: 5,
   },
   portraitResetButton: {
@@ -385,31 +514,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#333',
     fontWeight: '600',
-  },
-  portraitTopControls: {
-    position: 'absolute',
-    top: 24,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    zIndex: 10,
-  },
-  tallyBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  tallyText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#333',
-    letterSpacing: 1,
   },
   // Landscape-specific styles
   landscapeScoreButton: {
