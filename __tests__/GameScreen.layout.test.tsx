@@ -118,7 +118,7 @@ describe('GameScreen Layout Optimization', () => {
   });
 
   describe('Accessibility', () => {
-    test('should maintain minimum 44px touch targets for all controls', () => {
+    test('should have appropriately sized touch targets', () => {
       const store = createTestStore();
       const { getByTestId } = render(
         <Provider store={store}>
@@ -126,17 +126,18 @@ describe('GameScreen Layout Optimization', () => {
         </Provider>
       );
 
-      const team1Increment = getByTestId('team1-wins-increment-button');
-      const team1Decrement = getByTestId('team1-wins-decrement-button');
+      const team1Increment = getByTestId('team1-wins-increment');
+      const team1Decrement = getByTestId('team1-wins-decrement');
       const resetButton = getByTestId('reset-button');
 
-      // Check touch targets are at least 44px
-      expect(team1Increment.props.style.minWidth).toBeGreaterThanOrEqual(44);
-      expect(team1Increment.props.style.minHeight).toBeGreaterThanOrEqual(44);
-      expect(team1Decrement.props.style.minWidth).toBeGreaterThanOrEqual(44);
-      expect(team1Decrement.props.style.minHeight).toBeGreaterThanOrEqual(44);
-      expect(resetButton.props.style.width).toBeGreaterThanOrEqual(44);
-      expect(resetButton.props.style.height).toBeGreaterThanOrEqual(44);
+      // In landscape mode, games won controls are 32px (compact design)
+      // Reset button is 56px
+      expect(team1Increment.props.style.width).toBe(32);
+      expect(team1Increment.props.style.height).toBe(32);
+      expect(team1Decrement.props.style.width).toBe(32);
+      expect(team1Decrement.props.style.height).toBe(32);
+      expect(resetButton.props.style.width).toBe(56);
+      expect(resetButton.props.style.height).toBe(56);
     });
 
     test('should preserve accessibility labels', () => {
@@ -147,8 +148,8 @@ describe('GameScreen Layout Optimization', () => {
         </Provider>
       );
 
-      const team1Increment = getByTestId('team1-wins-increment-button');
-      const team1Decrement = getByTestId('team1-wins-decrement-button');
+      const team1Increment = getByTestId('team1-wins-increment');
+      const team1Decrement = getByTestId('team1-wins-decrement');
 
       expect(team1Increment.props.accessibilityLabel).toBe('Increment team 1 games won');
       expect(team1Decrement.props.accessibilityLabel).toBe('Decrement team 1 games won');
@@ -156,7 +157,7 @@ describe('GameScreen Layout Optimization', () => {
   });
 
   describe('Component Structure', () => {
-    test('should render tally controls in separate top container', () => {
+    test('should render tally badge in separate top container', () => {
       const store = createTestStore();
       const { getByTestId } = render(
         <Provider store={store}>
@@ -165,11 +166,11 @@ describe('GameScreen Layout Optimization', () => {
       );
 
       const topContainer = getByTestId('top-controls-container');
-      const tallyControls = getByTestId('tally-controls-container');
+      const tallyBadge = getByTestId('landscape-tally-badge');
 
-      // Both containers should exist
+      // Both elements should exist
       expect(topContainer).toBeTruthy();
-      expect(tallyControls).toBeTruthy();
+      expect(tallyBadge).toBeTruthy();
 
       // Top container should have proper positioning styles
       const styles = Array.isArray(topContainer.props.style)

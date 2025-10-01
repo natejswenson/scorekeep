@@ -129,6 +129,7 @@ const GameScreen: React.FC = () => {
           <View style={styles.landscapeGamesControls}>
             <TouchableOpacity
               testID="team1-wins-decrement"
+              accessibilityLabel="Decrement team 1 games won"
               onPress={handleDecrementTeam1Wins}
               style={styles.landscapeSmallButton}
             >
@@ -141,6 +142,7 @@ const GameScreen: React.FC = () => {
 
             <TouchableOpacity
               testID="team1-wins-increment"
+              accessibilityLabel="Increment team 1 games won"
               onPress={handleIncrementTeam1Wins}
               style={styles.landscapeSmallButton}
             >
@@ -173,6 +175,7 @@ const GameScreen: React.FC = () => {
           <View style={styles.landscapeGamesControls}>
             <TouchableOpacity
               testID="team2-wins-decrement"
+              accessibilityLabel="Decrement team 2 games won"
               onPress={handleDecrementTeam2Wins}
               style={styles.landscapeSmallButton}
             >
@@ -185,6 +188,7 @@ const GameScreen: React.FC = () => {
 
             <TouchableOpacity
               testID="team2-wins-increment"
+              accessibilityLabel="Increment team 2 games won"
               onPress={handleIncrementTeam2Wins}
               style={styles.landscapeSmallButton}
             >

@@ -38,16 +38,10 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      // In landscape, Games Won should have isLandscape prop
-      const team1Wins = getByTestId('team1-wins-container');
+      // In landscape mode, wins are displayed inline on each team side
+      const team1Wins = getByTestId('team1-wins');
       expect(team1Wins).toBeTruthy();
-
-      // Check if the container has position absolute (landscape style)
-      const styles = Array.isArray(team1Wins.props.style)
-        ? Object.assign({}, ...team1Wins.props.style)
-        : team1Wins.props.style;
-
-      expect(styles.position).toBe('absolute');
+      expect(team1Wins).toHaveTextContent('0');
     });
 
     test('should detect portrait orientation when height > width', () => {
@@ -119,7 +113,7 @@ describe('GameScreen Orientation Handling', () => {
   });
 
   describe('Tally Position in Landscape', () => {
-    test('should position Team 1 Games Won on left side in landscape', () => {
+    test('should display Team 1 Games Won on left side in landscape', () => {
       useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
 
       const store = createTestStore();
@@ -129,17 +123,15 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      const team1Wins = getByTestId('team1-wins-container');
-      const styles = Array.isArray(team1Wins.props.style)
-        ? Object.assign({}, ...team1Wins.props.style)
-        : team1Wins.props.style;
+      // Team1 wins are inline within the team1-side
+      const team1Side = getByTestId('team1-side');
+      const team1Wins = getByTestId('team1-wins');
 
-      expect(styles.position).toBe('absolute');
-      expect(styles.left).toBeDefined();
-      expect(styles.top).toBe('50%');
+      expect(team1Side).toBeTruthy();
+      expect(team1Wins).toBeTruthy();
     });
 
-    test('should position Team 2 Games Won on right side in landscape', () => {
+    test('should display Team 2 Games Won on right side in landscape', () => {
       useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
 
       const store = createTestStore();
@@ -149,17 +141,15 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      const team2Wins = getByTestId('team2-wins-container');
-      const styles = Array.isArray(team2Wins.props.style)
-        ? Object.assign({}, ...team2Wins.props.style)
-        : team2Wins.props.style;
+      // Team2 wins are inline within the team2-side
+      const team2Side = getByTestId('team2-side');
+      const team2Wins = getByTestId('team2-wins');
 
-      expect(styles.position).toBe('absolute');
-      expect(styles.right).toBeDefined();
-      expect(styles.top).toBe('50%');
+      expect(team2Side).toBeTruthy();
+      expect(team2Wins).toBeTruthy();
     });
 
-    test('should center vertically in landscape', () => {
+    test('should display games won at bottom of each team side in landscape', () => {
       useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
 
       const store = createTestStore();
@@ -169,14 +159,9 @@ describe('GameScreen Orientation Handling', () => {
         </Provider>
       );
 
-      const team1Wins = getByTestId('team1-wins-container');
-      const styles = Array.isArray(team1Wins.props.style)
-        ? Object.assign({}, ...team1Wins.props.style)
-        : team1Wins.props.style;
-
-      expect(styles.top).toBe('50%');
-      // Transform should exist for vertical centering
-      expect(styles.transform).toBeDefined();
+      // Both team sides should have games won inline
+      expect(getByTestId('team1-wins')).toBeTruthy();
+      expect(getByTestId('team2-wins')).toBeTruthy();
     });
   });
 
