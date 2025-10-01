@@ -92,6 +92,8 @@ const GameScreen: React.FC = () => {
           teamId="team1"
           wins={gameWins.team1}
           isLandscape={isLandscape}
+          onIncrement={handleIncrementTeam1Wins}
+          onDecrement={handleDecrementTeam1Wins}
         />
       </View>
 
@@ -125,6 +127,8 @@ const GameScreen: React.FC = () => {
           teamId="team2"
           wins={gameWins.team2}
           isLandscape={isLandscape}
+          onIncrement={handleIncrementTeam2Wins}
+          onDecrement={handleDecrementTeam2Wins}
         />
       </View>
 
