@@ -10,15 +10,15 @@ export const PORTRAIT_LAYOUT = {
 
   /**
    * Maximum card height as a ratio of zone height
-   * 85% ensures cards stay well within zone boundaries with margin
+   * 80% ensures cards stay well within zone boundaries with margin
    */
-  CARD_MAX_HEIGHT_RATIO: 0.85,
+  CARD_MAX_HEIGHT_RATIO: 0.80,
 
   /**
    * Score font size as a ratio of card height
-   * 60% provides good visual balance
+   * 55% provides good visual balance while preventing overflow
    */
-  SCORE_FONT_RATIO: 0.6,
+  SCORE_FONT_RATIO: 0.55,
 
   /**
    * Horizontal margin for card positioning

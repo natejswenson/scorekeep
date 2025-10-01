@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     width: '85%',
     maxWidth: 360,
     borderRadius: 20,
-    padding: 20,
+    padding: 12, // Reduced from 20 to minimize extra space
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.35,
@@ -174,18 +174,18 @@ const styles = StyleSheet.create({
     elevation: 15,
   },
   cardTopLeft: {
-    top: '5%',
+    top: '7.5%', // Increased from 5% to better center in zone
     left: '7.5%',
   },
   cardBottomRight: {
-    bottom: '5%',
+    bottom: '7.5%', // Increased from 5% to better center in zone
     right: '7.5%',
   },
   scoreSection: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
+    marginBottom: 8, // Reduced from 12 to tighten layout
   },
   scoreButton: {
     paddingHorizontal: 4,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 1.5,
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    marginVertical: 12,
+    marginVertical: 8, // Reduced from 12 to tighten layout
   },
   gamesSection: {
     alignItems: 'center',
