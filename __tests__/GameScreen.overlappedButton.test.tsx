@@ -142,7 +142,7 @@ describe('GameScreen - Overlapped Decrement Button', () => {
       });
     });
 
-    test('should maintain 150px score circle size', () => {
+    test('should maintain 200px score circle size', () => {
       const store = createTestStore();
       const { getByTestId } = render(
         <Provider store={store}>
@@ -153,8 +153,8 @@ describe('GameScreen - Overlapped Decrement Button', () => {
       const scoreArea = getByTestId('team1-score-area');
 
       expect(scoreArea).toHaveStyle({
-        width: 150,
-        height: 150,
+        width: 200,
+        height: 200,
       });
     });
   });

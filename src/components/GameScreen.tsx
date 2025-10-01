@@ -22,7 +22,7 @@ import { useIsLandscape } from '../hooks/useOrientation';
 
 // Layout constants for optimized spacing in landscape mode
 const LAYOUT_CONSTANTS = {
-  SCORE_AREA_MARGIN_BOTTOM: 10, // Reduced from 40 to bring elements closer
+  SCORE_CIRCLE_SIZE: 200, // Increased from 150 for greater visual prominence
   TOP_CONTROLS_POSITION: '8%' as const, // Tally controls positioned at top
   MIDDLE_CONTROLS_POSITION: '45%' as const, // Reset button stays in middle
   DECREMENT_BUTTON_SIZE: 60,
@@ -183,9 +183,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   scoreArea: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+    width: LAYOUT_CONSTANTS.SCORE_CIRCLE_SIZE,
+    height: LAYOUT_CONSTANTS.SCORE_CIRCLE_SIZE,
+    borderRadius: LAYOUT_CONSTANTS.SCORE_CIRCLE_SIZE / 2,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     zIndex: 2, // Higher z-index to appear above decrement button
   },
   score: {
-    fontSize: 72,
+    fontSize: 96,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
@@ -205,10 +205,8 @@ const styles = StyleSheet.create({
     borderRadius: LAYOUT_CONSTANTS.DECREMENT_BUTTON_SIZE / 2,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
     zIndex: 1, // Lower z-index to appear behind score circle
-    marginTop: LAYOUT_CONSTANTS.BUTTON_OVERLAP_OFFSET, // Negative margin for 20% overlap
+    marginTop: LAYOUT_CONSTANTS.BUTTON_OVERLAP_OFFSET, // Negative margin for 45% overlap
   },
   buttonText: {
     color: '#FFFFFF',
