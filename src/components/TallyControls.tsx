@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { Box } from '@mui/material';
 import TotalGameCounter from './TotalGameCounter';
 
 /**
@@ -25,17 +25,17 @@ const TallyControls: React.FC<TallyControlsProps> = ({
   const totalGames = team1Wins + team2Wins + 1;
 
   return (
-    <View testID="tally-controls-container" style={styles.controlsContainer}>
+    <Box
+      data-testid="tally-controls-container"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <TotalGameCounter totalGames={totalGames} />
-    </View>
+    </Box>
   );
 };
-
-const styles = StyleSheet.create({
-  controlsContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default TallyControls;

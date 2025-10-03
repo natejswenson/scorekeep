@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Box, Typography } from '@mui/material';
 
 interface TotalGameCounterProps {
   totalGames: number;
@@ -11,37 +11,38 @@ const TotalGameCounter: React.FC<TotalGameCounterProps> = ({ totalGames }) => {
   };
 
   return (
-    <View
-      testID="total-game-container"
-      style={styles.container}
-      accessibilityLabel={getAccessibilityLabel()}
-      accessibilityRole="text"
+    <Box
+      data-testid="total-game-container"
+      aria-label={getAccessibilityLabel()}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        mb: 1.25,
+      }}
     >
-      <Text testID="total-game-label" style={styles.label}>
+      <Typography
+        data-testid="total-game-label"
+        sx={{
+          fontSize: 14,
+          color: 'rgba(255, 255, 255, 0.8)',
+          mb: 0.25,
+        }}
+      >
         Game
-      </Text>
-      <Text testID="total-game-counter" style={styles.counter}>
+      </Typography>
+      <Typography
+        data-testid="total-game-counter"
+        sx={{
+          fontSize: 28,
+          fontWeight: 'bold',
+          color: '#FFFFFF',
+        }}
+      >
         {totalGames}
-      </Text>
-    </View>
+      </Typography>
+    </Box>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  label: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
-    marginBottom: 2,
-  },
-  counter: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-});
 
 export default TotalGameCounter;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Box, Typography, IconButton } from '@mui/material';
 
 // Reduced margin for tighter vertical spacing in landscape mode
 const TALLY_MARGIN_TOP = 8;
@@ -61,103 +61,109 @@ const TeamWinsTally: React.FC<TeamWinsTallyProps> = ({
 
   // Apply landscape-specific positioning
   const landscapeStyles = isLandscape ? {
-    position: 'absolute' as const,
-    top: '50%' as const,
-    [teamId === 'team1' ? 'left' : 'right']: LANDSCAPE_TALLY_OFFSET,
-    transform: [{ translateY: -40 }],
+    position: 'absolute',
+    top: '50%',
+    [teamId === 'team1' ? 'left' : 'right']: `${LANDSCAPE_TALLY_OFFSET}px`,
+    transform: 'translateY(-40px)',
   } : {};
 
   return (
-    <View
-      testID={`${teamId}-wins-container`}
-      style={[styles.tallyContainer, landscapeStyles]}
-      accessibilityLabel={getAccessibilityLabel()}
+    <Box
+      data-testid={`${teamId}-wins-container`}
+      aria-label={getAccessibilityLabel()}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        mt: `${TALLY_MARGIN_TOP}px`,
+        ...landscapeStyles,
+      }}
     >
-      <Text
-        testID={`${teamId}-wins-label`}
-        style={styles.tallyLabel}
+      <Typography
+        data-testid={`${teamId}-wins-label`}
+        sx={{
+          fontSize: 16,
+          fontWeight: 'normal',
+          mb: 0.5,
+          color: '#FFFFFF',
+        }}
       >
         Games Won
-      </Text>
-      <View
-        testID={`${teamId}-wins-controls-container`}
-        style={styles.controlsContainer}
+      </Typography>
+      <Box
+        data-testid={`${teamId}-wins-controls-container`}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          alignSelf: 'center',
+        }}
       >
-        <TouchableOpacity
-          testID={`${teamId}-wins-decrement-button`}
-          style={styles.controlButton}
-          onPress={onDecrement}
-          accessibilityLabel={`Decrement team ${teamNumber} games won`}
-          accessibilityRole="button"
+        <IconButton
+          data-testid={`${teamId}-wins-decrement-button`}
+          onClick={onDecrement}
+          aria-label={`Decrement team ${teamNumber} games won`}
+          sx={{
+            minWidth: BUTTON_SIZE,
+            minHeight: BUTTON_SIZE,
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '50%',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            },
+          }}
         >
-          <Text
-            testID={`${teamId}-wins-decrement-text`}
-            style={styles.buttonText}
+          <Typography
+            data-testid={`${teamId}-wins-decrement-text`}
+            sx={{
+              fontSize: 18,
+              color: 'rgba(255, 255, 255, 0.8)',
+              fontWeight: 'bold',
+            }}
           >
             -
-          </Text>
-        </TouchableOpacity>
-        <Text
-          testID={`${teamId}-wins-count`}
-          style={styles.tallyCount}
+          </Typography>
+        </IconButton>
+        <Typography
+          data-testid={`${teamId}-wins-count`}
+          sx={{
+            fontSize: 24,
+            fontWeight: 'bold',
+            color: '#FFFFFF',
+            textAlign: 'center',
+            mx: `${CONTROL_SPACING}px`,
+          }}
         >
           {wins}
-        </Text>
-        <TouchableOpacity
-          testID={`${teamId}-wins-increment-button`}
-          style={styles.controlButton}
-          onPress={onIncrement}
-          accessibilityLabel={`Increment team ${teamNumber} games won`}
-          accessibilityRole="button"
+        </Typography>
+        <IconButton
+          data-testid={`${teamId}-wins-increment-button`}
+          onClick={onIncrement}
+          aria-label={`Increment team ${teamNumber} games won`}
+          sx={{
+            minWidth: BUTTON_SIZE,
+            minHeight: BUTTON_SIZE,
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '50%',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            },
+          }}
         >
-          <Text
-            testID={`${teamId}-wins-increment-text`}
-            style={styles.buttonText}
+          <Typography
+            data-testid={`${teamId}-wins-increment-text`}
+            sx={{
+              fontSize: 18,
+              color: 'rgba(255, 255, 255, 0.8)',
+              fontWeight: 'bold',
+            }}
           >
             +
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          </Typography>
+        </IconButton>
+      </Box>
+    </Box>
   );
 };
-
-const styles = StyleSheet.create({
-  tallyContainer: {
-    alignItems: 'center',
-    marginTop: TALLY_MARGIN_TOP,
-  },
-  tallyLabel: {
-    fontSize: 16,
-    fontWeight: 'normal',
-    marginBottom: 4,
-    color: '#FFFFFF',
-  },
-  controlsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-  controlButton: {
-    minWidth: BUTTON_SIZE,
-    minHeight: BUTTON_SIZE,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: BUTTON_SIZE / 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontSize: 18,
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontWeight: 'bold',
-  },
-  tallyCount: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    marginHorizontal: CONTROL_SPACING,
-  },
-});
 
 export default TeamWinsTally;

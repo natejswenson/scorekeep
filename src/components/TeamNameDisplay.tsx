@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Box, Typography, TextField, IconButton } from '@mui/material';
 
 const MAX_TEAM_NAME_LENGTH = 20;
-const MIN_TOUCH_TARGET_SIZE = 24;
 
 interface TeamNameDisplayProps {
   teamId: 'team1' | 'team2';
@@ -38,80 +37,86 @@ const TeamNameDisplay: React.FC<TeamNameDisplayProps> = ({
     }
   };
 
-  const handleKeyPress = (event: { nativeEvent: { key: string } }) => {
-    if (event.nativeEvent.key === 'Escape') {
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
       onCancelEdit();
+    } else if (event.key === 'Enter') {
+      handleSave();
     }
   };
 
   if (isEditing) {
     return (
-      <View style={styles.nameContainer}>
-        <TextInput
-          testID={`${teamId}-name-input`}
-          style={[styles.nameInput, { color: '#FFFFFF' }]}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          mb: 5,
+        }}
+      >
+        <TextField
+          data-testid={`${teamId}-name-input`}
           value={inputValue}
-          onChangeText={setInputValue}
+          onChange={(e) => setInputValue(e.target.value)}
           onBlur={handleSave}
-          onSubmitEditing={handleSave}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           autoFocus
-          selectTextOnFocus
+          sx={{
+            '& .MuiInputBase-input': {
+              fontSize: 32,
+              fontWeight: 'bold',
+              color: '#FFFFFF',
+              textAlign: 'center',
+              minWidth: 150,
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: 0.5,
+              padding: 0.5,
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              border: 'none',
+            },
+          }}
         />
-      </View>
+      </Box>
     );
   }
 
   return (
-    <View style={styles.nameContainer}>
-      <Text testID={`${teamId}-name`} style={styles.teamNameText}>
-        {name}
-      </Text>
-      <TouchableOpacity
-        testID={`${teamId}-edit-icon`}
-        style={styles.editIcon}
-        onPress={() => onStartEdit(teamId)}
-        accessibilityLabel="Edit team name"
-        accessibilityRole="button"
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        mb: 5,
+      }}
+    >
+      <Typography
+        data-testid={`${teamId}-name`}
+        sx={{
+          fontSize: 32,
+          fontWeight: 'bold',
+          color: '#FFFFFF',
+          textAlign: 'center',
+        }}
       >
-        <Text style={styles.editIconText}>✏️</Text>
-      </TouchableOpacity>
-    </View>
+        {name}
+      </Typography>
+      <IconButton
+        data-testid={`${teamId}-edit-icon`}
+        onClick={() => onStartEdit(teamId)}
+        aria-label="Edit team name"
+        sx={{
+          ml: 1,
+          p: 0.5,
+          minWidth: 24,
+          minHeight: 24,
+        }}
+      >
+        <span style={{ fontSize: 16 }}>✏️</span>
+      </IconButton>
+    </Box>
   );
 };
-
-const styles = StyleSheet.create({
-  nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  teamNameText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  editIcon: {
-    marginLeft: 8,
-    padding: 4,
-    minWidth: MIN_TOUCH_TARGET_SIZE,
-    minHeight: MIN_TOUCH_TARGET_SIZE,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  editIconText: {
-    fontSize: 16,
-  },
-  nameInput: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 4,
-    padding: 4,
-    textAlign: 'center',
-    minWidth: 150,
-  },
-});
 
 export default TeamNameDisplay;

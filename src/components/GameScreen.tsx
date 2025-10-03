@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Button, Typography, IconButton } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { useTheme } from '@mui/material/styles';
 import { RootState } from '../store';
 import {
   incrementTeam1Score,
@@ -21,7 +20,6 @@ const GameScreen: React.FC = () => {
   const { team1, team2, gameWins } = useSelector((state: RootState) => state.game);
   const dispatch = useDispatch();
   const isLandscape = useIsLandscape();
-  const theme = useTheme();
 
   const handleIncrementTeam1Wins = () => {
     dispatch(incrementTeam1Wins());
