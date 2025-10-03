@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Typography, IconButton } from '@mui/material';
+import { Box, Button, Typography, IconButton, useMediaQuery } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import {
@@ -13,28 +13,24 @@ import {
   decrementTeam1Wins,
   decrementTeam2Wins,
 } from '../store/gameSlice';
-import { useIsLandscape } from '../hooks/useOrientation';
 import { palette } from '../theme';
 
 const GameScreen: React.FC = () => {
   const { team1, team2, gameWins } = useSelector((state: RootState) => state.game);
   const dispatch = useDispatch();
-  const isLandscape = useIsLandscape();
+  const isLandscape = useMediaQuery('(orientation: landscape)');
 
-  const handleIncrementTeam1Wins = () => {
-    dispatch(incrementTeam1Wins());
+  // Responsive sizing based on viewport
+  const buttonSize = {
+    xs: 40,
+    sm: 48,
+    md: 52,
   };
 
-  const handleIncrementTeam2Wins = () => {
-    dispatch(incrementTeam2Wins());
-  };
-
-  const handleDecrementTeam1Wins = () => {
-    dispatch(decrementTeam1Wins());
-  };
-
-  const handleDecrementTeam2Wins = () => {
-    dispatch(decrementTeam2Wins());
+  const resetButtonSize = {
+    xs: 48,
+    sm: 56,
+    md: 64,
   };
 
   // Portrait: Vertical split layout
@@ -44,9 +40,10 @@ const GameScreen: React.FC = () => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          height: '100vh',
+          height: '100dvh',
           width: '100vw',
           position: 'relative',
+          overflow: 'hidden',
         }}
       >
         {/* Team 1 - Red Top Half */}
@@ -56,12 +53,12 @@ const GameScreen: React.FC = () => {
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: palette.team1.main,
-            px: 2.5,
-            pt: 5,
-            pb: 5,
+            px: { xs: 1, sm: 2 },
+            py: { xs: 2, sm: 3 },
+            gap: { xs: 1.5, sm: 2 },
           }}
         >
           <Button
@@ -81,10 +78,9 @@ const GameScreen: React.FC = () => {
             data-testid="team1-decrement"
             onClick={() => dispatch(decrementTeam1Score())}
             sx={{
-              width: 52,
-              height: 52,
+              width: buttonSize,
+              height: buttonSize,
               backgroundColor: palette.neutral.buttonOverlay,
-              mt: -3.375,
               '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
             }}
           >
@@ -95,18 +91,17 @@ const GameScreen: React.FC = () => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              mt: 'auto',
-              mb: '15%',
+              gap: { xs: 0.5, sm: 0.75 },
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.75 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}>
               <IconButton
                 data-testid="team1-wins-decrement"
                 aria-label="Decrement team 1 games won"
-                onClick={handleDecrementTeam1Wins}
+                onClick={() => dispatch(decrementTeam1Wins())}
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: { xs: 28, sm: 32 },
+                  height: { xs: 28, sm: 32 },
                   backgroundColor: palette.neutral.buttonOverlay,
                   '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
                 }}
@@ -114,17 +109,17 @@ const GameScreen: React.FC = () => {
                 <Typography variant="smallButtonText">−</Typography>
               </IconButton>
 
-              <Typography data-testid="team1-wins" variant="gamesText" sx={{ mx: 1.5, minWidth: 36, textAlign: 'center' }}>
+              <Typography data-testid="team1-wins" variant="gamesText" sx={{ minWidth: { xs: 28, sm: 36 }, textAlign: 'center' }}>
                 {gameWins.team1}
               </Typography>
 
               <IconButton
                 data-testid="team1-wins-increment"
                 aria-label="Increment team 1 games won"
-                onClick={handleIncrementTeam1Wins}
+                onClick={() => dispatch(incrementTeam1Wins())}
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: { xs: 28, sm: 32 },
+                  height: { xs: 28, sm: 32 },
                   backgroundColor: palette.neutral.buttonOverlay,
                   '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
                 }}
@@ -143,12 +138,12 @@ const GameScreen: React.FC = () => {
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: palette.team2.main,
-            px: 2.5,
-            pt: 5,
-            pb: 5,
+            px: { xs: 1, sm: 2 },
+            py: { xs: 2, sm: 3 },
+            gap: { xs: 1.5, sm: 2 },
           }}
         >
           <Button
@@ -168,10 +163,9 @@ const GameScreen: React.FC = () => {
             data-testid="team2-decrement"
             onClick={() => dispatch(decrementTeam2Score())}
             sx={{
-              width: 52,
-              height: 52,
+              width: buttonSize,
+              height: buttonSize,
               backgroundColor: palette.neutral.buttonOverlay,
-              mt: -3.375,
               '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
             }}
           >
@@ -182,18 +176,17 @@ const GameScreen: React.FC = () => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              mt: 'auto',
-              mb: '15%',
+              gap: { xs: 0.5, sm: 0.75 },
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.75 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}>
               <IconButton
                 data-testid="team2-wins-decrement"
                 aria-label="Decrement team 2 games won"
-                onClick={handleDecrementTeam2Wins}
+                onClick={() => dispatch(decrementTeam2Wins())}
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: { xs: 28, sm: 32 },
+                  height: { xs: 28, sm: 32 },
                   backgroundColor: palette.neutral.buttonOverlay,
                   '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
                 }}
@@ -201,17 +194,17 @@ const GameScreen: React.FC = () => {
                 <Typography variant="smallButtonText">−</Typography>
               </IconButton>
 
-              <Typography data-testid="team2-wins" variant="gamesText" sx={{ mx: 1.5, minWidth: 36, textAlign: 'center' }}>
+              <Typography data-testid="team2-wins" variant="gamesText" sx={{ minWidth: { xs: 28, sm: 36 }, textAlign: 'center' }}>
                 {gameWins.team2}
               </Typography>
 
               <IconButton
                 data-testid="team2-wins-increment"
                 aria-label="Increment team 2 games won"
-                onClick={handleIncrementTeam2Wins}
+                onClick={() => dispatch(incrementTeam2Wins())}
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: { xs: 28, sm: 32 },
+                  height: { xs: 28, sm: 32 },
                   backgroundColor: palette.neutral.buttonOverlay,
                   '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
                 }}
@@ -228,7 +221,7 @@ const GameScreen: React.FC = () => {
           data-testid="top-controls-container"
           sx={{
             position: 'absolute',
-            top: 24,
+            top: { xs: 12, sm: 16, md: 24 },
             left: 0,
             right: 0,
             display: 'flex',
@@ -241,9 +234,9 @@ const GameScreen: React.FC = () => {
             data-testid="portrait-tally-badge"
             sx={{
               backgroundColor: palette.neutral.overlay,
-              px: 2.5,
-              py: 1,
-              borderRadius: 2.5,
+              px: { xs: 1.5, sm: 2, md: 2.5 },
+              py: { xs: 0.5, sm: 0.75, md: 1 },
+              borderRadius: { xs: 1.5, sm: 2, md: 2.5 },
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
             }}
           >
@@ -270,8 +263,8 @@ const GameScreen: React.FC = () => {
             data-testid="reset-button"
             onClick={() => dispatch(resetScores())}
             sx={{
-              width: 56,
-              height: 56,
+              width: resetButtonSize,
+              height: resetButtonSize,
               backgroundColor: palette.neutral.overlayLight,
               border: `2px solid rgba(0, 0, 0, 0.1)`,
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
@@ -285,15 +278,16 @@ const GameScreen: React.FC = () => {
     );
   }
 
-  // Landscape: Minimalist side-by-side layout
+  // Landscape: Side-by-side layout
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'row',
-        height: '100vh',
+        height: '100dvh',
         width: '100vw',
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
       {/* Team 1 - Red Side */}
@@ -303,11 +297,12 @@ const GameScreen: React.FC = () => {
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: palette.team1.main,
-          pt: 5,
-          pb: 5,
+          px: { xs: 1, sm: 2 },
+          py: { xs: 2, sm: 3 },
+          gap: { xs: 1.5, sm: 2 },
         }}
       >
         <Button
@@ -327,10 +322,9 @@ const GameScreen: React.FC = () => {
           data-testid="team1-decrement"
           onClick={() => dispatch(decrementTeam1Score())}
           sx={{
-            width: 52,
-            height: 52,
+            width: buttonSize,
+            height: buttonSize,
             backgroundColor: palette.neutral.buttonOverlay,
-            mt: -3.375,
             '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
           }}
         >
@@ -341,18 +335,17 @@ const GameScreen: React.FC = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            mt: 'auto',
-            mb: '15%',
+            gap: { xs: 0.5, sm: 0.75 },
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.75 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}>
             <IconButton
               data-testid="team1-wins-decrement"
               aria-label="Decrement team 1 games won"
-              onClick={handleDecrementTeam1Wins}
+              onClick={() => dispatch(decrementTeam1Wins())}
               sx={{
-                width: 32,
-                height: 32,
+                width: { xs: 28, sm: 32 },
+                height: { xs: 28, sm: 32 },
                 backgroundColor: palette.neutral.buttonOverlay,
                 '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
               }}
@@ -360,17 +353,17 @@ const GameScreen: React.FC = () => {
               <Typography variant="smallButtonText">−</Typography>
             </IconButton>
 
-            <Typography data-testid="team1-wins" variant="gamesText" sx={{ mx: 1.5, minWidth: 36, textAlign: 'center' }}>
+            <Typography data-testid="team1-wins" variant="gamesText" sx={{ minWidth: { xs: 28, sm: 36 }, textAlign: 'center' }}>
               {gameWins.team1}
             </Typography>
 
             <IconButton
               data-testid="team1-wins-increment"
               aria-label="Increment team 1 games won"
-              onClick={handleIncrementTeam1Wins}
+              onClick={() => dispatch(incrementTeam1Wins())}
               sx={{
-                width: 32,
-                height: 32,
+                width: { xs: 28, sm: 32 },
+                height: { xs: 28, sm: 32 },
                 backgroundColor: palette.neutral.buttonOverlay,
                 '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
               }}
@@ -389,11 +382,12 @@ const GameScreen: React.FC = () => {
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: palette.team2.main,
-          pt: 5,
-          pb: 5,
+          px: { xs: 1, sm: 2 },
+          py: { xs: 2, sm: 3 },
+          gap: { xs: 1.5, sm: 2 },
         }}
       >
         <Button
@@ -413,10 +407,9 @@ const GameScreen: React.FC = () => {
           data-testid="team2-decrement"
           onClick={() => dispatch(decrementTeam2Score())}
           sx={{
-            width: 52,
-            height: 52,
+            width: buttonSize,
+            height: buttonSize,
             backgroundColor: palette.neutral.buttonOverlay,
-            mt: -3.375,
             '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
           }}
         >
@@ -427,18 +420,17 @@ const GameScreen: React.FC = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            mt: 'auto',
-            mb: '15%',
+            gap: { xs: 0.5, sm: 0.75 },
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.75 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}>
             <IconButton
               data-testid="team2-wins-decrement"
               aria-label="Decrement team 2 games won"
-              onClick={handleDecrementTeam2Wins}
+              onClick={() => dispatch(decrementTeam2Wins())}
               sx={{
-                width: 32,
-                height: 32,
+                width: { xs: 28, sm: 32 },
+                height: { xs: 28, sm: 32 },
                 backgroundColor: palette.neutral.buttonOverlay,
                 '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
               }}
@@ -446,17 +438,17 @@ const GameScreen: React.FC = () => {
               <Typography variant="smallButtonText">−</Typography>
             </IconButton>
 
-            <Typography data-testid="team2-wins" variant="gamesText" sx={{ mx: 1.5, minWidth: 36, textAlign: 'center' }}>
+            <Typography data-testid="team2-wins" variant="gamesText" sx={{ minWidth: { xs: 28, sm: 36 }, textAlign: 'center' }}>
               {gameWins.team2}
             </Typography>
 
             <IconButton
               data-testid="team2-wins-increment"
               aria-label="Increment team 2 games won"
-              onClick={handleIncrementTeam2Wins}
+              onClick={() => dispatch(incrementTeam2Wins())}
               sx={{
-                width: 32,
-                height: 32,
+                width: { xs: 28, sm: 32 },
+                height: { xs: 28, sm: 32 },
                 backgroundColor: palette.neutral.buttonOverlay,
                 '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
               }}
@@ -474,11 +466,10 @@ const GameScreen: React.FC = () => {
         sx={{
           position: 'absolute',
           left: '50%',
-          top: '25%',
+          top: { xs: '15%', sm: '20%', md: '25%' },
           transform: 'translate(-50%, -50%)',
           display: 'flex',
           alignItems: 'center',
-          width: 150,
           zIndex: 10,
         }}
       >
@@ -486,9 +477,9 @@ const GameScreen: React.FC = () => {
           data-testid="landscape-tally-badge"
           sx={{
             backgroundColor: palette.neutral.overlay,
-            px: 2.5,
-            py: 1,
-            borderRadius: 2.5,
+            px: { xs: 1.5, sm: 2, md: 2.5 },
+            py: { xs: 0.5, sm: 0.75, md: 1 },
+            borderRadius: { xs: 1.5, sm: 2, md: 2.5 },
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
           }}
         >
@@ -498,13 +489,13 @@ const GameScreen: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Middle Controls - Reset Button in middle area */}
+      {/* Middle Controls - Reset Button */}
       <Box
         data-testid="middle-controls-container"
         sx={{
           position: 'absolute',
           left: '50%',
-          top: '45%',
+          top: { xs: '40%', sm: '42%', md: '45%' },
           transform: 'translate(-50%, -50%)',
           display: 'flex',
           alignItems: 'center',
@@ -514,8 +505,8 @@ const GameScreen: React.FC = () => {
           data-testid="reset-button"
           onClick={() => dispatch(resetScores())}
           sx={{
-            width: 56,
-            height: 56,
+            width: resetButtonSize,
+            height: resetButtonSize,
             backgroundColor: palette.neutral.overlayLight,
             border: `2px solid rgba(0, 0, 0, 0.1)`,
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
