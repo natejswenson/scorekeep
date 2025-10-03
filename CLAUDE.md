@@ -4,15 +4,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-ScoreKeep is a React Native volleyball scorekeeping app built with Expo. It provides a clean, ad-free interface for tracking scores between two teams with large touch targets optimized for mobile use.
+ScoreKeep is a **pure React web application** for volleyball scorekeeping built with **Material-UI (MUI)** and **Vite**. It provides a clean, ad-free interface for tracking scores between two teams with responsive design optimized for both desktop and mobile browsers.
+
+**Tech Stack:**
+- React 18
+- Material-UI (MUI) v5
+- Redux Toolkit
+- Vite (build system)
+- TypeScript
+- Jest + React Testing Library
 
 ## Commands
 
 ### Development
-- `npm start` - Start Expo development server
-- `npm run android` - Start on Android device/emulator
-- `npm run ios` - Start on iOS device/simulator
-- `npm run web` - Start web version (http://localhost:19006)
+- `npm run dev` - Start Vite dev server (http://localhost:3000)
+
+### Build
+- `npm run build` - Build optimized production bundle to `dist/`
+- `npm run preview` - Preview production build locally
 
 ### Testing
 - `npm test` - Run Jest tests
@@ -23,9 +32,6 @@ ScoreKeep is a React Native volleyball scorekeeping app built with Expo. It prov
 - `npm run lint` - Run ESLint (must pass with 0 warnings)
 - `npm run typecheck` - Run TypeScript type checking
 
-### Build
-- `npm run build:web` - Build for web deployment with GitHub Pages fixes
-
 ## Architecture
 
 ### State Management
@@ -34,26 +40,36 @@ ScoreKeep is a React Native volleyball scorekeeping app built with Expo. It prov
 - All game logic is handled through Redux actions (increment/decrement scores, reset, update teams)
 
 ### Component Structure
-- **App.tsx** - Root component with Redux Provider
-- **GameScreen.tsx** - Main game interface with red/blue team sides and centered reset button
+- **App.tsx** - Root component with Redux Provider, MUI ThemeProvider, CssBaseline
+- **GameScreen.tsx** - Main game interface (MUI components: Box, Typography, Button, IconButton)
+- **src/main.tsx** - React entry point (ReactDOM.createRoot)
+- **index.html** - HTML entry point with root div
 - All components are in `src/components/`
 
 ### Key Types
 - `Team` - { name, score, color }
-- `GameState` - { team1, team2, scoreIncrement, winCondition, isGameActive, winner }
+- `GameState` - { team1, team2, scoreIncrement, winCondition, isGameActive, winner, gameWins }
 - Type definitions in `src/types/index.ts`
 
-### Styling
-- React Native StyleSheet with responsive design
-- Red (#FF0000) vs Blue (#0000FF) team colors
-- Large touch targets (150px score circles, 60px buttons)
-- Centered reset button with shadow/elevation
+### Styling (MUI Theme System)
+- **Centralized theme** in `src/theme/` with clean separation from components
+- All styling via MUI `sx` prop and theme tokens (zero StyleSheet usage)
+- **Theme Structure:**
+  - `palette.ts` - Team colors (red #FF0000, blue #0000FF), neutral colors
+  - `typography.ts` - Custom variants (score, gamesText, gamesLabel, tallyText, etc.)
+  - `breakpoints.ts` - Responsive breakpoints
+  - `components.ts` - MUI component overrides (Button, IconButton, CssBaseline)
+  - `index.ts` - Main theme export
+- **CssBaseline** normalizes browser styles
+- **Responsive design** with landscape/portrait layouts
 
 ### Testing
-- Jest with React Native Testing Library
+- **Jest** with **jsdom** test environment
+- **React Testing Library** (replaced React Native Testing Library)
 - Test setup in `src/test-utils/setup.ts`
+- **Custom render helper:** `renderWithProviders` wraps components with Redux + Theme providers
 - Coverage thresholds: 90% for branches, functions, lines, statements
-- TestIDs used throughout for reliable testing
+- TestIDs used throughout (data-testid) for reliable testing
 
 ## Development Guidelines
 
@@ -75,23 +91,39 @@ The project follows Test-Driven Development principles as outlined in SPEC.md. A
 ### File Organization
 ```
 src/
-├── components/        # React components
-├── constants/         # Layout constants and configuration
-├── hooks/            # Custom React hooks (useOrientation, usePortraitLayout)
+├── components/        # React components (MUI-based)
+├── theme/            # MUI theme configuration
+│   ├── palette.ts    # Color definitions
+│   ├── typography.ts # Font variants
+│   ├── breakpoints.ts # Responsive breakpoints
+│   ├── components.ts # MUI overrides
+│   └── index.ts      # Main theme export
+├── hooks/            # Custom React hooks (useOrientation, useIsLandscape)
 ├── store/            # Redux store and slices
 ├── types/            # TypeScript type definitions
-└── test-utils/       # Testing utilities and setup
+├── test-utils/       # Testing utilities and setup
+│   ├── setup.ts      # Jest configuration
+│   └── test-utils.tsx # renderWithProviders helper
+└── main.tsx          # React entry point
+
+Root files:
+├── index.html         # HTML entry point
+├── vite.config.ts    # Vite configuration
+└── App.tsx           # Root component with providers
 ```
 
-### Mobile-First Design
-- Optimized for touch interaction with large target areas
+### Responsive Web Design
+- Optimized for desktop and mobile browsers
+- Click/touch interaction with appropriately sized targets
 - High contrast colors work in various lighting conditions
 - No complicated menus or navigation during gameplay
-- Cross-platform compatibility (iOS, Android, Web)
-- **Portrait Mode**: Floating score cards with zone-based layout
-  - Red zone (top 50%) and blue zone (bottom 50%) enforce boundary separation
-  - Dynamic card sizing: maxHeight = 85% of zone height
-  - Responsive font scaling: 60% of card height (clamped 120px-240px)
-  - Cards never cross the 50% midline boundary
-  - Layout hook (`usePortraitLayout`) provides centralized dimension calculations
-  - Layout constants in `src/constants/layout.ts`
+- **Landscape Mode**: Side-by-side team layout
+  - Team sides split 50/50 horizontally
+  - Scores displayed prominently in each side
+  - Reset button and tally badge centered
+- **Portrait Mode**: Vertical split layout
+  - Team sides split 50/50 vertically
+  - Scores optimized for vertical space
+  - Reset button at midline, tally badge at top
+- **Orientation Detection**: `useOrientation` hook via window.innerWidth/innerHeight
+- **Responsive Styling**: MUI breakpoints and sx prop for adaptive layouts
