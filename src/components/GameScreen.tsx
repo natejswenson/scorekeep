@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Box, Button, Typography, IconButton } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTheme } from '@mui/material/styles';
 import { RootState } from '../store';
 import {
   incrementTeam1Score,
@@ -14,21 +15,13 @@ import {
   decrementTeam2Wins,
 } from '../store/gameSlice';
 import { useIsLandscape } from '../hooks/useOrientation';
-
-// Layout constants for optimized spacing in landscape mode
-const LAYOUT_CONSTANTS = {
-  SCORE_AREA_MARGIN_BOTTOM: 10, // Reduced from 40 to bring elements closer
-  TOP_CONTROLS_POSITION: '8%' as const, // Tally controls positioned at top
-  MIDDLE_CONTROLS_POSITION: '45%' as const, // Reset button stays in middle
-  DECREMENT_BUTTON_SIZE: 60,
-  BUTTON_OVERLAP_PERCENTAGE: 0.45, // 45% overlap for tighter visual grouping
-  BUTTON_OVERLAP_OFFSET: -27, // -(60 * 0.45) = -27px overlap
-};
+import { palette } from '../theme';
 
 const GameScreen: React.FC = () => {
   const { team1, team2, gameWins } = useSelector((state: RootState) => state.game);
   const dispatch = useDispatch();
   const isLandscape = useIsLandscape();
+  const theme = useTheme();
 
   const handleIncrementTeam1Wins = () => {
     dispatch(incrementTeam1Wins());
@@ -46,580 +39,496 @@ const GameScreen: React.FC = () => {
     dispatch(decrementTeam2Wins());
   };
 
-  // Portrait: Vertical split layout (matches landscape but rotated 90 degrees)
+  // Portrait: Vertical split layout
   if (!isLandscape) {
     return (
-      <View style={styles.portraitContainer}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100vh',
+          width: '100vw',
+          position: 'relative',
+        }}
+      >
         {/* Team 1 - Red Top Half */}
-        <View testID="team1-side" style={[styles.portraitTeamSide, styles.portraitRedSide]}>
-          <TouchableOpacity
-            testID="team1-score-area"
-            style={styles.portraitScoreButton}
-            onPress={() => dispatch(incrementTeam1Score())}
+        <Box
+          data-testid="team1-side"
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: palette.team1.main,
+            px: 2.5,
+            pt: 5,
+            pb: 5,
+          }}
+        >
+          <Button
+            data-testid="team1-score-area"
+            onClick={() => dispatch(incrementTeam1Score())}
+            sx={{
+              px: 0.5,
+              minWidth: 0,
+              '&:hover': { backgroundColor: 'transparent' },
+            }}
           >
-            <Text testID="team1-score" style={styles.portraitScore}>
+            <Typography data-testid="team1-score" variant="score">
               {team1.score}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            testID="team1-decrement"
-            style={styles.portraitDecrementButton}
-            onPress={() => dispatch(decrementTeam1Score())}
+            </Typography>
+          </Button>
+          <IconButton
+            data-testid="team1-decrement"
+            onClick={() => dispatch(decrementTeam1Score())}
+            sx={{
+              width: 52,
+              height: 52,
+              backgroundColor: palette.neutral.buttonOverlay,
+              mt: -3.375,
+              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+            }}
           >
-            <Text style={styles.portraitControlText}>−</Text>
-          </TouchableOpacity>
-          <View style={styles.portraitGamesSection}>
-            <View style={styles.portraitGamesControls}>
-              <TouchableOpacity
-                testID="team1-wins-decrement"
-                accessibilityLabel="Decrement team 1 games won"
-                onPress={handleDecrementTeam1Wins}
-                style={styles.portraitSmallButton}
+            <Typography variant="controlText">−</Typography>
+          </IconButton>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              mt: 'auto',
+              mb: '15%',
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.75 }}>
+              <IconButton
+                data-testid="team1-wins-decrement"
+                aria-label="Decrement team 1 games won"
+                onClick={handleDecrementTeam1Wins}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: palette.neutral.buttonOverlay,
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+                }}
               >
-                <Text style={styles.portraitSmallButtonText}>−</Text>
-              </TouchableOpacity>
+                <Typography variant="smallButtonText">−</Typography>
+              </IconButton>
 
-              <Text testID="team1-wins" style={styles.portraitGamesText}>
+              <Typography data-testid="team1-wins" variant="gamesText" sx={{ mx: 1.5, minWidth: 36, textAlign: 'center' }}>
                 {gameWins.team1}
-              </Text>
+              </Typography>
 
-              <TouchableOpacity
-                testID="team1-wins-increment"
-                accessibilityLabel="Increment team 1 games won"
-                onPress={handleIncrementTeam1Wins}
-                style={styles.portraitSmallButton}
+              <IconButton
+                data-testid="team1-wins-increment"
+                aria-label="Increment team 1 games won"
+                onClick={handleIncrementTeam1Wins}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: palette.neutral.buttonOverlay,
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+                }}
               >
-                <Text style={styles.portraitSmallButtonText}>+</Text>
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.portraitGamesLabel}>GAMES WON</Text>
-          </View>
-        </View>
+                <Typography variant="smallButtonText">+</Typography>
+              </IconButton>
+            </Box>
+            <Typography variant="gamesLabel">GAMES WON</Typography>
+          </Box>
+        </Box>
 
         {/* Team 2 - Blue Bottom Half */}
-        <View testID="team2-side" style={[styles.portraitTeamSide, styles.portraitBlueSide]}>
-          <TouchableOpacity
-            testID="team2-score-area"
-            style={styles.portraitScoreButton}
-            onPress={() => dispatch(incrementTeam2Score())}
+        <Box
+          data-testid="team2-side"
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: palette.team2.main,
+            px: 2.5,
+            pt: 5,
+            pb: 5,
+          }}
+        >
+          <Button
+            data-testid="team2-score-area"
+            onClick={() => dispatch(incrementTeam2Score())}
+            sx={{
+              px: 0.5,
+              minWidth: 0,
+              '&:hover': { backgroundColor: 'transparent' },
+            }}
           >
-            <Text testID="team2-score" style={styles.portraitScore}>
+            <Typography data-testid="team2-score" variant="score">
               {team2.score}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            testID="team2-decrement"
-            style={styles.portraitDecrementButton}
-            onPress={() => dispatch(decrementTeam2Score())}
+            </Typography>
+          </Button>
+          <IconButton
+            data-testid="team2-decrement"
+            onClick={() => dispatch(decrementTeam2Score())}
+            sx={{
+              width: 52,
+              height: 52,
+              backgroundColor: palette.neutral.buttonOverlay,
+              mt: -3.375,
+              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+            }}
           >
-            <Text style={styles.portraitControlText}>−</Text>
-          </TouchableOpacity>
-          <View style={styles.portraitGamesSection}>
-            <View style={styles.portraitGamesControls}>
-              <TouchableOpacity
-                testID="team2-wins-decrement"
-                accessibilityLabel="Decrement team 2 games won"
-                onPress={handleDecrementTeam2Wins}
-                style={styles.portraitSmallButton}
+            <Typography variant="controlText">−</Typography>
+          </IconButton>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              mt: 'auto',
+              mb: '15%',
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.75 }}>
+              <IconButton
+                data-testid="team2-wins-decrement"
+                aria-label="Decrement team 2 games won"
+                onClick={handleDecrementTeam2Wins}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: palette.neutral.buttonOverlay,
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+                }}
               >
-                <Text style={styles.portraitSmallButtonText}>−</Text>
-              </TouchableOpacity>
+                <Typography variant="smallButtonText">−</Typography>
+              </IconButton>
 
-              <Text testID="team2-wins" style={styles.portraitGamesText}>
+              <Typography data-testid="team2-wins" variant="gamesText" sx={{ mx: 1.5, minWidth: 36, textAlign: 'center' }}>
                 {gameWins.team2}
-              </Text>
+              </Typography>
 
-              <TouchableOpacity
-                testID="team2-wins-increment"
-                accessibilityLabel="Increment team 2 games won"
-                onPress={handleIncrementTeam2Wins}
-                style={styles.portraitSmallButton}
+              <IconButton
+                data-testid="team2-wins-increment"
+                aria-label="Increment team 2 games won"
+                onClick={handleIncrementTeam2Wins}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: palette.neutral.buttonOverlay,
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+                }}
               >
-                <Text style={styles.portraitSmallButtonText}>+</Text>
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.portraitGamesLabel}>GAMES WON</Text>
-          </View>
-        </View>
+                <Typography variant="smallButtonText">+</Typography>
+              </IconButton>
+            </Box>
+            <Typography variant="gamesLabel">GAMES WON</Typography>
+          </Box>
+        </Box>
 
         {/* Top Controls - Tally Badge */}
-        <View testID="top-controls-container" style={styles.portraitTopControls}>
-          <View testID="portrait-tally-badge" style={styles.portraitTallyBadge}>
-            <Text style={styles.portraitTallyText}>
+        <Box
+          data-testid="top-controls-container"
+          sx={{
+            position: 'absolute',
+            top: 24,
+            left: 0,
+            right: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10,
+          }}
+        >
+          <Box
+            data-testid="portrait-tally-badge"
+            sx={{
+              backgroundColor: palette.neutral.overlay,
+              px: 2.5,
+              py: 1,
+              borderRadius: 2.5,
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Typography variant="tallyText">
               {gameWins.team1} - {gameWins.team2}
-            </Text>
-          </View>
-        </View>
+            </Typography>
+          </Box>
+        </Box>
 
         {/* Middle Controls - Reset Button at midline */}
-        <View testID="middle-controls-container" style={styles.portraitMiddleControls}>
-          <TouchableOpacity
-            testID="reset-button"
-            style={styles.portraitResetButton}
-            onPress={() => dispatch(resetScores())}
+        <Box
+          data-testid="middle-controls-container"
+          sx={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            display: 'flex',
+            alignItems: 'center',
+            zIndex: 5,
+          }}
+        >
+          <IconButton
+            data-testid="reset-button"
+            onClick={() => dispatch(resetScores())}
+            sx={{
+              width: 56,
+              height: 56,
+              backgroundColor: palette.neutral.overlayLight,
+              border: `2px solid rgba(0, 0, 0, 0.1)`,
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.95)' },
+            }}
           >
-            <Text style={styles.portraitResetIcon}>↻</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+            <Typography variant="resetIcon">↻</Typography>
+          </IconButton>
+        </Box>
+      </Box>
     );
   }
 
   // Landscape: Minimalist side-by-side layout
   return (
-    <View style={styles.container}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        height: '100vh',
+        width: '100vw',
+        position: 'relative',
+      }}
+    >
       {/* Team 1 - Red Side */}
-      <View testID="team1-side" style={[styles.teamSide, styles.redSide]}>
-        <TouchableOpacity
-          testID="team1-score-area"
-          style={styles.landscapeScoreButton}
-          onPress={() => dispatch(incrementTeam1Score())}
+      <Box
+        data-testid="team1-side"
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          backgroundColor: palette.team1.main,
+          pt: 5,
+          pb: 5,
+        }}
+      >
+        <Button
+          data-testid="team1-score-area"
+          onClick={() => dispatch(incrementTeam1Score())}
+          sx={{
+            px: 0.5,
+            minWidth: 0,
+            '&:hover': { backgroundColor: 'transparent' },
+          }}
         >
-          <Text testID="team1-score" style={styles.landscapeScore}>
+          <Typography data-testid="team1-score" variant="score">
             {team1.score}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          testID="team1-decrement"
-          style={styles.landscapeDecrementButton}
-          onPress={() => dispatch(decrementTeam1Score())}
+          </Typography>
+        </Button>
+        <IconButton
+          data-testid="team1-decrement"
+          onClick={() => dispatch(decrementTeam1Score())}
+          sx={{
+            width: 52,
+            height: 52,
+            backgroundColor: palette.neutral.buttonOverlay,
+            mt: -3.375,
+            '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+          }}
         >
-          <Text style={styles.landscapeControlText}>−</Text>
-        </TouchableOpacity>
-        <View style={styles.landscapeGamesSection}>
-          <View style={styles.landscapeGamesControls}>
-            <TouchableOpacity
-              testID="team1-wins-decrement"
-              accessibilityLabel="Decrement team 1 games won"
-              onPress={handleDecrementTeam1Wins}
-              style={styles.landscapeSmallButton}
+          <Typography variant="controlText">−</Typography>
+        </IconButton>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            mt: 'auto',
+            mb: '15%',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.75 }}>
+            <IconButton
+              data-testid="team1-wins-decrement"
+              aria-label="Decrement team 1 games won"
+              onClick={handleDecrementTeam1Wins}
+              sx={{
+                width: 32,
+                height: 32,
+                backgroundColor: palette.neutral.buttonOverlay,
+                '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+              }}
             >
-              <Text style={styles.landscapeSmallButtonText}>−</Text>
-            </TouchableOpacity>
+              <Typography variant="smallButtonText">−</Typography>
+            </IconButton>
 
-            <Text testID="team1-wins" style={styles.landscapeGamesText}>
+            <Typography data-testid="team1-wins" variant="gamesText" sx={{ mx: 1.5, minWidth: 36, textAlign: 'center' }}>
               {gameWins.team1}
-            </Text>
+            </Typography>
 
-            <TouchableOpacity
-              testID="team1-wins-increment"
-              accessibilityLabel="Increment team 1 games won"
-              onPress={handleIncrementTeam1Wins}
-              style={styles.landscapeSmallButton}
+            <IconButton
+              data-testid="team1-wins-increment"
+              aria-label="Increment team 1 games won"
+              onClick={handleIncrementTeam1Wins}
+              sx={{
+                width: 32,
+                height: 32,
+                backgroundColor: palette.neutral.buttonOverlay,
+                '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+              }}
             >
-              <Text style={styles.landscapeSmallButtonText}>+</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.landscapeGamesLabel}>GAMES WON</Text>
-        </View>
-      </View>
+              <Typography variant="smallButtonText">+</Typography>
+            </IconButton>
+          </Box>
+          <Typography variant="gamesLabel">GAMES WON</Typography>
+        </Box>
+      </Box>
 
       {/* Team 2 - Blue Side */}
-      <View testID="team2-side" style={[styles.teamSide, styles.blueSide]}>
-        <TouchableOpacity
-          testID="team2-score-area"
-          style={styles.landscapeScoreButton}
-          onPress={() => dispatch(incrementTeam2Score())}
+      <Box
+        data-testid="team2-side"
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          backgroundColor: palette.team2.main,
+          pt: 5,
+          pb: 5,
+        }}
+      >
+        <Button
+          data-testid="team2-score-area"
+          onClick={() => dispatch(incrementTeam2Score())}
+          sx={{
+            px: 0.5,
+            minWidth: 0,
+            '&:hover': { backgroundColor: 'transparent' },
+          }}
         >
-          <Text testID="team2-score" style={styles.landscapeScore}>
+          <Typography data-testid="team2-score" variant="score">
             {team2.score}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          testID="team2-decrement"
-          style={styles.landscapeDecrementButton}
-          onPress={() => dispatch(decrementTeam2Score())}
+          </Typography>
+        </Button>
+        <IconButton
+          data-testid="team2-decrement"
+          onClick={() => dispatch(decrementTeam2Score())}
+          sx={{
+            width: 52,
+            height: 52,
+            backgroundColor: palette.neutral.buttonOverlay,
+            mt: -3.375,
+            '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+          }}
         >
-          <Text style={styles.landscapeControlText}>−</Text>
-        </TouchableOpacity>
-        <View style={styles.landscapeGamesSection}>
-          <View style={styles.landscapeGamesControls}>
-            <TouchableOpacity
-              testID="team2-wins-decrement"
-              accessibilityLabel="Decrement team 2 games won"
-              onPress={handleDecrementTeam2Wins}
-              style={styles.landscapeSmallButton}
+          <Typography variant="controlText">−</Typography>
+        </IconButton>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            mt: 'auto',
+            mb: '15%',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.75 }}>
+            <IconButton
+              data-testid="team2-wins-decrement"
+              aria-label="Decrement team 2 games won"
+              onClick={handleDecrementTeam2Wins}
+              sx={{
+                width: 32,
+                height: 32,
+                backgroundColor: palette.neutral.buttonOverlay,
+                '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+              }}
             >
-              <Text style={styles.landscapeSmallButtonText}>−</Text>
-            </TouchableOpacity>
+              <Typography variant="smallButtonText">−</Typography>
+            </IconButton>
 
-            <Text testID="team2-wins" style={styles.landscapeGamesText}>
+            <Typography data-testid="team2-wins" variant="gamesText" sx={{ mx: 1.5, minWidth: 36, textAlign: 'center' }}>
               {gameWins.team2}
-            </Text>
+            </Typography>
 
-            <TouchableOpacity
-              testID="team2-wins-increment"
-              accessibilityLabel="Increment team 2 games won"
-              onPress={handleIncrementTeam2Wins}
-              style={styles.landscapeSmallButton}
+            <IconButton
+              data-testid="team2-wins-increment"
+              aria-label="Increment team 2 games won"
+              onClick={handleIncrementTeam2Wins}
+              sx={{
+                width: 32,
+                height: 32,
+                backgroundColor: palette.neutral.buttonOverlay,
+                '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.35)' },
+              }}
             >
-              <Text style={styles.landscapeSmallButtonText}>+</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.landscapeGamesLabel}>GAMES WON</Text>
-        </View>
-      </View>
+              <Typography variant="smallButtonText">+</Typography>
+            </IconButton>
+          </Box>
+          <Typography variant="gamesLabel">GAMES WON</Typography>
+        </Box>
+      </Box>
 
       {/* Top Controls - Tally Badge */}
-      <View testID="top-controls-container" style={styles.topControls}>
-        <View testID="landscape-tally-badge" style={styles.landscapeTallyBadge}>
-          <Text style={styles.landscapeTallyText}>
+      <Box
+        data-testid="top-controls-container"
+        sx={{
+          position: 'absolute',
+          left: '50%',
+          top: '25%',
+          transform: 'translate(-50%, -50%)',
+          display: 'flex',
+          alignItems: 'center',
+          width: 150,
+          zIndex: 10,
+        }}
+      >
+        <Box
+          data-testid="landscape-tally-badge"
+          sx={{
+            backgroundColor: palette.neutral.overlay,
+            px: 2.5,
+            py: 1,
+            borderRadius: 2.5,
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          <Typography variant="tallyText">
             {gameWins.team1} - {gameWins.team2}
-          </Text>
-        </View>
-      </View>
+          </Typography>
+        </Box>
+      </Box>
 
       {/* Middle Controls - Reset Button in middle area */}
-      <View testID="middle-controls-container" style={styles.middleControls}>
-        <TouchableOpacity
-          testID="reset-button"
-          style={styles.landscapeResetButton}
-          onPress={() => dispatch(resetScores())}
+      <Box
+        data-testid="middle-controls-container"
+        sx={{
+          position: 'absolute',
+          left: '50%',
+          top: '45%',
+          transform: 'translate(-50%, -50%)',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <IconButton
+          data-testid="reset-button"
+          onClick={() => dispatch(resetScores())}
+          sx={{
+            width: 56,
+            height: 56,
+            backgroundColor: palette.neutral.overlayLight,
+            border: `2px solid rgba(0, 0, 0, 0.1)`,
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.95)' },
+          }}
         >
-          <Text style={styles.landscapeResetIcon}>↻</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <Typography variant="resetIcon">↻</Typography>
+        </IconButton>
+      </Box>
+    </Box>
   );
 };
-
-const styles = StyleSheet.create({
-  // Landscape layout container
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    position: 'relative',
-  },
-  // Team side containers in landscape mode
-  // No horizontal padding to ensure background colors extend edge-to-edge
-  // Content is centered using alignItems: 'center'
-  teamSide: {
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: 40,
-    paddingBottom: 40,
-  },
-  redSide: {
-    backgroundColor: '#FF0000',
-  },
-  blueSide: {
-    backgroundColor: '#0000FF',
-  },
-  teamName: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 40,
-    textAlign: 'center',
-  },
-  scoreArea: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: '#FFFFFF',
-    zIndex: 2, // Higher z-index to appear above decrement button
-  },
-  score: {
-    fontSize: 72,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  decrementButton: {
-    width: LAYOUT_CONSTANTS.DECREMENT_BUTTON_SIZE,
-    height: LAYOUT_CONSTANTS.DECREMENT_BUTTON_SIZE,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    borderRadius: LAYOUT_CONSTANTS.DECREMENT_BUTTON_SIZE / 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    zIndex: 1, // Lower z-index to appear behind score circle
-    marginTop: LAYOUT_CONSTANTS.BUTTON_OVERLAP_OFFSET, // Negative margin for 20% overlap
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
-  topControls: {
-    position: 'absolute',
-    left: '50%',
-    top: '25%',
-    transform: [{ translateX: -75 }, { translateY: -50 }],
-    alignItems: 'center',
-    width: 150,
-    zIndex: 10, // Ensure tally controls appear above other elements
-  },
-  middleControls: {
-    position: 'absolute',
-    left: '50%',
-    top: LAYOUT_CONSTANTS.MIDDLE_CONTROLS_POSITION,
-    transform: [{ translateX: -35 }, { translateY: -35 }],
-    alignItems: 'center',
-  },
-  resetButton: {
-    width: 70,
-    height: 70,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderRadius: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  resetIcon: {
-    fontSize: 32,
-    color: '#333333',
-    fontWeight: 'bold',
-  },
-  // Portrait-specific styles (vertical split - matches landscape but rotated 90 degrees)
-  portraitContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    position: 'relative',
-  },
-  // Portrait team side containers
-  // paddingHorizontal is acceptable here as top/bottom backgrounds extend to edges
-  portraitTeamSide: {
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 40,
-    paddingBottom: 40,
-  },
-  portraitRedSide: {
-    backgroundColor: '#FF0000',
-  },
-  portraitBlueSide: {
-    backgroundColor: '#0000FF',
-  },
-  portraitScoreButton: {
-    paddingHorizontal: 4,
-  },
-  portraitScore: {
-    fontSize: 240,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    lineHeight: 240,
-    textAlign: 'center',
-  },
-  portraitDecrementButton: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: -27, // Overlap with score for tighter grouping
-  },
-  portraitControlText: {
-    fontSize: 36,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  portraitGamesSection: {
-    alignItems: 'center',
-    marginTop: 'auto',
-    marginBottom: '15%',
-  },
-  portraitGamesControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  portraitGamesText: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    marginHorizontal: 12,
-    minWidth: 36,
-    textAlign: 'center',
-  },
-  portraitSmallButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  portraitSmallButtonText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  portraitGamesLabel: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    letterSpacing: 1.5,
-    opacity: 0.6,
-  },
-  portraitTopControls: {
-    position: 'absolute',
-    top: 24,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    zIndex: 10,
-  },
-  portraitTallyBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  portraitTallyText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#333',
-    letterSpacing: 1,
-  },
-  portraitMiddleControls: {
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    transform: [{ translateX: -28 }, { translateY: -28 }],
-    alignItems: 'center',
-    zIndex: 5,
-  },
-  portraitResetButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-    borderWidth: 2,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  portraitResetIcon: {
-    fontSize: 24,
-    color: '#333',
-    fontWeight: '600',
-  },
-  // Landscape-specific styles
-  landscapeScoreButton: {
-    paddingHorizontal: 4,
-  },
-  landscapeScore: {
-    fontSize: 240,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    lineHeight: 240,
-    textAlign: 'center',
-  },
-  landscapeDecrementButton: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: -27, // Overlap with score for tighter grouping
-  },
-  landscapeControlText: {
-    fontSize: 36,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  landscapeGamesSection: {
-    alignItems: 'center',
-    marginTop: 'auto',
-    marginBottom: '15%',
-  },
-  landscapeGamesControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  landscapeGamesText: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    marginHorizontal: 12,
-    minWidth: 36,
-    textAlign: 'center',
-  },
-  landscapeSmallButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  landscapeSmallButtonText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  landscapeGamesLabel: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    letterSpacing: 1.5,
-    opacity: 0.6,
-  },
-  landscapeTallyBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  landscapeTallyText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#333',
-    letterSpacing: 1,
-  },
-  landscapeResetButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-    borderWidth: 2,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  landscapeResetIcon: {
-    fontSize: 24,
-    color: '#333',
-    fontWeight: '600',
-  },
-});
 
 export default GameScreen;

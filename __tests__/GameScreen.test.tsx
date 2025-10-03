@@ -1,112 +1,74 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { render, fireEvent } from '../src/test-utils/test-utils';
 import GameScreen from '../src/components/GameScreen';
-import { gameSlice } from '../src/store/gameSlice';
-
-// Mock useWindowDimensions to return landscape dimensions
-jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
-  default: jest.fn(),
-}));
-
-// Test store factory
-const createTestStore = (initialState?: any) => {
-  return configureStore({
-    reducer: {
-      game: gameSlice.reducer,
-    },
-    preloadedState: initialState,
-  });
-};
-
-// Import the mocked function for setup
-const useWindowDimensions = require('react-native/Libraries/Utilities/useWindowDimensions').default;
 
 // Set landscape mode for all tests in this file
 beforeEach(() => {
-  useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
+  window.innerWidth = 800;
+  window.innerHeight = 400;
 });
 
 describe('Core Scoring', () => {
   test('should display initial scores of 0-0', () => {
-    const store = createTestStore();
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <GameScreen />
-      </Provider>
-    );
+    const { getByTestId } = render(<GameScreen />);
 
     expect(getByTestId('team1-score')).toHaveTextContent('0');
     expect(getByTestId('team2-score')).toHaveTextContent('0');
   });
 
-  test('should increment team score when tapped', () => {
-    const store = createTestStore();
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <GameScreen />
-      </Provider>
-    );
+  test('should increment team score when clicked', () => {
+    const { getByTestId } = render(<GameScreen />);
 
-    fireEvent.press(getByTestId('team1-score-area'));
+    fireEvent.click(getByTestId('team1-score-area'));
     expect(getByTestId('team1-score')).toHaveTextContent('1');
 
-    fireEvent.press(getByTestId('team2-score-area'));
+    fireEvent.click(getByTestId('team2-score-area'));
     expect(getByTestId('team2-score')).toHaveTextContent('1');
   });
 
-  test('should decrement team score when minus button pressed', () => {
-    const store = createTestStore({
-      game: {
-        team1: { name: 'Team 1', score: 3, color: '#FF0000' },
-        team2: { name: 'Team 2', score: 2, color: '#0000FF' },
-        scoreIncrement: 1,
-        winCondition: 10,
-        isGameActive: true,
-        winner: null,
-        editingTeam: null,
-        gameWins: { team1: 0, team2: 0 },
+  test('should decrement team score when minus button clicked', () => {
+    const { getByTestId } = render(<GameScreen />, {
+      preloadedState: {
+        game: {
+          team1: { name: 'Team 1', score: 3, color: '#FF0000' },
+          team2: { name: 'Team 2', score: 2, color: '#0000FF' },
+          scoreIncrement: 1,
+          winCondition: 10,
+          isGameActive: true,
+          winner: null,
+          editingTeam: null,
+          gameWins: { team1: 0, team2: 0 },
+        },
       },
     });
 
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <GameScreen />
-      </Provider>
-    );
-
-    fireEvent.press(getByTestId('team1-decrement'));
+    fireEvent.click(getByTestId('team1-decrement'));
     expect(getByTestId('team1-score')).toHaveTextContent('2');
 
-    fireEvent.press(getByTestId('team2-decrement'));
+    fireEvent.click(getByTestId('team2-decrement'));
     expect(getByTestId('team2-score')).toHaveTextContent('1');
   });
 
   test('should not allow negative scores', () => {
-    const store = createTestStore({
-      game: {
-        team1: { name: 'Team 1', score: 0, color: '#FF0000' },
-        team2: { name: 'Team 2', score: 0, color: '#0000FF' },
-        scoreIncrement: 1,
-        winCondition: 10,
-        isGameActive: true,
-        winner: null,
-        editingTeam: null,
-        gameWins: { team1: 0, team2: 0 },
+    const { getByTestId } = render(<GameScreen />, {
+      preloadedState: {
+        game: {
+          team1: { name: 'Team 1', score: 0, color: '#FF0000' },
+          team2: { name: 'Team 2', score: 0, color: '#0000FF' },
+          scoreIncrement: 1,
+          winCondition: 10,
+          isGameActive: true,
+          winner: null,
+          editingTeam: null,
+          gameWins: { team1: 0, team2: 0 },
+        },
       },
     });
 
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <GameScreen />
-      </Provider>
-    );
-
-    fireEvent.press(getByTestId('team1-decrement'));
+    fireEvent.click(getByTestId('team1-decrement'));
     expect(getByTestId('team1-score')).toHaveTextContent('0');
 
-    fireEvent.press(getByTestId('team2-decrement'));
+    fireEvent.click(getByTestId('team2-decrement'));
     expect(getByTestId('team2-score')).toHaveTextContent('0');
   });
 

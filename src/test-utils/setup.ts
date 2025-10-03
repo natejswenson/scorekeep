@@ -1,8 +1,30 @@
 /* eslint-disable no-undef */
-import '@testing-library/react-native/extend-expect';
+import '@testing-library/jest-dom';
 
-// Mock useWindowDimensions to default to landscape (800x600)
-// This keeps existing tests working. Individual tests can override this mock.
-jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
-  default: jest.fn(() => ({ width: 800, height: 600 })),
-}));
+// Setup window dimensions for web tests
+Object.defineProperty(window, 'innerWidth', {
+  writable: true,
+  configurable: true,
+  value: 1024,
+});
+
+Object.defineProperty(window, 'innerHeight', {
+  writable: true,
+  configurable: true,
+  value: 768,
+});
+
+// Mock matchMedia for responsive tests
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
