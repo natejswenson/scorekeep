@@ -1,10 +1,10 @@
-const js = require('@eslint/js');
-const tsPlugin = require('@typescript-eslint/eslint-plugin');
-const tsParser = require('@typescript-eslint/parser');
+import js from '@eslint/js';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
 
-module.exports = [
+export default [
   {
-    ignores: ['**/__tests__/**/*', '**/*.test.{ts,tsx}', 'node_modules/', 'coverage/', 'dist/'],
+    ignores: ['**/__tests__/**/*', '**/*.test.{ts,tsx}', 'node_modules/', 'coverage/', 'dist/', 'metro.config.js'],
   },
   js.configs.recommended,
   {
@@ -18,6 +18,13 @@ module.exports = [
           jsx: true,
         },
       },
+      globals: {
+        React: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
+        navigator: 'readonly',
+        console: 'readonly',
+      },
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
@@ -30,10 +37,10 @@ module.exports = [
     },
   },
   {
-    files: ['babel.config.js', 'eslint.config.js', 'metro.config.js', 'scripts/**/*.js'],
+    files: ['babel.config.js', 'eslint.config.js', 'vite.config.ts', 'scripts/**/*.js'],
     languageOptions: {
       ecmaVersion: 'latest',
-      sourceType: 'script',
+      sourceType: 'module',
       globals: {
         module: 'readonly',
         require: 'readonly',
