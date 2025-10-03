@@ -7,7 +7,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build:web": "expo export --platform web && node scripts/fix-github-pages.js",
+    "build:web": "expo export --platform web && node scripts/fix-github-pages.js && node scripts/copy-web-assets.js && node scripts/inject-web-optimizations.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",

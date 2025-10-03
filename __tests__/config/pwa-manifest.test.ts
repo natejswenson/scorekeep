@@ -1,0 +1,46 @@
+import * as fs from 'fs/promises';
+import * as path from 'path';
+
+describe('PWA Manifest', () => {
+  let manifestExists = false;
+  let manifest: any = {};
+
+  beforeAll(async () => {
+    const manifestPath = path.join(__dirname, '../../dist/manifest.json');
+    try {
+      const content = await fs.readFile(manifestPath, 'utf-8');
+      manifest = JSON.parse(content);
+      manifestExists = true;
+    } catch (error) {
+      manifestExists = false;
+    }
+  });
+
+  test('manifest.json should exist', () => {
+    expect(manifestExists).toBe(true);
+  });
+
+  test('should have correct app name', () => {
+    expect(manifest.name).toBe('ScoreKeep');
+    expect(manifest.short_name).toBe('ScoreKeep');
+  });
+
+  test('should use fullscreen display mode', () => {
+    expect(manifest.display).toBe('fullscreen');
+  });
+
+  test('should allow any orientation', () => {
+    expect(manifest.orientation).toBe('any');
+  });
+
+  test('should have theme and background colors', () => {
+    expect(manifest.theme_color).toBeDefined();
+    expect(manifest.background_color).toBeDefined();
+  });
+
+  test('should have icon configuration', () => {
+    expect(manifest.icons).toBeDefined();
+    expect(Array.isArray(manifest.icons)).toBe(true);
+    expect(manifest.icons.length).toBeGreaterThan(0);
+  });
+});
