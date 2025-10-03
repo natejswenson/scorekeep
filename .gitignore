@@ -1,5 +1,4 @@
 node_modules/
-.expo/
 dist/
 npm-debug.*
 *.jks
@@ -8,7 +7,6 @@ npm-debug.*
 *.key
 *.mobileprovision
 *.orig.*
-web-build/
 .env.local
 .env.development.local
 .env.test.local
@@ -36,6 +34,12 @@ __snapshots__/
 *.swp
 *.swo
 
-# Expo
+# Vite
+.vite/
+
+# Legacy Expo (no longer used)
+.expo/
 .expo/*
+.expo-shared/
+web-build/
 web-build/*

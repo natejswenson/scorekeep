@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { render } from '../src/test-utils/test-utils';
 import { Text } from 'react-native';
 import TeamWinsTally from '../src/components/TeamWinsTally';
 

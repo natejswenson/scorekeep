@@ -1,55 +1,34 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { render, fireEvent } from '../src/test-utils/test-utils';
 import TeamNameDisplay from '../src/components/TeamNameDisplay';
-import { gameSlice } from '../src/store/gameSlice';
 
 // Test store factory
-const createTestStore = (initialState?: any) => {
-  return configureStore({
-    reducer: {
-      game: gameSlice.reducer,
-    },
-    preloadedState: initialState,
-  });
-};
 
 describe('TeamNameDisplay Component', () => {
   describe('Display Mode', () => {
     test('should display team name when not in edit mode', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <TeamNameDisplay
+      const { getByTestId, store } = render(<TeamNameDisplay
             teamId="team1"
             name="Team 1"
             isEditing={false}
             onStartEdit={jest.fn()}
             onSaveName={jest.fn()}
             onCancelEdit={jest.fn()}
-          />
-        </Provider>
-      );
+          />);
 
       expect(getByTestId('team1-name')).toHaveTextContent('Team 1');
       expect(getByTestId('team1-edit-icon')).toBeTruthy();
     });
 
     test('should display edit icon next to team name', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <TeamNameDisplay
+      const { getByTestId, store } = render(<TeamNameDisplay
             teamId="team2"
             name="Team 2"
             isEditing={false}
             onStartEdit={jest.fn()}
             onSaveName={jest.fn()}
             onCancelEdit={jest.fn()}
-          />
-        </Provider>
-      );
+          />);
 
       expect(getByTestId('team2-edit-icon')).toBeTruthy();
     });
@@ -70,45 +49,35 @@ describe('TeamNameDisplay Component', () => {
         </Provider>
       );
 
-      fireEvent.press(getByTestId('team1-edit-icon'));
+      fireEvent.click(getByTestId('team1-edit-icon'));
       expect(mockStartEdit).toHaveBeenCalledWith('team1');
     });
   });
 
   describe('Edit Mode', () => {
     test('should show text input when in edit mode', () => {
-      const store = createTestStore();
-      const { getByTestId, queryByTestId } = render(
-        <Provider store={store}>
-          <TeamNameDisplay
+      const { getByTestId, queryByTestId, store } = render(<TeamNameDisplay
             teamId="team1"
             name="Team 1"
             isEditing={true}
             onStartEdit={jest.fn()}
             onSaveName={jest.fn()}
             onCancelEdit={jest.fn()}
-          />
-        </Provider>
-      );
+          />);
 
       expect(getByTestId('team1-name-input')).toBeTruthy();
       expect(queryByTestId('team1-edit-icon')).toBeNull();
     });
 
     test('should display current team name in input field', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <TeamNameDisplay
+      const { getByTestId, store } = render(<TeamNameDisplay
             teamId="team2"
             name="Volleyball Stars"
             isEditing={true}
             onStartEdit={jest.fn()}
             onSaveName={jest.fn()}
             onCancelEdit={jest.fn()}
-          />
-        </Provider>
-      );
+          />);
 
       const input = getByTestId('team2-name-input');
       expect(input.props.value).toBe('Volleyball Stars');
@@ -185,38 +154,28 @@ describe('TeamNameDisplay Component', () => {
 
   describe('Accessibility', () => {
     test('should have proper accessibility labels', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <TeamNameDisplay
+      const { getByTestId, store } = render(<TeamNameDisplay
             teamId="team1"
             name="Team 1"
             isEditing={false}
             onStartEdit={jest.fn()}
             onSaveName={jest.fn()}
             onCancelEdit={jest.fn()}
-          />
-        </Provider>
-      );
+          />);
 
       expect(getByTestId('team1-edit-icon')).toHaveProp('accessibilityLabel', 'Edit team name');
       expect(getByTestId('team1-edit-icon')).toHaveProp('accessibilityRole', 'button');
     });
 
     test('should have proper touch target size for edit icon', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <TeamNameDisplay
+      const { getByTestId, store } = render(<TeamNameDisplay
             teamId="team1"
             name="Team 1"
             isEditing={false}
             onStartEdit={jest.fn()}
             onSaveName={jest.fn()}
             onCancelEdit={jest.fn()}
-          />
-        </Provider>
-      );
+          />);
 
       const editIcon = getByTestId('team1-edit-icon');
       const style = editIcon.props.style;

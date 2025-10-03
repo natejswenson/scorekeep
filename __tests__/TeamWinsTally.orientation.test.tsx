@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { render } from '../src/test-utils/test-utils';
 import TeamWinsTally from '../src/components/TeamWinsTally';
 
 describe('TeamWinsTally Orientation Support', () => {

@@ -73,26 +73,22 @@ describe('Core Scoring', () => {
   });
 
   test('should reset both scores to zero', () => {
-    const store = createTestStore({
-      game: {
-        team1: { name: 'Team 1', score: 5, color: '#FF0000' },
-        team2: { name: 'Team 2', score: 3, color: '#0000FF' },
-        scoreIncrement: 1,
-        winCondition: 10,
-        isGameActive: true,
-        winner: null,
-        editingTeam: null,
-        gameWins: { team1: 0, team2: 0 },
+    const { getByTestId } = render(<GameScreen />, {
+      preloadedState: {
+        game: {
+          team1: { name: 'Team 1', score: 5, color: '#FF0000' },
+          team2: { name: 'Team 2', score: 3, color: '#0000FF' },
+          scoreIncrement: 1,
+          winCondition: 10,
+          isGameActive: true,
+          winner: null,
+          editingTeam: null,
+          gameWins: { team1: 0, team2: 0 },
+        },
       },
     });
 
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <GameScreen />
-      </Provider>
-    );
-
-    fireEvent.press(getByTestId('reset-button'));
+    fireEvent.click(getByTestId('reset-button'));
     expect(getByTestId('team1-score')).toHaveTextContent('0');
     expect(getByTestId('team2-score')).toHaveTextContent('0');
   });
@@ -100,36 +96,21 @@ describe('Core Scoring', () => {
 
 describe('Visual Design Specification', () => {
   test('should display team 1 side with red background', () => {
-    const store = createTestStore();
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <GameScreen />
-      </Provider>
-    );
+    const { getByTestId } = render(<GameScreen />);
 
     const team1Side = getByTestId('team1-side');
     expect(team1Side).toHaveStyle({ backgroundColor: '#FF0000' });
   });
 
   test('should display team 2 side with blue background', () => {
-    const store = createTestStore();
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <GameScreen />
-      </Provider>
-    );
+    const { getByTestId } = render(<GameScreen />);
 
     const team2Side = getByTestId('team2-side');
     expect(team2Side).toHaveStyle({ backgroundColor: '#0000FF' });
   });
 
   test('should display white text on colored backgrounds', () => {
-    const store = createTestStore();
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <GameScreen />
-      </Provider>
-    );
+    const { getByTestId } = render(<GameScreen />);
 
     // In landscape mode, only scores are displayed (no team names)
     expect(getByTestId('team1-score')).toHaveStyle({ color: '#FFFFFF' });
@@ -137,12 +118,7 @@ describe('Visual Design Specification', () => {
   });
 
   test('should have reset button in middle controls', () => {
-    const store = createTestStore();
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <GameScreen />
-      </Provider>
-    );
+    const { getByTestId } = render(<GameScreen />);
 
     const resetButton = getByTestId('reset-button');
     // Landscape mode reset button styles
@@ -159,24 +135,20 @@ describe('Visual Design Specification', () => {
 
   describe('Game Wins Tally Integration', () => {
     test('should display game wins tallies for both teams', () => {
-      const store = createTestStore({
-        game: {
-          team1: { name: 'Team 1', score: 0, color: '#FF0000' },
-          team2: { name: 'Team 2', score: 0, color: '#0000FF' },
-          scoreIncrement: 1,
-          winCondition: 10,
-          isGameActive: true,
-          winner: null,
-          editingTeam: null,
-          gameWins: { team1: 2, team2: 1 },
+      const { getByTestId } = render(<GameScreen />, {
+        preloadedState: {
+          game: {
+            team1: { name: 'Team 1', score: 0, color: '#FF0000' },
+            team2: { name: 'Team 2', score: 0, color: '#0000FF' },
+            scoreIncrement: 1,
+            winCondition: 10,
+            isGameActive: true,
+            winner: null,
+            editingTeam: null,
+            gameWins: { team1: 2, team2: 1 },
+          },
         },
       });
-
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
 
       // In landscape mode, testIDs are team1-wins and team2-wins
       expect(getByTestId('team1-wins')).toHaveTextContent('2');
@@ -184,100 +156,83 @@ describe('Visual Design Specification', () => {
     });
 
     test('should display total game counter correctly', () => {
-      const store = createTestStore({
-        game: {
-          team1: { name: 'Team 1', score: 0, color: '#FF0000' },
-          team2: { name: 'Team 2', score: 0, color: '#0000FF' },
-          scoreIncrement: 1,
-          winCondition: 10,
-          isGameActive: true,
-          winner: null,
-          editingTeam: null,
-          gameWins: { team1: 1, team2: 1 },
+      const { getByTestId } = render(<GameScreen />, {
+        preloadedState: {
+          game: {
+            team1: { name: 'Team 1', score: 0, color: '#FF0000' },
+            team2: { name: 'Team 2', score: 0, color: '#0000FF' },
+            scoreIncrement: 1,
+            winCondition: 10,
+            isGameActive: true,
+            winner: null,
+            editingTeam: null,
+            gameWins: { team1: 1, team2: 1 },
+          },
         },
       });
-
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
 
       expect(getByTestId('landscape-tally-badge')).toHaveTextContent('1 - 1');
     });
 
     test('should increment team wins when tally controls are used', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       // Increment team1 wins
-      fireEvent.press(getByTestId('team1-wins-increment'));
+      fireEvent.click(getByTestId('team1-wins-increment'));
       expect(getByTestId('team1-wins')).toHaveTextContent('1');
       expect(getByTestId('landscape-tally-badge')).toHaveTextContent('1 - 0');
 
       // Increment team2 wins
-      fireEvent.press(getByTestId('team2-wins-increment'));
+      fireEvent.click(getByTestId('team2-wins-increment'));
       expect(getByTestId('team2-wins')).toHaveTextContent('1');
       expect(getByTestId('landscape-tally-badge')).toHaveTextContent('1 - 1');
     });
 
     test('should decrement team wins when decrement buttons are used', () => {
-      const store = createTestStore({
-        game: {
-          team1: { name: 'Team 1', score: 0, color: '#FF0000' },
-          team2: { name: 'Team 2', score: 0, color: '#0000FF' },
-          scoreIncrement: 1,
-          winCondition: 10,
-          isGameActive: true,
-          winner: null,
-          editingTeam: null,
-          gameWins: { team1: 2, team2: 1 },
+      const { getByTestId } = render(<GameScreen />, {
+        preloadedState: {
+          game: {
+            team1: { name: 'Team 1', score: 0, color: '#FF0000' },
+            team2: { name: 'Team 2', score: 0, color: '#0000FF' },
+            scoreIncrement: 1,
+            winCondition: 10,
+            isGameActive: true,
+            winner: null,
+            editingTeam: null,
+            gameWins: { team1: 2, team2: 1 },
+          },
         },
       });
 
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
-
       // Decrement team1 wins
-      fireEvent.press(getByTestId('team1-wins-decrement'));
+      fireEvent.click(getByTestId('team1-wins-decrement'));
       expect(getByTestId('team1-wins')).toHaveTextContent('1');
       expect(getByTestId('landscape-tally-badge')).toHaveTextContent('1 - 1');
 
       // Decrement team2 wins
-      fireEvent.press(getByTestId('team2-wins-decrement'));
+      fireEvent.click(getByTestId('team2-wins-decrement'));
       expect(getByTestId('team2-wins')).toHaveTextContent('0');
       expect(getByTestId('landscape-tally-badge')).toHaveTextContent('1 - 0');
     });
 
     test('should preserve game wins when scores are reset', () => {
-      const store = createTestStore({
-        game: {
-          team1: { name: 'Team 1', score: 5, color: '#FF0000' },
-          team2: { name: 'Team 2', score: 3, color: '#0000FF' },
-          scoreIncrement: 1,
-          winCondition: 10,
-          isGameActive: true,
-          winner: null,
-          editingTeam: null,
-          gameWins: { team1: 2, team2: 1 },
+      const { getByTestId } = render(<GameScreen />, {
+        preloadedState: {
+          game: {
+            team1: { name: 'Team 1', score: 5, color: '#FF0000' },
+            team2: { name: 'Team 2', score: 3, color: '#0000FF' },
+            scoreIncrement: 1,
+            winCondition: 10,
+            isGameActive: true,
+            winner: null,
+            editingTeam: null,
+            gameWins: { team1: 2, team2: 1 },
+          },
         },
       });
 
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
-
       // Reset scores
-      fireEvent.press(getByTestId('reset-button'));
+      fireEvent.click(getByTestId('reset-button'));
 
       // Scores should be reset
       expect(getByTestId('team1-score')).toHaveTextContent('0');
@@ -290,21 +245,16 @@ describe('Visual Design Specification', () => {
     });
 
     test('should maintain independence between scoring and tally systems', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       // Perform scoring operations
-      fireEvent.press(getByTestId('team1-score-area'));
-      fireEvent.press(getByTestId('team2-score-area'));
-      fireEvent.press(getByTestId('team1-decrement'));
+      fireEvent.click(getByTestId('team1-score-area'));
+      fireEvent.click(getByTestId('team2-score-area'));
+      fireEvent.click(getByTestId('team1-decrement'));
 
       // Perform tally operations
-      fireEvent.press(getByTestId('team1-wins-increment'));
-      fireEvent.press(getByTestId('team2-wins-increment'));
+      fireEvent.click(getByTestId('team1-wins-increment'));
+      fireEvent.click(getByTestId('team2-wins-increment'));
 
       // Check that both systems work independently
       expect(getByTestId('team1-score')).toHaveTextContent('0'); // 1 - 1 = 0

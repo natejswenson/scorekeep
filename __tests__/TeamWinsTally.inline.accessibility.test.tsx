@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent } from '../src/test-utils/test-utils';
 import TeamWinsTally from '../src/components/TeamWinsTally';
 
 describe('TeamWinsTally - Inline Controls Touch Targets & Accessibility', () => {
@@ -113,7 +113,7 @@ describe('TeamWinsTally - Inline Controls Touch Targets & Accessibility', () => 
       const { getByTestId } = render(<TeamWinsTally {...mockProps} />);
 
       const decrementButton = getByTestId('team1-wins-decrement-button');
-      fireEvent.press(decrementButton);
+      fireEvent.click(decrementButton);
 
       expect(mockProps.onDecrement).toHaveBeenCalledTimes(1);
     });
@@ -122,7 +122,7 @@ describe('TeamWinsTally - Inline Controls Touch Targets & Accessibility', () => 
       const { getByTestId } = render(<TeamWinsTally {...mockProps} />);
 
       const incrementButton = getByTestId('team1-wins-increment-button');
-      fireEvent.press(incrementButton);
+      fireEvent.click(incrementButton);
 
       expect(mockProps.onIncrement).toHaveBeenCalledTimes(1);
     });
@@ -131,9 +131,9 @@ describe('TeamWinsTally - Inline Controls Touch Targets & Accessibility', () => 
       const { getByTestId } = render(<TeamWinsTally {...mockProps} />);
 
       const incrementButton = getByTestId('team1-wins-increment-button');
-      fireEvent.press(incrementButton);
-      fireEvent.press(incrementButton);
-      fireEvent.press(incrementButton);
+      fireEvent.click(incrementButton);
+      fireEvent.click(incrementButton);
+      fireEvent.click(incrementButton);
 
       expect(mockProps.onIncrement).toHaveBeenCalledTimes(3);
     });
@@ -142,9 +142,9 @@ describe('TeamWinsTally - Inline Controls Touch Targets & Accessibility', () => 
       const { getByTestId } = render(<TeamWinsTally {...mockProps} />);
 
       const decrementButton = getByTestId('team1-wins-decrement-button');
-      fireEvent.press(decrementButton);
-      fireEvent.press(decrementButton);
-      fireEvent.press(decrementButton);
+      fireEvent.click(decrementButton);
+      fireEvent.click(decrementButton);
+      fireEvent.click(decrementButton);
 
       expect(mockProps.onDecrement).toHaveBeenCalledTimes(3);
     });

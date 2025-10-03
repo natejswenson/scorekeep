@@ -1,33 +1,17 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { render } from '../src/test-utils/test-utils';
 import GameScreen from '../src/components/GameScreen';
-import { gameSlice } from '../src/store/gameSlice';
 
-// Mock useWindowDimensions for landscape mode
-jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
-  default: jest.fn(() => ({ width: 800, height: 600 })), // Landscape dimensions
-}));
-
-const createTestStore = (initialState?: any) => {
-  return configureStore({
-    reducer: {
-      game: gameSlice.reducer,
-    },
-    preloadedState: initialState,
-  });
-};
+// Set landscape mode for all tests in this file
+beforeEach(() => {
+  window.innerWidth = 800;
+  window.innerHeight = 600;
+});
 
 describe('GameScreen Landscape Redesign', () => {
   describe('Score Display', () => {
     it('should render score with 240pt font in landscape', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team1Score = getByTestId('team1-score');
       const styles = Array.isArray(team1Score.props.style)
@@ -38,12 +22,7 @@ describe('GameScreen Landscape Redesign', () => {
     });
 
     it('should not render TeamNameDisplay in landscape', () => {
-      const store = createTestStore();
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { queryByTestId } = render(<GameScreen />);
 
       // Team name display should not be rendered
       expect(queryByTestId('team1-name')).toBeNull();
@@ -51,12 +30,7 @@ describe('GameScreen Landscape Redesign', () => {
     });
 
     it('should maintain side-by-side layout in landscape', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team1Side = getByTestId('team1-side');
       const team2Side = getByTestId('team2-side');
@@ -68,12 +42,7 @@ describe('GameScreen Landscape Redesign', () => {
 
   describe('Games Won Display', () => {
     it('should render games won with 28pt font in landscape', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team1Wins = getByTestId('team1-wins');
       const styles = Array.isArray(team1Wins.props.style)
@@ -84,12 +53,7 @@ describe('GameScreen Landscape Redesign', () => {
     });
 
     it('should render games won buttons with 32px size', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const incrementButton = getByTestId('team1-wins-increment');
       const styles = Array.isArray(incrementButton.props.style)
@@ -103,12 +67,7 @@ describe('GameScreen Landscape Redesign', () => {
 
   describe('Control Buttons', () => {
     it('should render reset button with 56px size in landscape', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const resetButton = getByTestId('reset-button');
       const styles = Array.isArray(resetButton.props.style)
@@ -120,12 +79,7 @@ describe('GameScreen Landscape Redesign', () => {
     });
 
     it('should render reset button with semi-transparent background', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const resetButton = getByTestId('reset-button');
       const styles = Array.isArray(resetButton.props.style)
@@ -136,12 +90,7 @@ describe('GameScreen Landscape Redesign', () => {
     });
 
     it('should render decrement button with 52px size', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const decrementButton = getByTestId('team1-decrement');
       const styles = Array.isArray(decrementButton.props.style)
@@ -155,24 +104,20 @@ describe('GameScreen Landscape Redesign', () => {
 
   describe('Top Tally Badge', () => {
     it('should render tally badge instead of TallyControls', () => {
-      const store = createTestStore({
-        game: {
-          team1: { name: 'Team 1', score: 0, color: '#FF0000' },
-          team2: { name: 'Team 2', score: 0, color: '#0000FF' },
-          scoreIncrement: 1,
-          winCondition: 10,
-          isGameActive: true,
-          winner: null,
-          editingTeam: null,
-          gameWins: { team1: 2, team2: 3 },
+      const { getByTestId, queryByTestId } = render(<GameScreen />, {
+        preloadedState: {
+          game: {
+            team1: { name: 'Team 1', score: 0, color: '#FF0000' },
+            team2: { name: 'Team 2', score: 0, color: '#0000FF' },
+            scoreIncrement: 1,
+            winCondition: 10,
+            isGameActive: true,
+            winner: null,
+            editingTeam: null,
+            gameWins: { team1: 2, team2: 3 },
+          },
         },
       });
-
-      const { getByTestId, queryByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
 
       // Should have tally badge
       expect(getByTestId('landscape-tally-badge')).toBeTruthy();
@@ -183,24 +128,20 @@ describe('GameScreen Landscape Redesign', () => {
     });
 
     it('should display correct game wins in tally badge', () => {
-      const store = createTestStore({
-        game: {
-          team1: { name: 'Team 1', score: 0, color: '#FF0000' },
-          team2: { name: 'Team 2', score: 0, color: '#0000FF' },
-          scoreIncrement: 1,
-          winCondition: 10,
-          isGameActive: true,
-          winner: null,
-          editingTeam: null,
-          gameWins: { team1: 2, team2: 3 },
+      const { getByText } = render(<GameScreen />, {
+        preloadedState: {
+          game: {
+            team1: { name: 'Team 1', score: 0, color: '#FF0000' },
+            team2: { name: 'Team 2', score: 0, color: '#0000FF' },
+            scoreIncrement: 1,
+            winCondition: 10,
+            isGameActive: true,
+            winner: null,
+            editingTeam: null,
+            gameWins: { team1: 2, team2: 3 },
+          },
         },
       });
-
-      const { getByText } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
 
       expect(getByText('2 - 3')).toBeTruthy();
     });

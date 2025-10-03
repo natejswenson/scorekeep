@@ -1,44 +1,26 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { render } from '../src/test-utils/test-utils';
 import { StyleSheet } from 'react-native';
 import GameScreen from '../src/components/GameScreen';
-import { gameSlice } from '../src/store/gameSlice';
 
-// Mock useWindowDimensions
-jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
-  default: jest.fn(),
-}));
 
-const useWindowDimensions = require('react-native/Libraries/Utilities/useWindowDimensions').default;
 
-const createTestStore = (initialState?: any) => {
-  return configureStore({
-    reducer: {
-      game: gameSlice.reducer,
-    },
-    preloadedState: initialState,
-  });
-};
+
 
 describe('GameScreen Layout Optimization', () => {
   beforeEach(() => {
     // Default to landscape mode for layout tests
-    useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
+    window.innerWidth = 800;
+      window.innerHeight = 400;
     jest.clearAllMocks();
   });
 
   describe('Landscape Background Edge Extension', () => {
     test('team sides should have no horizontal padding in landscape', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 }); // Landscape
+      window.innerWidth = 800;
+      window.innerHeight = 400; // Landscape
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team1Side = getByTestId('team1-side');
       const style = StyleSheet.flatten(team1Side.props.style);
@@ -50,14 +32,10 @@ describe('GameScreen Layout Optimization', () => {
     });
 
     test('team1 side should extend to left edge with flex', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 }); // Landscape
+      window.innerWidth = 800;
+      window.innerHeight = 400; // Landscape
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team1Side = getByTestId('team1-side');
       const style = StyleSheet.flatten(team1Side.props.style);
@@ -68,14 +46,10 @@ describe('GameScreen Layout Optimization', () => {
     });
 
     test('team2 side should extend to right edge with flex', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 }); // Landscape
+      window.innerWidth = 800;
+      window.innerHeight = 400; // Landscape
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team2Side = getByTestId('team2-side');
       const style = StyleSheet.flatten(team2Side.props.style);
@@ -86,14 +60,10 @@ describe('GameScreen Layout Optimization', () => {
     });
 
     test('content should remain centered despite no horizontal padding', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 }); // Landscape
+      window.innerWidth = 800;
+      window.innerHeight = 400; // Landscape
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team1Side = getByTestId('team1-side');
       const style = StyleSheet.flatten(team1Side.props.style);
@@ -105,14 +75,10 @@ describe('GameScreen Layout Optimization', () => {
 
   describe('Portrait Mode - No Regression', () => {
     test('portrait team sides should maintain proper styling', () => {
-      useWindowDimensions.mockReturnValue({ width: 400, height: 800 }); // Portrait
+      window.innerWidth = 400;
+      window.innerHeight = 800; // Portrait
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team1Side = getByTestId('team1-side');
       const team2Side = getByTestId('team2-side');
@@ -125,14 +91,10 @@ describe('GameScreen Layout Optimization', () => {
     });
 
     test('portrait mode should not be affected by landscape fix', () => {
-      useWindowDimensions.mockReturnValue({ width: 400, height: 800 }); // Portrait
+      window.innerWidth = 400;
+      window.innerHeight = 800; // Portrait
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       // Portrait uses portraitTeamSide style, not teamSide
       const team1Side = getByTestId('team1-side');
@@ -145,12 +107,7 @@ describe('GameScreen Layout Optimization', () => {
 
   describe('Vertical Spacing', () => {
     test('should reduce gap between score circle and decrement button', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const scoreArea = getByTestId('team1-score-area');
       const styles = scoreArea.props.style;
@@ -160,12 +117,7 @@ describe('GameScreen Layout Optimization', () => {
     });
 
     test('should position Games Won section at bottom of viewport', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       // Games won controls should exist
       expect(getByTestId('team1-wins')).toBeTruthy();
@@ -175,12 +127,7 @@ describe('GameScreen Layout Optimization', () => {
 
   describe('Tally Controls Position', () => {
     test('should position tally controls at top of screen', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const topContainer = getByTestId('top-controls-container');
       const styles = Array.isArray(topContainer.props.style)
@@ -192,12 +139,7 @@ describe('GameScreen Layout Optimization', () => {
     });
 
     test('should center tally controls horizontally', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const topContainer = getByTestId('top-controls-container');
       const styles = Array.isArray(topContainer.props.style)
@@ -211,12 +153,7 @@ describe('GameScreen Layout Optimization', () => {
 
   describe('Reset Button Position', () => {
     test('should position reset button in middle area separate from tally controls', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const middleContainer = getByTestId('middle-controls-container');
       const styles = Array.isArray(middleContainer.props.style)
@@ -228,12 +165,7 @@ describe('GameScreen Layout Optimization', () => {
     });
 
     test('should not be grouped with tally controls', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const topContainer = getByTestId('top-controls-container');
       const middleContainer = getByTestId('middle-controls-container');
@@ -247,12 +179,7 @@ describe('GameScreen Layout Optimization', () => {
 
   describe('Accessibility', () => {
     test('should have appropriately sized touch targets', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team1Increment = getByTestId('team1-wins-increment');
       const team1Decrement = getByTestId('team1-wins-decrement');
@@ -269,12 +196,7 @@ describe('GameScreen Layout Optimization', () => {
     });
 
     test('should preserve accessibility labels', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team1Increment = getByTestId('team1-wins-increment');
       const team1Decrement = getByTestId('team1-wins-decrement');
@@ -286,12 +208,7 @@ describe('GameScreen Layout Optimization', () => {
 
   describe('Component Structure', () => {
     test('should render tally badge in separate top container', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const topContainer = getByTestId('top-controls-container');
       const tallyBadge = getByTestId('landscape-tally-badge');
@@ -308,12 +225,7 @@ describe('GameScreen Layout Optimization', () => {
     });
 
     test('should render reset button in separate middle container', () => {
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const middleContainer = getByTestId('middle-controls-container');
       const resetButton = getByTestId('reset-button');

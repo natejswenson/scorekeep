@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { render } from '../src/test-utils/test-utils';
 import TotalGameCounter from '../src/components/TotalGameCounter';
 
 describe('TotalGameCounter Component', () => {

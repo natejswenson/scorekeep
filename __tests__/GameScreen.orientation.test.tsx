@@ -1,26 +1,11 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import { Dimensions } from 'react-native';
+import { render } from '../src/test-utils/test-utils';
+
 import GameScreen from '../src/components/GameScreen';
-import { gameSlice } from '../src/store/gameSlice';
 
-const createTestStore = (initialState?: any) => {
-  return configureStore({
-    reducer: {
-      game: gameSlice.reducer,
-    },
-    preloadedState: initialState,
-  });
-};
 
-// Mock useWindowDimensions
-jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
-  default: jest.fn(),
-}));
 
-const useWindowDimensions = require('react-native/Libraries/Utilities/useWindowDimensions').default;
+
 
 describe('GameScreen Orientation Handling', () => {
   beforeEach(() => {
@@ -29,14 +14,10 @@ describe('GameScreen Orientation Handling', () => {
 
   describe('Orientation Detection', () => {
     test('should detect landscape orientation when width > height', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
+      window.innerWidth = 800;
+      window.innerHeight = 400;
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       // In landscape mode, wins are displayed inline on each team side
       const team1Wins = getByTestId('team1-wins');
@@ -45,14 +26,10 @@ describe('GameScreen Orientation Handling', () => {
     });
 
     test('should detect portrait orientation when height > width', () => {
-      useWindowDimensions.mockReturnValue({ width: 400, height: 800 });
+      window.innerWidth = 400;
+      window.innerHeight = 800;
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       // In portrait, team sides are rendered with vertical split
       const team1Side = getByTestId('team1-side');
@@ -65,14 +42,10 @@ describe('GameScreen Orientation Handling', () => {
 
   describe('Vertical Split Layout in Portrait', () => {
     test('should render team sides with vertical split', () => {
-      useWindowDimensions.mockReturnValue({ width: 400, height: 800 });
+      window.innerWidth = 400;
+      window.innerHeight = 800;
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const team1Side = getByTestId('team1-side');
       const team2Side = getByTestId('team2-side');
@@ -83,14 +56,10 @@ describe('GameScreen Orientation Handling', () => {
     });
 
     test('should display scores and game wins in portrait', () => {
-      useWindowDimensions.mockReturnValue({ width: 400, height: 800 });
+      window.innerWidth = 400;
+      window.innerHeight = 800;
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       // Verify scores are displayed
       const team1Score = getByTestId('team1-score');
@@ -107,14 +76,10 @@ describe('GameScreen Orientation Handling', () => {
 
   describe('Tally Position in Landscape', () => {
     test('should display Team 1 Games Won on left side in landscape', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
+      window.innerWidth = 800;
+      window.innerHeight = 400;
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       // Team1 wins are inline within the team1-side
       const team1Side = getByTestId('team1-side');
@@ -125,14 +90,10 @@ describe('GameScreen Orientation Handling', () => {
     });
 
     test('should display Team 2 Games Won on right side in landscape', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
+      window.innerWidth = 800;
+      window.innerHeight = 400;
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       // Team2 wins are inline within the team2-side
       const team2Side = getByTestId('team2-side');
@@ -143,14 +104,10 @@ describe('GameScreen Orientation Handling', () => {
     });
 
     test('should display games won at bottom of each team side in landscape', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
+      window.innerWidth = 800;
+      window.innerHeight = 400;
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       // Both team sides should have games won inline
       expect(getByTestId('team1-wins')).toBeTruthy();
@@ -160,14 +117,10 @@ describe('GameScreen Orientation Handling', () => {
 
   describe('Component Independence', () => {
     test('should not affect scoring functionality in landscape', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
+      window.innerWidth = 800;
+      window.innerHeight = 400;
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const scoreArea = getByTestId('team1-score-area');
       expect(scoreArea).toBeTruthy();
@@ -177,14 +130,10 @@ describe('GameScreen Orientation Handling', () => {
     });
 
     test('should not affect tally badge in landscape', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
+      window.innerWidth = 800;
+      window.innerHeight = 400;
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const tallyBadge = getByTestId('landscape-tally-badge');
       expect(tallyBadge).toBeTruthy();
@@ -194,14 +143,10 @@ describe('GameScreen Orientation Handling', () => {
     });
 
     test('should not affect reset button in landscape', () => {
-      useWindowDimensions.mockReturnValue({ width: 800, height: 400 });
+      window.innerWidth = 800;
+      window.innerHeight = 400;
 
-      const store = createTestStore();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <GameScreen />
-        </Provider>
-      );
+      const { getByTestId } = render(<GameScreen />);
 
       const resetButton = getByTestId('reset-button');
       expect(resetButton).toBeTruthy();
