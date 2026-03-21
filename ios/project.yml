@@ -23,6 +23,7 @@ targets:
       - path: ScoreKeep
     resources:
       - path: ScoreKeep/Resources/Assets.xcassets
+      - path: ScoreKeep/Resources/Fonts
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.scorekeep.app

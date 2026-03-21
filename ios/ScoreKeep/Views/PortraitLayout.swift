@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PortraitLayout: View {
     @Bindable var viewModel: GameViewModel
+    @Binding var showHistory: Bool
     @State private var editingTeam: TeamSide? = nil
 
     var body: some View {
@@ -40,10 +41,28 @@ struct PortraitLayout: View {
                     .frame(maxHeight: .infinity, alignment: .center)
                     .allowsHitTesting(false)
 
-                // Reset button centered on divider
-                ResetButton {
-                    viewModel.resetSet()
+                // Divider controls row — centered on the hairline
+                HStack(spacing: 0) {
+                    // History button — left of reset
+                    Button {
+                        showHistory = true
+                    } label: {
+                        Image(systemName: "clock")
+                            .font(.system(size: 13, weight: .light))
+                            .foregroundStyle(Color(hex: "#3A3A3C"))
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                    }
+
+                    Spacer()
+
+                    // Reset button — right of history
+                    ResetButton {
+                        viewModel.resetSet()
+                    }
                 }
+                .frame(maxHeight: .infinity, alignment: .center)
+                .padding(.horizontal, 28)
             }
         }
         .sheet(item: $editingTeam) { team in

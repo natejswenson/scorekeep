@@ -13,6 +13,8 @@
 		2550A012B4CC708A3F547689 /* PortraitLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5288EE991E476D3D726E65F /* PortraitLayout.swift */; };
 		5198ADFF9A327C8C1AB54E8B /* GameSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB2CDA46BEAC723076BCDF /* GameSession.swift */; };
 		8946F455E719398399E959C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B34AC238806C0C4F262ACE64 /* Assets.xcassets */; };
+		8DBBEF026EDFFC33825082DC /* digital-7 (mono).ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6AE2B520F1DD395E391B8E10 /* digital-7 (mono).ttf */; };
+		935B16927D1D597C39F304D8 /* digital-7.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7E48FDEF3B52E4D8460A9B1 /* digital-7.ttf */; };
 		9637D94C793712567602D47F /* ResetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88371F979A13B3B212627482 /* ResetButton.swift */; };
 		A031A0479BE90C9B6FA1F512 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D325FE6219EC3326F4D1354B /* Extensions.swift */; };
 		A23D23021ED9EEAFDBF809FF /* LandscapeLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB03C32C17C5CC9C4A2AF0F /* LandscapeLayout.swift */; };
@@ -41,6 +43,7 @@
 		5A52F7B9ED6F8418B76AB559 /* ActiveGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveGame.swift; sourceTree = "<group>"; };
 		5B2EFCE0FF9BE617C2586627 /* MainGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainGameView.swift; sourceTree = "<group>"; };
 		6ACB2CDA46BEAC723076BCDF /* GameSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSession.swift; sourceTree = "<group>"; };
+		6AE2B520F1DD395E391B8E10 /* digital-7 (mono).ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "digital-7 (mono).ttf"; sourceTree = "<group>"; };
 		88220FDDD36D608E518BA6B9 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		88371F979A13B3B212627482 /* ResetButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetButton.swift; sourceTree = "<group>"; };
 		95D45AE9AAFFAD71538476B7 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
@@ -50,6 +53,7 @@
 		B5288EE991E476D3D726E65F /* PortraitLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortraitLayout.swift; sourceTree = "<group>"; };
 		D325FE6219EC3326F4D1354B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		D6A92141B5054941936F0F98 /* TeamHalfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamHalfView.swift; sourceTree = "<group>"; };
+		E7E48FDEF3B52E4D8460A9B1 /* digital-7.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "digital-7.ttf"; sourceTree = "<group>"; };
 		EDBEBF255BAC2F0B6A8306A9 /* GameViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModelTests.swift; sourceTree = "<group>"; };
 		F23A6F8D163AD0D55B0ED31C /* TeamNameEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamNameEditSheet.swift; sourceTree = "<group>"; };
 		F50919D961C3089F00CA8C62 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -85,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				B34AC238806C0C4F262ACE64 /* Assets.xcassets */,
+				B250F2843311EBA2B193B5FD /* Fonts */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -119,6 +124,15 @@
 				1AD86DF6C3122EA2A6B0027A /* ScoreKeepTests */,
 				2126476BC2712080793CACA7 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		B250F2843311EBA2B193B5FD /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				6AE2B520F1DD395E391B8E10 /* digital-7 (mono).ttf */,
+				E7E48FDEF3B52E4D8460A9B1 /* digital-7.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		C21B08FCFB7C080F692E3628 /* ScoreKeep */ = {
@@ -223,6 +237,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8946F455E719398399E959C4 /* Assets.xcassets in Resources */,
+				8DBBEF026EDFFC33825082DC /* digital-7 (mono).ttf in Resources */,
+				935B16927D1D597C39F304D8 /* digital-7.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

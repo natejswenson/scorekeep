@@ -50,5 +50,10 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Dark</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>digital-7.ttf</string>
+		<string>digital-7 (mono).ttf</string>
+	</array>
 </dict>
 </plist>

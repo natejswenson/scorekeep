@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LandscapeLayout: View {
     @Bindable var viewModel: GameViewModel
+    @Binding var showHistory: Bool
     @State private var editingTeam: TeamSide? = nil
 
     var body: some View {
@@ -40,9 +41,21 @@ struct LandscapeLayout: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .allowsHitTesting(false)
 
-                // Reset button centered on divider
-                ResetButton {
-                    viewModel.resetSet()
+                // Divider controls — vertical stack on the center line
+                VStack(spacing: 16) {
+                    Button {
+                        showHistory = true
+                    } label: {
+                        Image(systemName: "clock")
+                            .font(.system(size: 13, weight: .light))
+                            .foregroundStyle(Color(hex: "#3A3A3C"))
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                    }
+
+                    ResetButton {
+                        viewModel.resetSet()
+                    }
                 }
             }
         }

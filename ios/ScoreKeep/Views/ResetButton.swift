@@ -11,14 +11,34 @@ struct ResetButton: View {
             action()
         } label: {
             ZStack {
-                // Frosted glass circle — picks up the hairline separator color behind it
+                // Thin gradient ring — no fill, just the stroke
                 Circle()
-                    .fill(.ultraThinMaterial)
-                    .frame(width: 52, height: 52)
+                    .strokeBorder(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(0.45),
+                                Color.white.opacity(0.08)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 0.75
+                    )
+                    .frame(width: 54, height: 54)
 
+                // Counterclockwise arrow — ultralight, subtle
                 Image(systemName: "arrow.counterclockwise")
-                    .font(.system(size: 17, weight: .light))
-                    .foregroundStyle(.white.opacity(0.7))
+                    .font(.system(size: 15, weight: .ultraLight))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(0.65),
+                                Color.white.opacity(0.3)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
             }
         }
         .buttonStyle(ResetButtonStyle())
@@ -28,8 +48,8 @@ struct ResetButton: View {
 private struct ResetButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.88 : 1.0)
-            .opacity(configuration.isPressed ? 0.7 : 1.0)
-            .animation(.spring(response: 0.18, dampingFraction: 0.65), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.84 : 1.0)
+            .opacity(configuration.isPressed ? 0.5 : 1.0)
+            .animation(.spring(response: 0.16, dampingFraction: 0.6), value: configuration.isPressed)
     }
 }

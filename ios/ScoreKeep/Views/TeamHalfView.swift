@@ -120,7 +120,7 @@ struct TeamHalfView: View {
 
     private var scoreLabel: some View {
         Text("\(score)")
-            .font(.system(size: 160, weight: .ultraLight, design: .default))
+            .font(.custom("Digital-7", size: 160))
             .foregroundColor(.white)
             .minimumScaleFactor(0.3)
             .lineLimit(1)
