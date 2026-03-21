@@ -11,34 +11,43 @@ struct ResetButton: View {
             action()
         } label: {
             ZStack {
-                // Thin gradient ring — no fill, just the stroke
+                // Subtle dark fill so button reads against both halves
+                Circle()
+                    .fill(Color.black.opacity(0.55))
+                    .frame(width: 64, height: 64)
+
+                // Thin gradient ring — blue/purple tint
                 Circle()
                     .strokeBorder(
                         LinearGradient(
                             colors: [
-                                Color.white.opacity(0.45),
-                                Color.white.opacity(0.08)
+                                Color(hex: "#818CF8").opacity(0.55),
+                                Color(hex: "#A78BFA").opacity(0.15)
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ),
-                        lineWidth: 0.75
+                        lineWidth: 0.8
                     )
-                    .frame(width: 54, height: 54)
+                    .frame(width: 64, height: 64)
 
-                // Counterclockwise arrow — ultralight, subtle
+                // Icon with layered glow
                 Image(systemName: "arrow.counterclockwise")
-                    .font(.system(size: 15, weight: .ultraLight))
+                    .font(.system(size: 22, weight: .light))
                     .foregroundStyle(
                         LinearGradient(
                             colors: [
-                                Color.white.opacity(0.65),
-                                Color.white.opacity(0.3)
+                                Color(hex: "#C4B5FD"), // violet-300
+                                Color(hex: "#818CF8")  // indigo-400
                             ],
                             startPoint: .top,
                             endPoint: .bottom
                         )
                     )
+                    // Inner tight glow
+                    .shadow(color: Color(hex: "#818CF8").opacity(0.95), radius: 6, x: 0, y: 0)
+                    // Outer diffuse glow
+                    .shadow(color: Color(hex: "#A78BFA").opacity(0.6), radius: 18, x: 0, y: 0)
             }
         }
         .buttonStyle(ResetButtonStyle())
@@ -48,8 +57,8 @@ struct ResetButton: View {
 private struct ResetButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.84 : 1.0)
-            .opacity(configuration.isPressed ? 0.5 : 1.0)
+            .scaleEffect(configuration.isPressed ? 0.86 : 1.0)
+            .opacity(configuration.isPressed ? 0.6 : 1.0)
             .animation(.spring(response: 0.16, dampingFraction: 0.6), value: configuration.isPressed)
     }
 }

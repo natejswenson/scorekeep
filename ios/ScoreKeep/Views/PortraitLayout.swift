@@ -41,28 +41,29 @@ struct PortraitLayout: View {
                     .frame(maxHeight: .infinity, alignment: .center)
                     .allowsHitTesting(false)
 
-                // Divider controls row — centered on the hairline
-                HStack(spacing: 0) {
-                    // History button — left of reset
-                    Button {
-                        showHistory = true
-                    } label: {
-                        Image(systemName: "clock")
-                            .font(.system(size: 13, weight: .light))
-                            .foregroundStyle(Color(hex: "#3A3A3C"))
-                            .frame(width: 44, height: 44)
-                            .contentShape(Rectangle())
-                    }
-
-                    Spacer()
-
-                    // Reset button — right of history
+                // Divider controls — reset centered, history icon overlaid left
+                ZStack {
+                    // Reset button — always centered
                     ResetButton {
                         viewModel.resetSet()
                     }
+
+                    // History icon — left edge, doesn't affect reset centering
+                    HStack {
+                        Button {
+                            showHistory = true
+                        } label: {
+                            Image(systemName: "clock")
+                                .font(.system(size: 13, weight: .light))
+                                .foregroundStyle(Color(hex: "#3A3A3C"))
+                                .frame(width: 44, height: 44)
+                                .contentShape(Rectangle())
+                        }
+                        Spacer()
+                    }
+                    .padding(.horizontal, 28)
                 }
                 .frame(maxHeight: .infinity, alignment: .center)
-                .padding(.horizontal, 28)
             }
         }
         .sheet(item: $editingTeam) { team in
