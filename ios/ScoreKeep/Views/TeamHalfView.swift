@@ -12,6 +12,9 @@ struct TeamHalfView: View {
     @State private var flashOpacity: Double = 0
     @State private var flashColor: Color = .white
     @State private var scoreScale: CGFloat = 1.0
+    @State private var pressStartTime: Date?
+
+    private let longPressDuration: TimeInterval = 0.45
 
     private var backgroundColor: Color {
         side == .team1 ? Color(hex: "#1E1E1E") : Color(hex: "#161616")
@@ -33,39 +36,61 @@ struct TeamHalfView: View {
             }
         }
         .contentShape(Rectangle())
-        .simultaneousGesture(
-            LongPressGesture(minimumDuration: 0.4)
-                .onEnded { _ in handleDecrement() }
-        )
-        .simultaneousGesture(
-            TapGesture()
-                .onEnded { handleIncrement() }
+        // Single gesture: measure duration to decide tap vs long-press
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    if pressStartTime == nil { pressStartTime = Date() }
+                }
+                .onEnded { _ in
+                    defer { pressStartTime = nil }
+                    let elapsed = pressStartTime.map { Date().timeIntervalSince($0) } ?? 0
+                    if elapsed >= longPressDuration {
+                        handleDecrement()
+                    } else {
+                        handleIncrement()
+                    }
+                }
         )
     }
 
     // MARK: - Layouts
 
     private var portraitContent: some View {
-        VStack(spacing: 0) {
+        ZStack {
+            // Score: always centered
+            scoreLabel
+
             if side == .team1 {
-                teamNameLabel
-                    .padding(.top, 24)
-                Spacer()
-                scoreLabel
-                Spacer()
-                gamesWonRow
-                    .padding(.bottom, 24)
+                VStack(spacing: 0) {
+                    // Team name top-center
+                    teamNameLabel
+                        .padding(.top, 20)
+                    Spacer()
+                    // Games won bottom-left
+                    HStack {
+                        gamesWonBadge(alignment: .leading)
+                            .padding(.leading, 28)
+                            .padding(.bottom, 28)
+                        Spacer()
+                    }
+                }
             } else {
-                gamesWonRow
-                    .padding(.top, 24)
-                Spacer()
-                scoreLabel
-                Spacer()
-                teamNameLabel
-                    .padding(.bottom, 24)
+                VStack(spacing: 0) {
+                    // Games won top-right
+                    HStack {
+                        Spacer()
+                        gamesWonBadge(alignment: .trailing)
+                            .padding(.trailing, 28)
+                            .padding(.top, 28)
+                    }
+                    Spacer()
+                    // Team name bottom-center
+                    teamNameLabel
+                        .padding(.bottom, 20)
+                }
             }
         }
-        .padding(.horizontal, 16)
     }
 
     private var landscapeContent: some View {
@@ -75,7 +100,7 @@ struct TeamHalfView: View {
             Spacer()
             scoreLabel
             Spacer()
-            gamesWonRow
+            gamesWonBadge(alignment: .center)
                 .padding(.bottom, 20)
         }
         .padding(.horizontal, 16)
@@ -103,15 +128,15 @@ struct TeamHalfView: View {
             .animation(.spring(response: 0.18, dampingFraction: 0.7), value: scoreScale)
     }
 
-    private var gamesWonRow: some View {
-        VStack(spacing: 2) {
+    private func gamesWonBadge(alignment: HorizontalAlignment) -> some View {
+        VStack(alignment: alignment, spacing: 3) {
             Text("\(gamesWon)")
-                .font(.system(size: 28, weight: .thin, design: .default))
+                .font(.system(size: 24, weight: .thin, design: .default))
                 .foregroundColor(.white)
             Text("GAMES WON")
-                .font(.system(size: 10, weight: .medium))
+                .font(.system(size: 9, weight: .medium))
                 .foregroundColor(Color(hex: "#636366"))
-                .kerning(1.2)
+                .kerning(1.4)
         }
     }
 
@@ -121,10 +146,7 @@ struct TeamHalfView: View {
         viewModel.incrementScore(team: side)
         triggerFlash(color: Color(white: 1, opacity: 0.04))
         animateScoreIn(from: 0.85)
-
-        let generator = UIImpactFeedbackGenerator(style: .light)
-        generator.prepare()
-        generator.impactOccurred()
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
     private func handleDecrement() {
@@ -133,21 +155,14 @@ struct TeamHalfView: View {
         viewModel.decrementScore(team: side)
         triggerFlash(color: Color(red: 1, green: 0.231, blue: 0, opacity: 0.04))
         animateScoreIn(from: 1.1)
-
-        let generator = UIImpactFeedbackGenerator(style: .medium)
-        generator.prepare()
-        generator.impactOccurred()
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }
 
     private func triggerFlash(color: Color) {
         flashColor = color
-        withAnimation(.easeIn(duration: 0.06)) {
-            flashOpacity = 1
-        }
+        withAnimation(.easeIn(duration: 0.06)) { flashOpacity = 1 }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
-            withAnimation(.easeOut(duration: 0.06)) {
-                flashOpacity = 0
-            }
+            withAnimation(.easeOut(duration: 0.06)) { flashOpacity = 0 }
         }
     }
 
