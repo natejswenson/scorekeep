@@ -109,7 +109,6 @@ struct LandscapeLayout: View {
         }
         .onChange(of: viewModel.activeSport) { _, newSport in
             landscapeSelectedPoints = newSport == .football ? 6 : 3
-            lastScoredTeam = nil
         }
         .sheet(item: $editingTeam) { team in
             TeamNameEditSheet(

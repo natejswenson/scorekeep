@@ -113,7 +113,6 @@ struct PortraitLayout: View {
         }
         .onChange(of: viewModel.activeSport) { _, newSport in
             portraitSelectedPoints = newSport == .football ? 6 : 3
-            lastScoredTeam = nil
         }
         .sheet(item: $editingTeam) { team in
             TeamNameEditSheet(
