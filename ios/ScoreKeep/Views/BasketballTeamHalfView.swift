@@ -16,7 +16,6 @@ struct BasketballTeamHalfView: View {
         side == .team1 ? Color(hex: "#1E1E1E") : Color(hex: "#161616")
     }
     private let accentColor = Color(hex: "#F97316")
-
     private let pointValues = [3, 2, 1]
 
     var body: some View {
@@ -28,61 +27,67 @@ struct BasketballTeamHalfView: View {
 
     // MARK: - Layouts
 
+    /// Portrait: team name pinned top, score + chips grouped together and centered in remaining space.
     private var portraitContent: some View {
         VStack(spacing: 0) {
-            teamNameLabel.padding(.top, 16)
-            Spacer()
-            scoreLabel
-            Spacer()
-            chipArea(isLandscape: false).padding(.horizontal, 12).padding(.bottom, 14)
+            teamNameLabel
+                .padding(.top, 16)
+            Spacer(minLength: 0)
+            // Score and chips as one cohesive unit
+            VStack(spacing: 14) {
+                scoreLabel
+                chipsPortrait
+                    .padding(.horizontal, 12)
+            }
+            Spacer(minLength: 0)
         }
     }
 
+    /// Landscape: team name top, score + chips centered vertically.
     private var landscapeContent: some View {
         VStack(spacing: 0) {
-            teamNameLabel.padding(.top, 20)
-            Spacer()
-            scoreLabel
-            Spacer()
-            chipArea(isLandscape: true).padding(.horizontal, 12).padding(.bottom, 18)
+            teamNameLabel
+                .padding(.top, 20)
+            Spacer(minLength: 0)
+            VStack(spacing: 12) {
+                scoreLabel
+                chipsLandscape
+                    .padding(.horizontal, 10)
+            }
+            Spacer(minLength: 0)
         }
     }
 
-    // MARK: - Chip Layout
+    // MARK: - Chip Arrangements
 
-    /// Portrait: 3pts + 2pts on top row, 1pt + undo on bottom row
-    /// Landscape: single row of all 4
-    private func chipArea(isLandscape: Bool) -> some View {
-        Group {
-            if isLandscape {
-                HStack(spacing: 8) {
-                    ForEach(pointValues, id: \.self) { pts in
-                        ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
-                            .frame(height: 54)
-                    }
-                    UndoChip(canUndo: canUndo, action: undo)
-                        .frame(height: 54)
-                }
-            } else {
-                VStack(spacing: 8) {
-                    HStack(spacing: 8) {
-                        ScoringChip(points: 3, accentColor: accentColor) { score(3) }
-                            .frame(height: 52)
-                        ScoringChip(points: 2, accentColor: accentColor) { score(2) }
-                            .frame(height: 52)
-                    }
-                    HStack(spacing: 8) {
-                        ScoringChip(points: 1, accentColor: accentColor) { score(1) }
-                            .frame(height: 52)
-                        UndoChip(canUndo: canUndo, action: undo)
-                            .frame(height: 52)
-                    }
+    /// Portrait: all 3 scoring chips on one row, undo on its own full-width row below.
+    private var chipsPortrait: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: 8) {
+                ForEach(pointValues, id: \.self) { pts in
+                    ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
+                        .frame(height: 50)
                 }
             }
+            UndoChip(canUndo: canUndo, action: undo)
+                .frame(maxWidth: .infinity)
+                .frame(height: 38)
         }
     }
 
-    // MARK: - Components
+    /// Landscape: all 3 scoring chips + undo in a single horizontal row.
+    private var chipsLandscape: some View {
+        HStack(spacing: 8) {
+            ForEach(pointValues, id: \.self) { pts in
+                ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
+                    .frame(height: 52)
+            }
+            UndoChip(canUndo: canUndo, action: undo)
+                .frame(height: 52)
+        }
+    }
+
+    // MARK: - Subviews
 
     private var teamNameLabel: some View {
         Text(teamName)
@@ -96,7 +101,7 @@ struct BasketballTeamHalfView: View {
 
     private var scoreLabel: some View {
         Text("\(score)")
-            .font(.custom("Digital-7", size: isPortrait ? 96 : 120))
+            .font(.custom("Digital-7", size: isPortrait ? 96 : 110))
             .foregroundColor(.white)
             .minimumScaleFactor(0.3)
             .lineLimit(1)

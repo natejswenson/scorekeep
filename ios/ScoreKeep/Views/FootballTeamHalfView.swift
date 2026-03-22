@@ -16,8 +16,6 @@ struct FootballTeamHalfView: View {
         side == .team1 ? Color(hex: "#1E1E1E") : Color(hex: "#161616")
     }
     private let accentColor = Color(hex: "#F59E0B")
-
-    // Football point values: 6, 3, 2, 1  (covers TD, FG, 2-pt/safety, EP)
     private let pointValues = [6, 3, 2, 1]
 
     var body: some View {
@@ -29,58 +27,67 @@ struct FootballTeamHalfView: View {
 
     // MARK: - Layouts
 
+    /// Portrait: team name pinned top, score + chips grouped together and centered in remaining space.
     private var portraitContent: some View {
         VStack(spacing: 0) {
-            teamNameLabel.padding(.top, 16)
-            Spacer()
-            scoreLabel
-            Spacer()
-            chipGrid(columns: 2, chipHeight: 52).padding(.horizontal, 12).padding(.bottom, 14)
+            teamNameLabel
+                .padding(.top, 16)
+            Spacer(minLength: 0)
+            // Score and chips as one cohesive unit
+            VStack(spacing: 14) {
+                scoreLabel
+                chipsPortrait
+                    .padding(.horizontal, 12)
+            }
+            Spacer(minLength: 0)
         }
     }
 
+    /// Landscape: team name top, score + chips centered vertically.
     private var landscapeContent: some View {
         VStack(spacing: 0) {
-            teamNameLabel.padding(.top, 20)
-            Spacer()
-            scoreLabel
-            Spacer()
-            chipRow(chipHeight: 54).padding(.horizontal, 12).padding(.bottom, 18)
+            teamNameLabel
+                .padding(.top, 20)
+            Spacer(minLength: 0)
+            VStack(spacing: 12) {
+                scoreLabel
+                chipsLandscape
+                    .padding(.horizontal, 10)
+            }
+            Spacer(minLength: 0)
         }
     }
 
-    // MARK: - Chip Grids
+    // MARK: - Chip Arrangements
 
-    /// Portrait: all 4 scoring chips on one row, undo on its own row below
-    private func chipGrid(columns: Int, chipHeight: CGFloat) -> some View {
+    /// Portrait: all 4 scoring chips on one row, undo on its own full-width row below.
+    private var chipsPortrait: some View {
         VStack(spacing: 8) {
-            // Single row: 6pts · 3pts · 2pts · 1pt
             HStack(spacing: 8) {
                 ForEach(pointValues, id: \.self) { pts in
                     ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
-                        .frame(height: chipHeight)
+                        .frame(height: 50)
                 }
             }
-            // Undo — full width, slightly shorter
             UndoChip(canUndo: canUndo, action: undo)
                 .frame(maxWidth: .infinity)
-                .frame(height: chipHeight - 12)
+                .frame(height: 38)
         }
     }
 
-    /// Landscape: single horizontal row — 4 scoring chips + undo
-    private func chipRow(chipHeight: CGFloat) -> some View {
+    /// Landscape: all 4 scoring chips + undo in a single horizontal row.
+    private var chipsLandscape: some View {
         HStack(spacing: 8) {
             ForEach(pointValues, id: \.self) { pts in
                 ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
-                    .frame(height: chipHeight)
+                    .frame(height: 52)
             }
             UndoChip(canUndo: canUndo, action: undo)
-                .frame(height: chipHeight)
+                .frame(height: 52)
         }
     }
 
-    // MARK: - Components
+    // MARK: - Subviews
 
     private var teamNameLabel: some View {
         Text(teamName)
@@ -94,7 +101,7 @@ struct FootballTeamHalfView: View {
 
     private var scoreLabel: some View {
         Text("\(score)")
-            .font(.custom("Digital-7", size: isPortrait ? 96 : 120))
+            .font(.custom("Digital-7", size: isPortrait ? 96 : 110))
             .foregroundColor(.white)
             .minimumScaleFactor(0.3)
             .lineLimit(1)
