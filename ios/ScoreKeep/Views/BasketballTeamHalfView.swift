@@ -5,7 +5,7 @@ struct BasketballTeamHalfView: View {
     let teamName: String
     let score: Int
     let isPortrait: Bool
-    let lastAction: Int?
+    let canUndo: Bool
     let onTapName: () -> Void
     let onScore: (Int) -> Void
     let onUndo: () -> Void
@@ -60,7 +60,7 @@ struct BasketballTeamHalfView: View {
                         ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
                             .frame(height: 54)
                     }
-                    UndoChip(canUndo: lastAction != nil, action: undo)
+                    UndoChip(canUndo: canUndo, action: undo)
                         .frame(height: 54)
                 }
             } else {
@@ -74,7 +74,7 @@ struct BasketballTeamHalfView: View {
                     HStack(spacing: 8) {
                         ScoringChip(points: 1, accentColor: accentColor) { score(1) }
                             .frame(height: 52)
-                        UndoChip(canUndo: lastAction != nil, action: undo)
+                        UndoChip(canUndo: canUndo, action: undo)
                             .frame(height: 52)
                     }
                 }

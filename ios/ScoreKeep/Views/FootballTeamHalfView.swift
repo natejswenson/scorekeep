@@ -5,7 +5,7 @@ struct FootballTeamHalfView: View {
     let teamName: String
     let score: Int
     let isPortrait: Bool
-    let lastAction: Int?
+    let canUndo: Bool
     let onTapName: () -> Void
     let onScore: (Int) -> Void
     let onUndo: () -> Void
@@ -51,27 +51,20 @@ struct FootballTeamHalfView: View {
 
     // MARK: - Chip Grids
 
-    /// Portrait: 2-column grid — 2×2 scoring chips + undo spanning full width
+    /// Portrait: all 4 scoring chips on one row, undo on its own row below
     private func chipGrid(columns: Int, chipHeight: CGFloat) -> some View {
         VStack(spacing: 8) {
-            // Row 1: 6pts, 3pts
+            // Single row: 6pts · 3pts · 2pts · 1pt
             HStack(spacing: 8) {
-                ScoringChip(points: 6, accentColor: accentColor) { score(6) }
-                    .frame(height: chipHeight)
-                ScoringChip(points: 3, accentColor: accentColor) { score(3) }
-                    .frame(height: chipHeight)
+                ForEach(pointValues, id: \.self) { pts in
+                    ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
+                        .frame(height: chipHeight)
+                }
             }
-            // Row 2: 2pts, 1pt
-            HStack(spacing: 8) {
-                ScoringChip(points: 2, accentColor: accentColor) { score(2) }
-                    .frame(height: chipHeight)
-                ScoringChip(points: 1, accentColor: accentColor) { score(1) }
-                    .frame(height: chipHeight)
-            }
-            // Undo — full width
-            UndoChip(canUndo: lastAction != nil, action: undo)
+            // Undo — full width, slightly shorter
+            UndoChip(canUndo: canUndo, action: undo)
                 .frame(maxWidth: .infinity)
-                .frame(height: chipHeight - 10)
+                .frame(height: chipHeight - 12)
         }
     }
 
@@ -82,7 +75,7 @@ struct FootballTeamHalfView: View {
                 ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
                     .frame(height: chipHeight)
             }
-            UndoChip(canUndo: lastAction != nil, action: undo)
+            UndoChip(canUndo: canUndo, action: undo)
                 .frame(height: chipHeight)
         }
     }

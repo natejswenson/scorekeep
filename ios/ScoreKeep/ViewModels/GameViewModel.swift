@@ -35,9 +35,9 @@ final class GameViewModel {
     var sessionId: UUID = UUID()
     var startedAt: Date = Date()
 
-    // Non-volleyball per-team undo (one level)
-    var team1LastAction: Int? = nil
-    var team2LastAction: Int? = nil
+    // Non-volleyball per-team undo stack (push on score, pop on undo)
+    var team1ActionStack: [Int] = []
+    var team2ActionStack: [Int] = []
 
     // In-memory undo for volleyball set reset
     private(set) var lastResetSnapshot: ResetSnapshot? = nil
@@ -62,6 +62,8 @@ final class GameViewModel {
     var gameHistory: [GameSession] { currentHistory }
 
     var hasNonZeroScore: Bool { team1Score > 0 || team2Score > 0 }
+    var team1CanUndo: Bool { !team1ActionStack.isEmpty }
+    var team2CanUndo: Bool { !team2ActionStack.isEmpty }
 
     // Debounce for tap-anywhere sports (volleyball, soccer)
     private var lastTapTime: [Int: Date] = [:]   // 1 = team1, 2 = team2
@@ -88,8 +90,8 @@ final class GameViewModel {
         saveCurrentSportState()     // persist old state first
 
         activeSport = sport
-        team1LastAction = nil
-        team2LastAction = nil
+        team1ActionStack = []
+        team2ActionStack = []
         lastResetSnapshot = nil
 
         loadSportState(sport)
@@ -113,8 +115,8 @@ final class GameViewModel {
             team2Name = "Team 2"
             team1Score = 0
             team2Score = 0
-            team1LastAction = nil
-            team2LastAction = nil
+            team1ActionStack = []
+            team2ActionStack = []
             if sport == .volleyball {
                 team1GamesWon = 0
                 team2GamesWon = 0
@@ -129,8 +131,8 @@ final class GameViewModel {
         team2Name       = saved.team2Name
         team1Score      = saved.team1Score
         team2Score      = saved.team2Score
-        team1LastAction = saved.team1LastAction
-        team2LastAction = saved.team2LastAction
+        team1ActionStack = saved.team1ActionStack
+        team2ActionStack = saved.team2ActionStack
 
         if sport == .volleyball {
             team1GamesWon = saved.team1GamesWon
@@ -160,39 +162,37 @@ final class GameViewModel {
         case .team1:
             guard team1Score > 0 else { return }
             team1Score -= 1
-            team1LastAction = nil
+            team1ActionStack = []
         case .team2:
             guard team2Score > 0 else { return }
             team2Score -= 1
-            team2LastAction = nil
+            team2ActionStack = []
         }
         saveCurrentSportState()
     }
 
-    /// Button-based scoring for football and basketball.
+    /// Button-based scoring for football and basketball. Pushes onto the undo stack.
     func addScore(team: TeamSide, points: Int) {
         switch team {
         case .team1:
             team1Score += points
-            team1LastAction = points
+            team1ActionStack.append(points)
         case .team2:
             team2Score += points
-            team2LastAction = points
+            team2ActionStack.append(points)
         }
         saveCurrentSportState()
     }
 
-    /// Undo the last button action (football / basketball Undo button).
+    /// Undo the most recent button action (pops from the team's undo stack).
     func undoLastAction(team: TeamSide) {
         switch team {
         case .team1:
-            guard let action = team1LastAction else { return }
+            guard let action = team1ActionStack.popLast() else { return }
             team1Score = max(0, team1Score - action)
-            team1LastAction = nil
         case .team2:
-            guard let action = team2LastAction else { return }
+            guard let action = team2ActionStack.popLast() else { return }
             team2Score = max(0, team2Score - action)
-            team2LastAction = nil
         }
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         saveCurrentSportState()
@@ -245,8 +245,8 @@ final class GameViewModel {
 
         team1Score = 0
         team2Score = 0
-        team1LastAction = nil
-        team2LastAction = nil
+        team1ActionStack = []
+        team2ActionStack = []
         startedAt = Date()
         saveCurrentSportState()
     }
@@ -366,8 +366,8 @@ final class GameViewModel {
             team2Score: team2Score,
             team1GamesWon: team1GamesWon,
             team2GamesWon: team2GamesWon,
-            team1LastAction: team1LastAction,
-            team2LastAction: team2LastAction,
+            team1ActionStack: team1ActionStack,
+            team2ActionStack: team2ActionStack,
             sets: completedSets,
             sessionId: sessionId,
             startedAt: startedAt

@@ -121,7 +121,7 @@ struct PortraitLayout: View {
     private func teamHalf(side: TeamSide, isPortrait: Bool) -> some View {
         let name    = side == .team1 ? viewModel.team1Name    : viewModel.team2Name
         let score   = side == .team1 ? viewModel.team1Score   : viewModel.team2Score
-        let lastAct = side == .team1 ? viewModel.team1LastAction : viewModel.team2LastAction
+        let canUndo = side == .team1 ? viewModel.team1CanUndo : viewModel.team2CanUndo
 
         switch viewModel.activeSport {
         case .volleyball:
@@ -139,7 +139,7 @@ struct PortraitLayout: View {
         case .football:
             FootballTeamHalfView(
                 side: side, teamName: name, score: score,
-                isPortrait: isPortrait, lastAction: lastAct,
+                isPortrait: isPortrait, canUndo: canUndo,
                 onTapName: { editingTeam = side },
                 onScore: { pts in viewModel.addScore(team: side, points: pts) },
                 onUndo: { viewModel.undoLastAction(team: side) }
@@ -147,7 +147,7 @@ struct PortraitLayout: View {
         case .basketball:
             BasketballTeamHalfView(
                 side: side, teamName: name, score: score,
-                isPortrait: isPortrait, lastAction: lastAct,
+                isPortrait: isPortrait, canUndo: canUndo,
                 onTapName: { editingTeam = side },
                 onScore: { pts in viewModel.addScore(team: side, points: pts) },
                 onUndo: { viewModel.undoLastAction(team: side) }
