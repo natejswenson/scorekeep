@@ -8,15 +8,34 @@ struct PortraitLayout: View {
     @State private var showUndoToast = false
     @State private var undoToastTask: Task<Void, Never>? = nil
     @State private var showSportSelector = false
+    @State private var portraitSelectedPoints: Int = 6
+    @State private var lastScoredTeam: TeamSide? = nil
+
+    private var isChipSport: Bool {
+        viewModel.activeSport == .football || viewModel.activeSport == .basketball
+    }
+
+    private var portraitPointValues: [Int] {
+        viewModel.activeSport == .football ? [6, 3, 2, 1] : [3, 2, 1]
+    }
+
+    private var portraitAccentColor: Color {
+        Color(hex: viewModel.activeSport.glowHex)
+    }
+
+    private var portraitCanUndo: Bool {
+        guard let team = lastScoredTeam else { return false }
+        return team == .team1 ? viewModel.team1CanUndo : viewModel.team2CanUndo
+    }
 
     var body: some View {
         GeometryReader { geo in
             ZStack {
                 VStack(spacing: 0) {
-                    teamHalf(side: .team1, isPortrait: true)
+                    teamHalf(side: .team1)
                         .frame(height: geo.size.height / 2)
 
-                    teamHalf(side: .team2, isPortrait: true)
+                    teamHalf(side: .team2)
                         .frame(height: geo.size.height / 2)
                 }
 
@@ -27,15 +46,20 @@ struct PortraitLayout: View {
                     .frame(maxHeight: .infinity, alignment: .center)
                     .allowsHitTesting(false)
 
-                // Divider controls: reset center (volleyball only), history left, i-button right
-                ZStack {
-                    if viewModel.activeSport == .volleyball {
-                        ResetButton {
-                            viewModel.handleReset()
-                            triggerUndoToast()
-                        }
+                // Center element: reset (volleyball) or shared chip panel (football/basketball)
+                if viewModel.activeSport == .volleyball {
+                    ResetButton {
+                        viewModel.handleReset()
+                        triggerUndoToast()
                     }
+                    .frame(maxHeight: .infinity, alignment: .center)
+                } else if isChipSport {
+                    portraitChipPanel
+                        .frame(maxHeight: .infinity, alignment: .center)
+                }
 
+                // Top icon bar — clock left, sport icon + i-button right
+                VStack {
                     HStack {
                         Button { showHistory = true } label: {
                             Image(systemName: "clock")
@@ -44,12 +68,17 @@ struct PortraitLayout: View {
                                 .frame(width: 44, height: 44)
                                 .contentShape(Rectangle())
                         }
-                        Spacer()
-                    }
-                    .padding(.horizontal, 28)
 
-                    HStack {
                         Spacer()
+
+                        Button { showSportSelector = true } label: {
+                            Image(systemName: viewModel.activeSport.systemImageName)
+                                .font(.system(size: 15, weight: .light))
+                                .foregroundStyle(Color(hex: "#636366"))
+                                .frame(width: 44, height: 44)
+                                .contentShape(Rectangle())
+                        }
+
                         Button { showOnboarding = true } label: {
                             ZStack {
                                 Circle()
@@ -63,25 +92,11 @@ struct PortraitLayout: View {
                         .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
                     }
-                    .padding(.horizontal, 28)
-                }
-                .frame(maxHeight: .infinity, alignment: .center)
+                    .padding(.horizontal, 8)
+                    .padding(.top, 4)
 
-                // Sport switcher — top-right, subtle (no glow)
-                VStack {
-                    HStack {
-                        Spacer()
-                        Button { showSportSelector = true } label: {
-                            Image(systemName: viewModel.activeSport.systemImageName)
-                                .font(.system(size: 15, weight: .light))
-                                .foregroundStyle(Color(hex: "#636366"))
-                                .frame(width: 44, height: 44)
-                                .contentShape(Rectangle())
-                        }
-                    }
                     Spacer()
                 }
-                .padding(.top, 4)
                 .allowsHitTesting(true)
                 .zIndex(15)
 
@@ -99,6 +114,10 @@ struct PortraitLayout: View {
                     .zIndex(10)
                 }
             }
+        }
+        .onChange(of: viewModel.activeSport) { _, newSport in
+            portraitSelectedPoints = newSport == .football ? 6 : 3
+            lastScoredTeam = nil
         }
         .sheet(item: $editingTeam) { team in
             TeamNameEditSheet(
@@ -122,10 +141,43 @@ struct PortraitLayout: View {
         }
     }
 
+    // MARK: - Shared portrait chip panel
+
+    @ViewBuilder
+    private var portraitChipPanel: some View {
+        VStack(spacing: 6) {
+            HStack(spacing: 8) {
+                ForEach(portraitPointValues, id: \.self) { pts in
+                    ScoringChip(
+                        points: pts,
+                        accentColor: portraitAccentColor,
+                        isSelected: portraitSelectedPoints == pts
+                    ) {
+                        portraitSelectedPoints = pts
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 32)
+                }
+            }
+            UndoChip(canUndo: portraitCanUndo) {
+                portraitUndo()
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 26)
+        }
+        .padding(.horizontal, 20)
+    }
+
+    private func portraitUndo() {
+        guard let team = lastScoredTeam else { return }
+        viewModel.undoLastAction(team: team)
+    }
+
     // MARK: - Sport Routing
 
     @ViewBuilder
-    private func teamHalf(side: TeamSide, isPortrait: Bool) -> some View {
+    private func teamHalf(side: TeamSide) -> some View {
         let name    = side == .team1 ? viewModel.team1Name    : viewModel.team2Name
         let score   = side == .team1 ? viewModel.team1Score   : viewModel.team2Score
         let canUndo = side == .team1 ? viewModel.team1CanUndo : viewModel.team2CanUndo
@@ -134,30 +186,38 @@ struct PortraitLayout: View {
         case .volleyball:
             TeamHalfView(
                 side: side, teamName: name, score: score,
-                isPortrait: isPortrait, showGamesWon: true,
+                isPortrait: true, showGamesWon: true,
                 onTapName: { editingTeam = side }, viewModel: viewModel
             )
         case .soccer:
             TeamHalfView(
                 side: side, teamName: name, score: score,
-                isPortrait: isPortrait, showGamesWon: false,
+                isPortrait: true, showGamesWon: false,
                 onTapName: { editingTeam = side }, viewModel: viewModel
             )
         case .football:
             FootballTeamHalfView(
                 side: side, teamName: name, score: score,
-                isPortrait: isPortrait, canUndo: canUndo,
+                isPortrait: true, canUndo: canUndo,
                 onTapName: { editingTeam = side },
-                onScore: { pts in viewModel.addScore(team: side, points: pts) },
-                onUndo: { viewModel.undoLastAction(team: side) }
+                onScore: { pts in
+                    viewModel.addScore(team: side, points: pts)
+                    lastScoredTeam = side
+                },
+                onUndo: { viewModel.undoLastAction(team: side) },
+                externalSelectedPoints: portraitSelectedPoints
             )
         case .basketball:
             BasketballTeamHalfView(
                 side: side, teamName: name, score: score,
-                isPortrait: isPortrait, canUndo: canUndo,
+                isPortrait: true, canUndo: canUndo,
                 onTapName: { editingTeam = side },
-                onScore: { pts in viewModel.addScore(team: side, points: pts) },
-                onUndo: { viewModel.undoLastAction(team: side) }
+                onScore: { pts in
+                    viewModel.addScore(team: side, points: pts)
+                    lastScoredTeam = side
+                },
+                onUndo: { viewModel.undoLastAction(team: side) },
+                externalSelectedPoints: portraitSelectedPoints
             )
         }
     }
