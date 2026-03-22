@@ -1,8 +1,17 @@
 import Foundation
 import Observation
+import UIKit
 
 enum TeamSide {
     case team1, team2
+}
+
+struct ResetSnapshot {
+    let team1Score: Int
+    let team2Score: Int
+    let team1GamesWon: Int
+    let team2GamesWon: Int
+    let completedSets: [SetResult]
 }
 
 @Observable
@@ -17,6 +26,9 @@ final class GameViewModel {
     var sessionId: UUID = UUID()
     var startedAt: Date = Date()
     var gameHistory: [GameSession] = []
+
+    // In-memory only — not persisted across restarts
+    private(set) var lastResetSnapshot: ResetSnapshot? = nil
 
     // Debounce
     private var lastTapTime: [TeamSide: Date] = [:]
@@ -69,6 +81,15 @@ final class GameViewModel {
     // MARK: - Reset Set
 
     func resetSet() {
+        // Snapshot full state BEFORE modifying anything
+        lastResetSnapshot = ResetSnapshot(
+            team1Score: team1Score,
+            team2Score: team2Score,
+            team1GamesWon: team1GamesWon,
+            team2GamesWon: team2GamesWon,
+            completedSets: completedSets
+        )
+
         let set = SetResult(team1Score: team1Score, team2Score: team2Score, completedAt: Date())
         completedSets.append(set)
 
@@ -77,11 +98,26 @@ final class GameViewModel {
         } else if team2Score > team1Score {
             team2GamesWon += 1
         }
-        // tied — increment neither
 
         team1Score = 0
         team2Score = 0
         saveActiveGame()
+    }
+
+    func undoReset() {
+        guard let snap = lastResetSnapshot else { return }
+        team1Score = snap.team1Score
+        team2Score = snap.team2Score
+        team1GamesWon = snap.team1GamesWon
+        team2GamesWon = snap.team2GamesWon
+        completedSets = snap.completedSets
+        lastResetSnapshot = nil
+        saveActiveGame()
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+    }
+
+    func clearResetSnapshot() {
+        lastResetSnapshot = nil
     }
 
     // MARK: - Team Names
@@ -111,12 +147,12 @@ final class GameViewModel {
         )
         persistence.appendSession(session, to: &gameHistory)
 
-        // Reset state but keep team names
         team1Score = 0
         team2Score = 0
         team1GamesWon = 0
         team2GamesWon = 0
         completedSets = []
+        lastResetSnapshot = nil
         sessionId = UUID()
         startedAt = Date()
         saveActiveGame()

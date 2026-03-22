@@ -3,6 +3,7 @@ import SwiftUI
 struct MainGameView: View {
     @State private var viewModel = GameViewModel()
     @State private var showHistory = false
+    @State private var showOnboarding = !UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
 
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
@@ -15,9 +16,9 @@ struct MainGameView: View {
         // The layout itself respects safe area so content is never hidden under the Dynamic Island.
         Group {
             if isLandscape {
-                LandscapeLayout(viewModel: viewModel, showHistory: $showHistory)
+                LandscapeLayout(viewModel: viewModel, showHistory: $showHistory, showOnboarding: $showOnboarding)
             } else {
-                PortraitLayout(viewModel: viewModel, showHistory: $showHistory)
+                PortraitLayout(viewModel: viewModel, showHistory: $showHistory, showOnboarding: $showOnboarding)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: isLandscape)
@@ -25,6 +26,9 @@ struct MainGameView: View {
         .statusBarHidden(true)
         .sheet(isPresented: $showHistory) {
             HistoryView(viewModel: viewModel, isPresented: $showHistory)
+        }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingView(isPresented: $showOnboarding)
         }
     }
 }
