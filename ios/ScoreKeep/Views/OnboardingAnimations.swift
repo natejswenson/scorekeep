@@ -4,20 +4,36 @@ import SwiftUI
 
 struct TapToScoreAnimation: View {
     @State private var score = 0
-    @State private var flashOpacity = 0.0
+    @State private var rippleScale: CGFloat = 0.3
+    @State private var rippleOpacity = 0.0
     @State private var running = false
+
+    private let tapInterval: TimeInterval = 0.55
 
     var body: some View {
         ZStack {
             Color(hex: "#111111")
+
+            // Bluish-purple tap ripple
+            Circle()
+                .fill(
+                    RadialGradient(
+                        colors: [Color(hex: "#C4B5FD").opacity(0.35), Color(hex: "#818CF8").opacity(0)],
+                        center: .center,
+                        startRadius: 0,
+                        endRadius: 60
+                    )
+                )
+                .frame(width: 120, height: 120)
+                .scaleEffect(rippleScale)
+                .opacity(rippleOpacity)
+                .allowsHitTesting(false)
 
             Text(score == 0 ? "" : "\(score)")
                 .font(.custom("Digital-7", size: 150))
                 .foregroundColor(.white)
                 .minimumScaleFactor(0.3)
                 .animation(nil, value: score)
-
-            Color.white.opacity(flashOpacity).allowsHitTesting(false)
         }
         .onAppear {
             guard !running else { return }
@@ -30,18 +46,20 @@ struct TapToScoreAnimation: View {
         score = 0
         let total = 25
         for i in 1...total {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.16) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * tapInterval) {
                 score = i
-                withAnimation(.easeIn(duration: 0.03)) { flashOpacity = 0.05 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                    withAnimation(.easeOut(duration: 0.06)) { flashOpacity = 0 }
+                // Snap ripple to small, then expand + fade
+                rippleScale = 0.3
+                rippleOpacity = 0.9
+                withAnimation(.easeOut(duration: 0.45)) {
+                    rippleScale = 1.4
+                    rippleOpacity = 0
                 }
             }
         }
         // Pause at 25, then loop
-        DispatchQueue.main.asyncAfter(deadline: .now() + Double(total) * 0.16 + 1.4) {
-            withAnimation(.easeOut(duration: 0.3)) { flashOpacity = 0 }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { runLoop() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + Double(total) * tapInterval + 1.8) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { runLoop() }
         }
     }
 }
