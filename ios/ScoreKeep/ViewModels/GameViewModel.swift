@@ -16,72 +16,201 @@ struct ResetSnapshot {
 
 @Observable
 final class GameViewModel {
+
+    // MARK: - Active Sport
+
+    var activeSport: Sport = .volleyball
+
+    // MARK: - Current Game State (shared across sports)
+
     var team1Name: String = "Team 1"
     var team2Name: String = "Team 2"
     var team1Score: Int = 0
     var team2Score: Int = 0
+
+    // Volleyball only
     var team1GamesWon: Int = 0
     var team2GamesWon: Int = 0
     var completedSets: [SetResult] = []
     var sessionId: UUID = UUID()
     var startedAt: Date = Date()
-    var gameHistory: [GameSession] = []
 
-    // In-memory only — not persisted across restarts
+    // Non-volleyball per-team undo (one level)
+    var team1LastAction: Int? = nil
+    var team2LastAction: Int? = nil
+
+    // In-memory undo for volleyball set reset
     private(set) var lastResetSnapshot: ResetSnapshot? = nil
 
-    // Debounce
-    private var lastTapTime: [TeamSide: Date] = [:]
+    // MARK: - Per-Sport History
+
+    var volleyballHistory: [GameSession] = []
+    var footballHistory: [GameSession] = []
+    var basketballHistory: [GameSession] = []
+    var soccerHistory: [GameSession] = []
+
+    var currentHistory: [GameSession] {
+        switch activeSport {
+        case .volleyball: return volleyballHistory
+        case .football:   return footballHistory
+        case .basketball: return basketballHistory
+        case .soccer:     return soccerHistory
+        }
+    }
+
+    // Backward-compat alias used by HistoryView
+    var gameHistory: [GameSession] { currentHistory }
+
+    var hasNonZeroScore: Bool { team1Score > 0 || team2Score > 0 }
+
+    // Debounce for tap-anywhere sports (volleyball, soccer)
+    private var lastTapTime: [Int: Date] = [:]   // 1 = team1, 2 = team2
     private let tapDebounceInterval: TimeInterval = 0.2
 
     private let persistence = PersistenceService.shared
 
+    // MARK: - Init
+
     init() {
-        gameHistory = persistence.loadHistory()
-        if let saved = persistence.loadActiveGame() {
-            team1Name = saved.team1Name
-            team2Name = saved.team2Name
-            team1Score = saved.team1Score
-            team2Score = saved.team2Score
+        volleyballHistory = persistence.loadHistory(sport: .volleyball)
+        footballHistory   = persistence.loadHistory(sport: .football)
+        basketballHistory = persistence.loadHistory(sport: .basketball)
+        soccerHistory     = persistence.loadHistory(sport: .soccer)
+
+        activeSport = persistence.loadActiveSport()
+        loadSportState(activeSport)
+    }
+
+    // MARK: - Sport Switching
+
+    func switchSport(_ sport: Sport) {
+        guard sport != activeSport else { return }
+        saveCurrentSportState()     // persist old state first
+
+        activeSport = sport
+        team1LastAction = nil
+        team2LastAction = nil
+        lastResetSnapshot = nil
+
+        loadSportState(sport)
+
+        // Switching resets scores to 0 (confirmed by dialog)
+        team1Score = 0
+        team2Score = 0
+        if sport == .volleyball {
+            team1GamesWon = 0
+            team2GamesWon = 0
+            completedSets = []
+        }
+
+        persistence.saveActiveSport(sport)
+        saveCurrentSportState()
+    }
+
+    private func loadSportState(_ sport: Sport) {
+        guard let saved = persistence.loadActiveGame(sport: sport) else {
+            team1Name = "Team 1"
+            team2Name = "Team 2"
+            team1Score = 0
+            team2Score = 0
+            team1LastAction = nil
+            team2LastAction = nil
+            if sport == .volleyball {
+                team1GamesWon = 0
+                team2GamesWon = 0
+                completedSets = []
+                sessionId = UUID()
+                startedAt = Date()
+            }
+            return
+        }
+
+        team1Name       = saved.team1Name
+        team2Name       = saved.team2Name
+        team1Score      = saved.team1Score
+        team2Score      = saved.team2Score
+        team1LastAction = saved.team1LastAction
+        team2LastAction = saved.team2LastAction
+
+        if sport == .volleyball {
             team1GamesWon = saved.team1GamesWon
             team2GamesWon = saved.team2GamesWon
             completedSets = saved.sets
-            sessionId = saved.sessionId
+            sessionId     = saved.sessionId
+            startedAt     = saved.startedAt
+        } else {
             startedAt = saved.startedAt
         }
     }
 
     // MARK: - Score Actions
 
+    /// Tap-anywhere increment for volleyball and soccer (debounced).
     func incrementScore(team: TeamSide) {
+        let key = team == .team1 ? 1 : 2
         let now = Date()
-        if let last = lastTapTime[team], now.timeIntervalSince(last) < tapDebounceInterval {
-            return
-        }
-        lastTapTime[team] = now
-        switch team {
-        case .team1: team1Score += 1
-        case .team2: team2Score += 1
-        }
-        saveActiveGame()
+        if let last = lastTapTime[key], now.timeIntervalSince(last) < tapDebounceInterval { return }
+        lastTapTime[key] = now
+        addScore(team: team, points: 1)
     }
 
+    /// Long-press decrement for volleyball and soccer.
     func decrementScore(team: TeamSide) {
         switch team {
         case .team1:
             guard team1Score > 0 else { return }
             team1Score -= 1
+            team1LastAction = nil
         case .team2:
             guard team2Score > 0 else { return }
             team2Score -= 1
+            team2LastAction = nil
         }
-        saveActiveGame()
+        saveCurrentSportState()
     }
 
-    // MARK: - Reset Set
+    /// Button-based scoring for football and basketball.
+    func addScore(team: TeamSide, points: Int) {
+        switch team {
+        case .team1:
+            team1Score += points
+            team1LastAction = points
+        case .team2:
+            team2Score += points
+            team2LastAction = points
+        }
+        saveCurrentSportState()
+    }
 
+    /// Undo the last button action (football / basketball Undo button).
+    func undoLastAction(team: TeamSide) {
+        switch team {
+        case .team1:
+            guard let action = team1LastAction else { return }
+            team1Score = max(0, team1Score - action)
+            team1LastAction = nil
+        case .team2:
+            guard let action = team2LastAction else { return }
+            team2Score = max(0, team2Score - action)
+            team2LastAction = nil
+        }
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        saveCurrentSportState()
+    }
+
+    // MARK: - Reset
+
+    /// Routes to the correct reset handler for the current sport.
+    func handleReset() {
+        if activeSport == .volleyball {
+            resetSet()
+        } else {
+            resetGame()
+        }
+    }
+
+    /// Volleyball: end a set, track games won, snapshot for undo.
     func resetSet() {
-        // Snapshot full state BEFORE modifying anything
         lastResetSnapshot = ResetSnapshot(
             team1Score: team1Score,
             team2Score: team2Score,
@@ -93,26 +222,45 @@ final class GameViewModel {
         let set = SetResult(team1Score: team1Score, team2Score: team2Score, completedAt: Date())
         completedSets.append(set)
 
-        if team1Score > team2Score {
-            team1GamesWon += 1
-        } else if team2Score > team1Score {
-            team2GamesWon += 1
-        }
+        if team1Score > team2Score { team1GamesWon += 1 }
+        else if team2Score > team1Score { team2GamesWon += 1 }
 
         team1Score = 0
         team2Score = 0
-        saveActiveGame()
+        saveCurrentSportState()
     }
 
+    /// Non-volleyball: end game, save to sport history, clear scores.
+    func resetGame() {
+        let session = GameSession(
+            sport: activeSport,
+            team1Name: team1Name,
+            team2Name: team2Name,
+            team1FinalScore: team1Score,
+            team2FinalScore: team2Score,
+            startedAt: startedAt,
+            endedAt: Date()
+        )
+        appendToCurrentHistory(session)
+
+        team1Score = 0
+        team2Score = 0
+        team1LastAction = nil
+        team2LastAction = nil
+        startedAt = Date()
+        saveCurrentSportState()
+    }
+
+    /// Undo a volleyball set reset.
     func undoReset() {
         guard let snap = lastResetSnapshot else { return }
-        team1Score = snap.team1Score
-        team2Score = snap.team2Score
+        team1Score    = snap.team1Score
+        team2Score    = snap.team2Score
         team1GamesWon = snap.team1GamesWon
         team2GamesWon = snap.team2GamesWon
         completedSets = snap.completedSets
         lastResetSnapshot = nil
-        saveActiveGame()
+        saveCurrentSportState()
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 
@@ -129,14 +277,16 @@ final class GameViewModel {
         case .team1: team1Name = trimmed
         case .team2: team2Name = trimmed
         }
-        saveActiveGame()
+        saveCurrentSportState()
     }
 
-    // MARK: - New Game
+    // MARK: - History Management
 
+    /// Archive current volleyball session and start fresh (called from HistoryView).
     func startNewGame() {
         let session = GameSession(
             id: sessionId,
+            sport: .volleyball,
             team1Name: team1Name,
             team2Name: team2Name,
             team1GamesWon: team1GamesWon,
@@ -145,7 +295,7 @@ final class GameViewModel {
             startedAt: startedAt,
             endedAt: Date()
         )
-        persistence.appendSession(session, to: &gameHistory)
+        appendToCurrentHistory(session)
 
         team1Score = 0
         team2Score = 0
@@ -155,31 +305,69 @@ final class GameViewModel {
         lastResetSnapshot = nil
         sessionId = UUID()
         startedAt = Date()
-        saveActiveGame()
+        saveCurrentSportState()
     }
 
-    // MARK: - History Management
-
     func deleteHistorySession(id: UUID) {
-        gameHistory.removeAll { $0.id == id }
-        persistence.saveHistory(gameHistory)
+        switch activeSport {
+        case .volleyball:
+            volleyballHistory.removeAll { $0.id == id }
+            persistence.saveHistory(volleyballHistory, sport: .volleyball)
+        case .football:
+            footballHistory.removeAll { $0.id == id }
+            persistence.saveHistory(footballHistory, sport: .football)
+        case .basketball:
+            basketballHistory.removeAll { $0.id == id }
+            persistence.saveHistory(basketballHistory, sport: .basketball)
+        case .soccer:
+            soccerHistory.removeAll { $0.id == id }
+            persistence.saveHistory(soccerHistory, sport: .soccer)
+        }
     }
 
     func clearAllHistory() {
-        gameHistory = []
-        persistence.saveHistory(gameHistory)
+        switch activeSport {
+        case .volleyball:
+            volleyballHistory = []
+            persistence.saveHistory([], sport: .volleyball)
+        case .football:
+            footballHistory = []
+            persistence.saveHistory([], sport: .football)
+        case .basketball:
+            basketballHistory = []
+            persistence.saveHistory([], sport: .basketball)
+        case .soccer:
+            soccerHistory = []
+            persistence.saveHistory([], sport: .soccer)
+        }
     }
 
-    // MARK: - Private Persistence
+    // MARK: - Private Helpers
 
-    private func saveActiveGame() {
+    private func appendToCurrentHistory(_ session: GameSession) {
+        switch activeSport {
+        case .volleyball:
+            persistence.appendSession(session, sport: .volleyball, to: &volleyballHistory)
+        case .football:
+            persistence.appendSession(session, sport: .football, to: &footballHistory)
+        case .basketball:
+            persistence.appendSession(session, sport: .basketball, to: &basketballHistory)
+        case .soccer:
+            persistence.appendSession(session, sport: .soccer, to: &soccerHistory)
+        }
+    }
+
+    private func saveCurrentSportState() {
         let active = ActiveGame(
+            sport: activeSport,
             team1Name: team1Name,
             team2Name: team2Name,
             team1Score: team1Score,
             team2Score: team2Score,
             team1GamesWon: team1GamesWon,
             team2GamesWon: team2GamesWon,
+            team1LastAction: team1LastAction,
+            team2LastAction: team2LastAction,
             sets: completedSets,
             sessionId: sessionId,
             startedAt: startedAt

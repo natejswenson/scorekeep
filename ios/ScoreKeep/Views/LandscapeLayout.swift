@@ -7,30 +7,18 @@ struct LandscapeLayout: View {
     @State private var editingTeam: TeamSide? = nil
     @State private var showUndoToast = false
     @State private var undoToastTask: Task<Void, Never>? = nil
+    @State private var showSportSelector = false
 
     var body: some View {
         GeometryReader { geo in
             ZStack {
+                // Team halves
                 HStack(spacing: 0) {
-                    TeamHalfView(
-                        side: .team1,
-                        teamName: viewModel.team1Name,
-                        score: viewModel.team1Score,
-                        isPortrait: false,
-                        onTapName: { editingTeam = .team1 },
-                        viewModel: viewModel
-                    )
-                    .frame(width: geo.size.width / 2)
+                    teamHalf(side: .team1, isPortrait: false)
+                        .frame(width: geo.size.width / 2)
 
-                    TeamHalfView(
-                        side: .team2,
-                        teamName: viewModel.team2Name,
-                        score: viewModel.team2Score,
-                        isPortrait: false,
-                        onTapName: { editingTeam = .team2 },
-                        viewModel: viewModel
-                    )
-                    .frame(width: geo.size.width / 2)
+                    teamHalf(side: .team2, isPortrait: false)
+                        .frame(width: geo.size.width / 2)
                 }
 
                 // Hairline vertical separator
@@ -40,11 +28,9 @@ struct LandscapeLayout: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .allowsHitTesting(false)
 
-                // Divider controls — vertical stack: history top, reset center, i-button bottom
+                // Divider controls: history → reset → i-button
                 VStack(spacing: 20) {
-                    Button {
-                        showHistory = true
-                    } label: {
+                    Button { showHistory = true } label: {
                         Image(systemName: "clock")
                             .font(.system(size: 15, weight: .light))
                             .foregroundStyle(Color(hex: "#636366"))
@@ -53,13 +39,13 @@ struct LandscapeLayout: View {
                     }
 
                     ResetButton {
-                        viewModel.resetSet()
-                        triggerUndoToast()
+                        viewModel.handleReset()
+                        if viewModel.activeSport == .volleyball {
+                            triggerUndoToast()
+                        }
                     }
 
-                    Button {
-                        showOnboarding = true
-                    } label: {
+                    Button { showOnboarding = true } label: {
                         ZStack {
                             Circle()
                                 .strokeBorder(Color(hex: "#3A3A3C"), lineWidth: 0.75)
@@ -73,7 +59,18 @@ struct LandscapeLayout: View {
                     .contentShape(Rectangle())
                 }
 
-                // Undo toast
+                // Sport switcher — top center
+                VStack {
+                    SportSwitcherButton(sport: viewModel.activeSport) {
+                        showSportSelector = true
+                    }
+                    .padding(.top, 14)
+                    Spacer()
+                }
+                .allowsHitTesting(true)
+                .zIndex(15)
+
+                // Undo toast (volleyball only)
                 if showUndoToast {
                     UndoToastView {
                         viewModel.undoReset()
@@ -95,6 +92,56 @@ struct LandscapeLayout: View {
                 ),
                 currentName: team == .team1 ? viewModel.team1Name : viewModel.team2Name,
                 onSave: { name in viewModel.updateTeamName(name, team: team) }
+            )
+        }
+        .sheet(isPresented: $showSportSelector) {
+            SportSelectorSheet(
+                isPresented: $showSportSelector,
+                currentSport: viewModel.activeSport,
+                hasNonZeroScore: viewModel.hasNonZeroScore,
+                onSelectSport: { sport in viewModel.switchSport(sport) }
+            )
+            .presentationDetents([.height(340)])
+            .presentationDragIndicator(.hidden)
+        }
+    }
+
+    // MARK: - Sport Routing
+
+    @ViewBuilder
+    private func teamHalf(side: TeamSide, isPortrait: Bool) -> some View {
+        let name    = side == .team1 ? viewModel.team1Name    : viewModel.team2Name
+        let score   = side == .team1 ? viewModel.team1Score   : viewModel.team2Score
+        let lastAct = side == .team1 ? viewModel.team1LastAction : viewModel.team2LastAction
+
+        switch viewModel.activeSport {
+        case .volleyball:
+            TeamHalfView(
+                side: side, teamName: name, score: score,
+                isPortrait: isPortrait, showGamesWon: true,
+                onTapName: { editingTeam = side }, viewModel: viewModel
+            )
+        case .soccer:
+            TeamHalfView(
+                side: side, teamName: name, score: score,
+                isPortrait: isPortrait, showGamesWon: false,
+                onTapName: { editingTeam = side }, viewModel: viewModel
+            )
+        case .football:
+            FootballTeamHalfView(
+                side: side, teamName: name, score: score,
+                isPortrait: isPortrait, lastAction: lastAct,
+                onTapName: { editingTeam = side },
+                onScore: { pts in viewModel.addScore(team: side, points: pts) },
+                onUndo: { viewModel.undoLastAction(team: side) }
+            )
+        case .basketball:
+            BasketballTeamHalfView(
+                side: side, teamName: name, score: score,
+                isPortrait: isPortrait, lastAction: lastAct,
+                onTapName: { editingTeam = side },
+                onScore: { pts in viewModel.addScore(team: side, points: pts) },
+                onUndo: { viewModel.undoLastAction(team: side) }
             )
         }
     }

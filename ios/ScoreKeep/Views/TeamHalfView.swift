@@ -5,6 +5,7 @@ struct TeamHalfView: View {
     let teamName: String
     let score: Int
     let isPortrait: Bool
+    var showGamesWon: Bool = true
     let onTapName: () -> Void
     var viewModel: GameViewModel
 
@@ -66,22 +67,26 @@ struct TeamHalfView: View {
                     teamNameLabel
                         .padding(.top, 20)
                     Spacer()
-                    // Games won bottom-left
-                    HStack {
-                        gamesWonBadge(alignment: .leading)
-                            .padding(.leading, 28)
-                            .padding(.bottom, 28)
-                        Spacer()
+                    // Games won bottom-left (volleyball only)
+                    if showGamesWon {
+                        HStack {
+                            gamesWonBadge(alignment: .leading)
+                                .padding(.leading, 28)
+                                .padding(.bottom, 28)
+                            Spacer()
+                        }
                     }
                 }
             } else {
                 VStack(spacing: 0) {
-                    // Games won top-right
-                    HStack {
-                        Spacer()
-                        gamesWonBadge(alignment: .trailing)
-                            .padding(.trailing, 28)
-                            .padding(.top, 28)
+                    // Games won top-right (volleyball only)
+                    if showGamesWon {
+                        HStack {
+                            Spacer()
+                            gamesWonBadge(alignment: .trailing)
+                                .padding(.trailing, 28)
+                                .padding(.top, 28)
+                        }
                     }
                     Spacer()
                     // Team name bottom-center
@@ -99,8 +104,10 @@ struct TeamHalfView: View {
             Spacer()
             scoreLabel
             Spacer()
-            gamesWonBadge(alignment: .center)
-                .padding(.bottom, 20)
+            if showGamesWon {
+                gamesWonBadge(alignment: .center)
+                    .padding(.bottom, 20)
+            }
         }
         .padding(.horizontal, 16)
     }
