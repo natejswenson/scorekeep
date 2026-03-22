@@ -9,7 +9,6 @@ struct LandscapeLayout: View {
     @State private var undoToastTask: Task<Void, Never>? = nil
     @State private var showSportSelector = false
     @State private var landscapeSelectedPoints: Int = 6
-    @State private var lastScoredTeam: TeamSide? = nil
 
     private var isChipSport: Bool {
         viewModel.activeSport == .football || viewModel.activeSport == .basketball
@@ -23,10 +22,7 @@ struct LandscapeLayout: View {
         Color(hex: viewModel.activeSport.glowHex)
     }
 
-    private var landscapeCanUndo: Bool {
-        guard let team = lastScoredTeam else { return false }
-        return team == .team1 ? viewModel.team1CanUndo : viewModel.team2CanUndo
-    }
+    private var landscapeCanUndo: Bool { viewModel.canUndoGlobal }
 
     var body: some View {
         GeometryReader { geo in
@@ -166,8 +162,7 @@ struct LandscapeLayout: View {
     }
 
     private func landscapeUndo() {
-        guard let team = lastScoredTeam else { return }
-        viewModel.undoLastAction(team: team)
+        viewModel.undoLastGlobalAction()
     }
 
     // MARK: - Sport Routing
@@ -196,11 +191,8 @@ struct LandscapeLayout: View {
                 side: side, teamName: name, score: score,
                 isPortrait: false, canUndo: canUndo,
                 onTapName: { editingTeam = side },
-                onScore: { pts in
-                    viewModel.addScore(team: side, points: pts)
-                    lastScoredTeam = side
-                },
-                onUndo: { viewModel.undoLastAction(team: side) },
+                onScore: { pts in viewModel.addScore(team: side, points: pts) },
+                onUndo: { viewModel.undoLastGlobalAction() },
                 externalSelectedPoints: landscapeSelectedPoints
             )
         case .basketball:
@@ -208,11 +200,8 @@ struct LandscapeLayout: View {
                 side: side, teamName: name, score: score,
                 isPortrait: false, canUndo: canUndo,
                 onTapName: { editingTeam = side },
-                onScore: { pts in
-                    viewModel.addScore(team: side, points: pts)
-                    lastScoredTeam = side
-                },
-                onUndo: { viewModel.undoLastAction(team: side) },
+                onScore: { pts in viewModel.addScore(team: side, points: pts) },
+                onUndo: { viewModel.undoLastGlobalAction() },
                 externalSelectedPoints: landscapeSelectedPoints
             )
         }

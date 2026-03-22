@@ -2,8 +2,14 @@ import Foundation
 import Observation
 import UIKit
 
-enum TeamSide {
+enum TeamSide: Codable {
     case team1, team2
+}
+
+/// One scored action in global order — used for cross-team undo.
+struct ScoredAction: Codable {
+    let team: TeamSide
+    let points: Int
 }
 
 struct ResetSnapshot {
@@ -35,9 +41,12 @@ final class GameViewModel {
     var sessionId: UUID = UUID()
     var startedAt: Date = Date()
 
-    // Non-volleyball per-team undo stack (push on score, pop on undo)
+    // Per-team undo stacks (kept for compatibility / volleyball long-press decrement)
     var team1ActionStack: [Int] = []
     var team2ActionStack: [Int] = []
+
+    // Global ordered action log — drives the shared undo button for football/basketball
+    var globalActionLog: [ScoredAction] = []
 
     // In-memory undo for volleyball set reset
     private(set) var lastResetSnapshot: ResetSnapshot? = nil
@@ -64,6 +73,7 @@ final class GameViewModel {
     var hasNonZeroScore: Bool { team1Score > 0 || team2Score > 0 }
     var team1CanUndo: Bool { !team1ActionStack.isEmpty }
     var team2CanUndo: Bool { !team2ActionStack.isEmpty }
+    var canUndoGlobal: Bool { !globalActionLog.isEmpty }
 
     // Debounce for tap-anywhere sports (volleyball, soccer)
     private var lastTapTime: [Int: Date] = [:]   // 1 = team1, 2 = team2
@@ -92,6 +102,7 @@ final class GameViewModel {
         activeSport = sport
         team1ActionStack = []
         team2ActionStack = []
+        globalActionLog = []
         lastResetSnapshot = nil
 
         loadSportState(sport)
@@ -133,6 +144,7 @@ final class GameViewModel {
         team2Score      = saved.team2Score
         team1ActionStack = saved.team1ActionStack
         team2ActionStack = saved.team2ActionStack
+        globalActionLog  = saved.globalActionLog
 
         if sport == .volleyball {
             team1GamesWon = saved.team1GamesWon
@@ -171,7 +183,7 @@ final class GameViewModel {
         saveCurrentSportState()
     }
 
-    /// Button-based scoring for football and basketball. Pushes onto the undo stack.
+    /// Button-based scoring for football and basketball. Pushes onto both stacks.
     func addScore(team: TeamSide, points: Int) {
         switch team {
         case .team1:
@@ -181,18 +193,36 @@ final class GameViewModel {
             team2Score += points
             team2ActionStack.append(points)
         }
+        globalActionLog.append(ScoredAction(team: team, points: points))
         saveCurrentSportState()
     }
 
-    /// Undo the most recent button action (pops from the team's undo stack).
+    /// Undo the most recent action across both teams (global ordered log).
+    func undoLastGlobalAction() {
+        guard let action = globalActionLog.popLast() else { return }
+        switch action.team {
+        case .team1:
+            team1Score = max(0, team1Score - action.points)
+            if !team1ActionStack.isEmpty { team1ActionStack.removeLast() }
+        case .team2:
+            team2Score = max(0, team2Score - action.points)
+            if !team2ActionStack.isEmpty { team2ActionStack.removeLast() }
+        }
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        saveCurrentSportState()
+    }
+
+    /// Undo the most recent button action for a specific team (legacy per-team path).
     func undoLastAction(team: TeamSide) {
         switch team {
         case .team1:
             guard let action = team1ActionStack.popLast() else { return }
             team1Score = max(0, team1Score - action)
+            globalActionLog.removeAll { $0.team == .team1 && $0.points == action }
         case .team2:
             guard let action = team2ActionStack.popLast() else { return }
             team2Score = max(0, team2Score - action)
+            globalActionLog.removeAll { $0.team == .team2 && $0.points == action }
         }
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         saveCurrentSportState()
@@ -247,6 +277,7 @@ final class GameViewModel {
         team2Score = 0
         team1ActionStack = []
         team2ActionStack = []
+        globalActionLog = []
         startedAt = Date()
         saveCurrentSportState()
     }
@@ -322,6 +353,7 @@ final class GameViewModel {
             team2Score = 0
             team1ActionStack = []
             team2ActionStack = []
+            globalActionLog = []
             startedAt = Date()
         }
         saveCurrentSportState()
@@ -387,6 +419,7 @@ final class GameViewModel {
             team2GamesWon: team2GamesWon,
             team1ActionStack: team1ActionStack,
             team2ActionStack: team2ActionStack,
+            globalActionLog: globalActionLog,
             sets: completedSets,
             sessionId: sessionId,
             startedAt: startedAt

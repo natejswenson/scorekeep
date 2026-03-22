@@ -9,7 +9,6 @@ struct PortraitLayout: View {
     @State private var undoToastTask: Task<Void, Never>? = nil
     @State private var showSportSelector = false
     @State private var portraitSelectedPoints: Int = 6
-    @State private var lastScoredTeam: TeamSide? = nil
 
     private var isChipSport: Bool {
         viewModel.activeSport == .football || viewModel.activeSport == .basketball
@@ -23,10 +22,7 @@ struct PortraitLayout: View {
         Color(hex: viewModel.activeSport.glowHex)
     }
 
-    private var portraitCanUndo: Bool {
-        guard let team = lastScoredTeam else { return false }
-        return team == .team1 ? viewModel.team1CanUndo : viewModel.team2CanUndo
-    }
+    private var portraitCanUndo: Bool { viewModel.canUndoGlobal }
 
     var body: some View {
         GeometryReader { geo in
@@ -170,8 +166,7 @@ struct PortraitLayout: View {
     }
 
     private func portraitUndo() {
-        guard let team = lastScoredTeam else { return }
-        viewModel.undoLastAction(team: team)
+        viewModel.undoLastGlobalAction()
     }
 
     // MARK: - Sport Routing
@@ -200,11 +195,8 @@ struct PortraitLayout: View {
                 side: side, teamName: name, score: score,
                 isPortrait: true, canUndo: canUndo,
                 onTapName: { editingTeam = side },
-                onScore: { pts in
-                    viewModel.addScore(team: side, points: pts)
-                    lastScoredTeam = side
-                },
-                onUndo: { viewModel.undoLastAction(team: side) },
+                onScore: { pts in viewModel.addScore(team: side, points: pts) },
+                onUndo: { viewModel.undoLastGlobalAction() },
                 externalSelectedPoints: portraitSelectedPoints
             )
         case .basketball:
@@ -212,11 +204,8 @@ struct PortraitLayout: View {
                 side: side, teamName: name, score: score,
                 isPortrait: true, canUndo: canUndo,
                 onTapName: { editingTeam = side },
-                onScore: { pts in
-                    viewModel.addScore(team: side, points: pts)
-                    lastScoredTeam = side
-                },
-                onUndo: { viewModel.undoLastAction(team: side) },
+                onScore: { pts in viewModel.addScore(team: side, points: pts) },
+                onUndo: { viewModel.undoLastGlobalAction() },
                 externalSelectedPoints: portraitSelectedPoints
             )
         }
