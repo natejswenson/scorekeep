@@ -9,12 +9,17 @@ struct BasketballTeamHalfView: View {
     let onTapName: () -> Void
     let onScore: (Int) -> Void
     let onUndo: () -> Void
+    /// When non-nil (landscape), chips are hidden and this value is used for tap-anywhere scoring.
+    var externalSelectedPoints: Int? = nil
 
     @State private var scoreScale: CGFloat = 1.0
-    @State private var selectedPoints: Int = 3
+    @State private var _selectedPoints: Int = 3
     @State private var lastTapTime: Date = .distantPast
 
     private let tapDebounce: TimeInterval = 0.20
+
+    private var showChips: Bool { externalSelectedPoints == nil }
+    private var activeSelectedPoints: Int { externalSelectedPoints ?? _selectedPoints }
 
     private var backgroundColor: Color {
         side == .team1 ? Color(hex: "#1E1E1E") : Color(hex: "#161616")
@@ -22,7 +27,6 @@ struct BasketballTeamHalfView: View {
     private let accentColor = Color(hex: "#E879F9")
     private let pointValues = [3, 2, 1]
 
-    // Fixed heights — chips stay compact selectors; score claims everything else.
     private let nameHeight: CGFloat    = 40
     private let chipRowHeight: CGFloat = 32
     private let undoRowHeight: CGFloat = 26
@@ -41,11 +45,9 @@ struct BasketballTeamHalfView: View {
                 let scoreSize = dynamicFontSize(for: geo.size.height)
 
                 VStack(spacing: 0) {
-                    // Team name — fixed top
                     teamNameLabel
                         .frame(height: nameHeight)
 
-                    // Score — expands to fill all remaining space
                     Text("\(score)")
                         .font(.custom("Digital-7", size: scoreSize))
                         .foregroundColor(.white)
@@ -55,26 +57,27 @@ struct BasketballTeamHalfView: View {
                         .animation(.spring(response: 0.18, dampingFraction: 0.7), value: scoreScale)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-                    // Chips — compact selectors at bottom
-                    chipsView
-                        .padding(.horizontal, 12)
-                        .frame(height: totalChipsHeight)
+                    if showChips {
+                        chipsView
+                            .padding(.horizontal, 12)
+                            .frame(height: totalChipsHeight)
+                    }
                 }
             }
         }
-        // Tap anywhere on this half to score with the selected point value
         .onTapGesture {
             let now = Date()
             guard now.timeIntervalSince(lastTapTime) >= tapDebounce else { return }
             lastTapTime = now
-            scoreAction(selectedPoints)
+            scoreAction(activeSelectedPoints)
         }
     }
 
     // MARK: - Dynamic Font Size
 
     private func dynamicFontSize(for availableHeight: CGFloat) -> CGFloat {
-        let scoreSpace = availableHeight - nameHeight - totalChipsHeight
+        let chipsH = showChips ? totalChipsHeight : 0
+        let scoreSpace = availableHeight - nameHeight - chipsH
         return max(48, scoreSpace * 0.80)
     }
 
@@ -82,21 +85,19 @@ struct BasketballTeamHalfView: View {
 
     private var chipsView: some View {
         VStack(spacing: chipSpacing) {
-            // Selector chips row
             HStack(spacing: 8) {
                 ForEach(pointValues, id: \.self) { pts in
                     ScoringChip(
                         points: pts,
                         accentColor: accentColor,
-                        isSelected: selectedPoints == pts
+                        isSelected: _selectedPoints == pts
                     ) {
-                        selectedPoints = pts
+                        _selectedPoints = pts
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     }
                     .frame(height: chipRowHeight)
                 }
             }
-            // Undo — full width
             UndoChip(canUndo: canUndo, action: undoAction)
                 .frame(maxWidth: .infinity)
                 .frame(height: undoRowHeight)
