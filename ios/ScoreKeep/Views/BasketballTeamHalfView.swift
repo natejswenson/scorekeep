@@ -18,75 +18,72 @@ struct BasketballTeamHalfView: View {
     private let accentColor = Color(hex: "#F97316")
     private let pointValues = [3, 2, 1]
 
+    // Fixed heights — chips stay compact; score claims everything else.
+    private let nameHeight: CGFloat    = 40
+    private let chipRowHeight: CGFloat = 46
+    private let undoRowHeight: CGFloat = 34
+    private let chipSpacing: CGFloat   = 7
+    private let bottomPad: CGFloat     = 12
+
+    private var totalChipsHeight: CGFloat {
+        chipRowHeight + chipSpacing + undoRowHeight + bottomPad
+    }
+
     var body: some View {
         ZStack {
             backgroundColor.ignoresSafeArea()
-            if isPortrait { portraitContent } else { landscapeContent }
-        }
-    }
 
-    // MARK: - Layouts
+            GeometryReader { geo in
+                let scoreSize = dynamicFontSize(for: geo.size.height)
 
-    /// Portrait: team name pinned top, score + chips grouped together and centered in remaining space.
-    private var portraitContent: some View {
-        VStack(spacing: 0) {
-            teamNameLabel
-                .padding(.top, 16)
-            Spacer(minLength: 0)
-            // Score and chips as one cohesive unit
-            VStack(spacing: 14) {
-                scoreLabel
-                chipsPortrait
-                    .padding(.horizontal, 12)
-            }
-            Spacer(minLength: 0)
-        }
-    }
+                VStack(spacing: 0) {
+                    // Team name — fixed top
+                    teamNameLabel
+                        .frame(height: nameHeight)
 
-    /// Landscape: team name top, score + chips centered vertically.
-    private var landscapeContent: some View {
-        VStack(spacing: 0) {
-            teamNameLabel
-                .padding(.top, 20)
-            Spacer(minLength: 0)
-            VStack(spacing: 12) {
-                scoreLabel
-                chipsLandscape
-                    .padding(.horizontal, 10)
-            }
-            Spacer(minLength: 0)
-        }
-    }
+                    // Score — expands to fill all remaining space
+                    Text("\(score)")
+                        .font(.custom("Digital-7", size: scoreSize))
+                        .foregroundColor(.white)
+                        .minimumScaleFactor(0.2)
+                        .lineLimit(1)
+                        .scaleEffect(scoreScale)
+                        .animation(.spring(response: 0.18, dampingFraction: 0.7), value: scoreScale)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-    // MARK: - Chip Arrangements
-
-    /// Portrait: all 3 scoring chips on one row, undo on its own full-width row below.
-    private var chipsPortrait: some View {
-        VStack(spacing: 8) {
-            HStack(spacing: 8) {
-                ForEach(pointValues, id: \.self) { pts in
-                    ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
-                        .frame(height: 50)
+                    // Chips — fixed bottom
+                    chipsView
+                        .padding(.horizontal, 12)
+                        .frame(height: totalChipsHeight)
                 }
             }
-            UndoChip(canUndo: canUndo, action: undo)
-                .frame(maxWidth: .infinity)
-                .frame(height: 38)
         }
     }
 
-    /// Landscape: 3 scoring chips on one row, undo full-width below.
-    private var chipsLandscape: some View {
-        VStack(spacing: 7) {
+    // MARK: - Dynamic Font Size
+
+    /// Give the score everything except the name row and chips block.
+    /// The Digital-7 glyph fills ~80% of its point size vertically.
+    private func dynamicFontSize(for availableHeight: CGFloat) -> CGFloat {
+        let scoreSpace = availableHeight - nameHeight - totalChipsHeight
+        return max(48, scoreSpace * 0.80)
+    }
+
+    // MARK: - Chip Views
+
+    private var chipsView: some View {
+        VStack(spacing: chipSpacing) {
+            // Scoring chips row
             HStack(spacing: 8) {
                 ForEach(pointValues, id: \.self) { pts in
-                    ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
-                        .frame(height: 46)
+                    ScoringChip(points: pts, accentColor: accentColor) { scoreAction(pts) }
+                        .frame(height: chipRowHeight)
                 }
             }
-            UndoChip(canUndo: canUndo, action: undo)
+            // Undo — full width
+            UndoChip(canUndo: canUndo, action: undoAction)
                 .frame(maxWidth: .infinity)
-                .frame(height: 34)
+                .frame(height: undoRowHeight)
         }
     }
 
@@ -97,33 +94,22 @@ struct BasketballTeamHalfView: View {
             .font(.system(size: 15, weight: .regular))
             .foregroundColor(Color(hex: "#8E8E93"))
             .onTapGesture { onTapName() }
-            .padding(.vertical, 4)
-            .padding(.horizontal, 12)
+            .padding(.top, 10)
             .contentShape(Rectangle())
-    }
-
-    private var scoreLabel: some View {
-        Text("\(score)")
-            .font(.custom("Digital-7", size: isPortrait ? 96 : 110))
-            .foregroundColor(.white)
-            .minimumScaleFactor(0.3)
-            .lineLimit(1)
-            .scaleEffect(scoreScale)
-            .animation(.spring(response: 0.18, dampingFraction: 0.7), value: scoreScale)
     }
 
     // MARK: - Actions
 
-    private func score(_ points: Int) {
+    private func scoreAction(_ points: Int) {
         onScore(points)
-        scoreScale = 0.85
+        scoreScale = 0.88
         withAnimation(.spring(response: 0.18, dampingFraction: 0.7)) { scoreScale = 1.0 }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
-    private func undo() {
+    private func undoAction() {
         onUndo()
-        scoreScale = 1.1
+        scoreScale = 1.08
         withAnimation(.spring(response: 0.18, dampingFraction: 0.7)) { scoreScale = 1.0 }
     }
 }
