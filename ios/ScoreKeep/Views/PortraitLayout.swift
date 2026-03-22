@@ -27,11 +27,11 @@ struct PortraitLayout: View {
                     .frame(maxHeight: .infinity, alignment: .center)
                     .allowsHitTesting(false)
 
-                // Divider controls: reset center, history left, i-button right
+                // Divider controls: reset center (volleyball only), history left, i-button right
                 ZStack {
-                    ResetButton {
-                        viewModel.handleReset()
-                        if viewModel.activeSport == .volleyball {
+                    if viewModel.activeSport == .volleyball {
+                        ResetButton {
+                            viewModel.handleReset()
                             triggerUndoToast()
                         }
                     }

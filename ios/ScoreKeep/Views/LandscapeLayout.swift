@@ -28,7 +28,7 @@ struct LandscapeLayout: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .allowsHitTesting(false)
 
-                // Divider controls: history → reset → i-button
+                // Divider controls: history → reset (volleyball only) → i-button
                 VStack(spacing: 20) {
                     Button { showHistory = true } label: {
                         Image(systemName: "clock")
@@ -38,9 +38,9 @@ struct LandscapeLayout: View {
                             .contentShape(Rectangle())
                     }
 
-                    ResetButton {
-                        viewModel.handleReset()
-                        if viewModel.activeSport == .volleyball {
+                    if viewModel.activeSport == .volleyball {
+                        ResetButton {
+                            viewModel.handleReset()
                             triggerUndoToast()
                         }
                     }

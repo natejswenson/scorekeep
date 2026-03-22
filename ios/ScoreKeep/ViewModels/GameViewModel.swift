@@ -282,29 +282,48 @@ final class GameViewModel {
 
     // MARK: - History Management
 
-    /// Archive current volleyball session and start fresh (called from HistoryView).
+    /// Archive current session and start fresh (called from HistoryView for all sports).
     func startNewGame() {
-        let session = GameSession(
-            id: sessionId,
-            sport: .volleyball,
-            team1Name: team1Name,
-            team2Name: team2Name,
-            team1GamesWon: team1GamesWon,
-            team2GamesWon: team2GamesWon,
-            sets: completedSets,
-            startedAt: startedAt,
-            endedAt: Date()
-        )
-        appendToCurrentHistory(session)
+        if activeSport == .volleyball {
+            let session = GameSession(
+                id: sessionId,
+                sport: .volleyball,
+                team1Name: team1Name,
+                team2Name: team2Name,
+                team1GamesWon: team1GamesWon,
+                team2GamesWon: team2GamesWon,
+                sets: completedSets,
+                startedAt: startedAt,
+                endedAt: Date()
+            )
+            appendToCurrentHistory(session)
 
-        team1Score = 0
-        team2Score = 0
-        team1GamesWon = 0
-        team2GamesWon = 0
-        completedSets = []
-        lastResetSnapshot = nil
-        sessionId = UUID()
-        startedAt = Date()
+            team1Score = 0
+            team2Score = 0
+            team1GamesWon = 0
+            team2GamesWon = 0
+            completedSets = []
+            lastResetSnapshot = nil
+            sessionId = UUID()
+            startedAt = Date()
+        } else {
+            let session = GameSession(
+                sport: activeSport,
+                team1Name: team1Name,
+                team2Name: team2Name,
+                team1FinalScore: team1Score,
+                team2FinalScore: team2Score,
+                startedAt: startedAt,
+                endedAt: Date()
+            )
+            appendToCurrentHistory(session)
+
+            team1Score = 0
+            team2Score = 0
+            team1ActionStack = []
+            team2ActionStack = []
+            startedAt = Date()
+        }
         saveCurrentSportState()
     }
 

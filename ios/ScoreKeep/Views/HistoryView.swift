@@ -42,10 +42,7 @@ struct HistoryView: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                // "New Game" only makes sense for volleyball (archives current session)
-                if sport == .volleyball {
-                    newGameButton
-                }
+                newGameButton
             }
         }
         .preferredColorScheme(.dark)
