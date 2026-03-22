@@ -75,15 +75,18 @@ struct FootballTeamHalfView: View {
         }
     }
 
-    /// Landscape: all 4 scoring chips + undo in a single horizontal row.
+    /// Landscape: 4 scoring chips on one row, undo full-width below.
     private var chipsLandscape: some View {
-        HStack(spacing: 8) {
-            ForEach(pointValues, id: \.self) { pts in
-                ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
-                    .frame(height: 52)
+        VStack(spacing: 7) {
+            HStack(spacing: 8) {
+                ForEach(pointValues, id: \.self) { pts in
+                    ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
+                        .frame(height: 46)
+                }
             }
             UndoChip(canUndo: canUndo, action: undo)
-                .frame(height: 52)
+                .frame(maxWidth: .infinity)
+                .frame(height: 34)
         }
     }
 
