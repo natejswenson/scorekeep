@@ -15,17 +15,14 @@ struct BasketballTeamHalfView: View {
     private var backgroundColor: Color {
         side == .team1 ? Color(hex: "#1E1E1E") : Color(hex: "#161616")
     }
-    private let accentColor = Color(hex: "#F97316")  // orange
+    private let accentColor = Color(hex: "#F97316")
+
+    private let pointValues = [3, 2, 1]
 
     var body: some View {
         ZStack {
             backgroundColor.ignoresSafeArea()
-
-            if isPortrait {
-                portraitContent
-            } else {
-                landscapeContent
-            }
+            if isPortrait { portraitContent } else { landscapeContent }
         }
     }
 
@@ -37,7 +34,7 @@ struct BasketballTeamHalfView: View {
             Spacer()
             scoreLabel
             Spacer()
-            actionGrid.padding(.bottom, 14)
+            chipArea(isLandscape: false).padding(.horizontal, 12).padding(.bottom, 14)
         }
     }
 
@@ -47,9 +44,42 @@ struct BasketballTeamHalfView: View {
             Spacer()
             scoreLabel
             Spacer()
-            actionGrid.padding(.bottom, 18)
+            chipArea(isLandscape: true).padding(.horizontal, 12).padding(.bottom, 18)
         }
-        .padding(.horizontal, 10)
+    }
+
+    // MARK: - Chip Layout
+
+    /// Portrait: 3pts + 2pts on top row, 1pt + undo on bottom row
+    /// Landscape: single row of all 4
+    private func chipArea(isLandscape: Bool) -> some View {
+        Group {
+            if isLandscape {
+                HStack(spacing: 8) {
+                    ForEach(pointValues, id: \.self) { pts in
+                        ScoringChip(points: pts, accentColor: accentColor) { score(pts) }
+                            .frame(height: 54)
+                    }
+                    UndoChip(canUndo: lastAction != nil, action: undo)
+                        .frame(height: 54)
+                }
+            } else {
+                VStack(spacing: 8) {
+                    HStack(spacing: 8) {
+                        ScoringChip(points: 3, accentColor: accentColor) { score(3) }
+                            .frame(height: 52)
+                        ScoringChip(points: 2, accentColor: accentColor) { score(2) }
+                            .frame(height: 52)
+                    }
+                    HStack(spacing: 8) {
+                        ScoringChip(points: 1, accentColor: accentColor) { score(1) }
+                            .frame(height: 52)
+                        UndoChip(canUndo: lastAction != nil, action: undo)
+                            .frame(height: 52)
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - Components
@@ -74,75 +104,18 @@ struct BasketballTeamHalfView: View {
             .animation(.spring(response: 0.18, dampingFraction: 0.7), value: scoreScale)
     }
 
-    private var actionGrid: some View {
-        VStack(spacing: 7) {
-            HStack(spacing: 7) {
-                actionButton(label: "3PT", points: 3)
-                actionButton(label: "2PT", points: 2)
-            }
-            HStack(spacing: 7) {
-                actionButton(label: "FT",  points: 1)
-                undoButton
-            }
-        }
-        .padding(.horizontal, 12)
+    // MARK: - Actions
+
+    private func score(_ points: Int) {
+        onScore(points)
+        scoreScale = 0.85
+        withAnimation(.spring(response: 0.18, dampingFraction: 0.7)) { scoreScale = 1.0 }
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
-    private func actionButton(label: String, points: Int) -> some View {
-        Button {
-            onScore(points)
-            animateScore(increment: true)
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        } label: {
-            Text(label)
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(accentColor)
-                .frame(maxWidth: .infinity)
-                .frame(height: 40)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color(hex: "#242424"))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .strokeBorder(accentColor.opacity(0.3), lineWidth: 0.6)
-                        )
-                )
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var undoButton: some View {
-        let canUndo = lastAction != nil
-        return Button {
-            guard canUndo else { return }
-            onUndo()
-            animateScore(increment: false)
-        } label: {
-            Text("Undo")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(canUndo ? Color(hex: "#8E8E93") : Color(hex: "#3A3A3C"))
-                .frame(maxWidth: .infinity)
-                .frame(height: 40)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color(hex: "#242424"))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .strokeBorder(
-                                    canUndo ? Color(hex: "#8E8E93").opacity(0.3) : Color(hex: "#242424"),
-                                    lineWidth: 0.6
-                                )
-                        )
-                )
-        }
-        .buttonStyle(.plain)
-        .disabled(!canUndo)
-    }
-
-    private func animateScore(increment: Bool) {
-        scoreScale = increment ? 0.85 : 1.1
-        withAnimation(.spring(response: 0.18, dampingFraction: 0.7)) {
-            scoreScale = 1.0
-        }
+    private func undo() {
+        onUndo()
+        scoreScale = 1.1
+        withAnimation(.spring(response: 0.18, dampingFraction: 0.7)) { scoreScale = 1.0 }
     }
 }

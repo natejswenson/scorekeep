@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		004DEEEC7D467E6460337146 /* ScoringChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = E61D811FBD9AA4232D8FEDC0 /* ScoringChip.swift */; };
 		02DFB7B873CC129457E7BD52 /* TeamHalfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A92141B5054941936F0F98 /* TeamHalfView.swift */; };
 		0DAB99F7318F43F982EEDBF8 /* OnboardingSlide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DBA44697B371CD9FD0015C /* OnboardingSlide.swift */; };
 		195FB46E4A550FD11A147D37 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88220FDDD36D608E518BA6B9 /* GameViewModel.swift */; };
@@ -72,6 +73,7 @@
 		D6A92141B5054941936F0F98 /* TeamHalfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamHalfView.swift; sourceTree = "<group>"; };
 		D78B36168D970A76AD6CC579 /* FingerTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerTipView.swift; sourceTree = "<group>"; };
 		D7B21FCDF64759D6B52EC836 /* SportSelectorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportSelectorSheet.swift; sourceTree = "<group>"; };
+		E61D811FBD9AA4232D8FEDC0 /* ScoringChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringChip.swift; sourceTree = "<group>"; };
 		E7E48FDEF3B52E4D8460A9B1 /* digital-7.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "digital-7.ttf"; sourceTree = "<group>"; };
 		EDBEBF255BAC2F0B6A8306A9 /* GameViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModelTests.swift; sourceTree = "<group>"; };
 		F1D9C346EFBE31EDA3DE1CB3 /* OnboardingAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAnimations.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				0B15989557F6EC88647E90CE /* OnboardingView.swift */,
 				B5288EE991E476D3D726E65F /* PortraitLayout.swift */,
 				88371F979A13B3B212627482 /* ResetButton.swift */,
+				E61D811FBD9AA4232D8FEDC0 /* ScoringChip.swift */,
 				3FE6D8AD487EA49B19984B6C /* SportIconView.swift */,
 				D7B21FCDF64759D6B52EC836 /* SportSelectorSheet.swift */,
 				D6A92141B5054941936F0F98 /* TeamHalfView.swift */,
@@ -304,6 +307,7 @@
 				2550A012B4CC708A3F547689 /* PortraitLayout.swift in Sources */,
 				9637D94C793712567602D47F /* ResetButton.swift in Sources */,
 				C9453AC2E5DC3C9F2FB4DC11 /* ScoreKeepApp.swift in Sources */,
+				004DEEEC7D467E6460337146 /* ScoringChip.swift in Sources */,
 				D39B85A3658081D250990CD0 /* Sport.swift in Sources */,
 				95E4F9605031DC8F95CC0A51 /* SportIconView.swift in Sources */,
 				2EE446047121291D4BC61306 /* SportSelectorSheet.swift in Sources */,
