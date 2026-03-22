@@ -4,7 +4,6 @@ struct TeamHalfView: View {
     let side: TeamSide
     let teamName: String
     let score: Int
-    let gamesWon: Int
     let isPortrait: Bool
     let onTapName: () -> Void
     var viewModel: GameViewModel
@@ -128,9 +127,13 @@ struct TeamHalfView: View {
             .animation(.spring(response: 0.18, dampingFraction: 0.7), value: scoreScale)
     }
 
+    private var currentGamesWon: Int {
+        side == .team1 ? viewModel.team1GamesWon : viewModel.team2GamesWon
+    }
+
     private func gamesWonBadge(alignment: HorizontalAlignment) -> some View {
         VStack(alignment: alignment, spacing: 3) {
-            Text("\(gamesWon)")
+            Text("\(currentGamesWon)")
                 .font(.system(size: 24, weight: .thin, design: .default))
                 .foregroundColor(.white)
             Text("GAMES WON")

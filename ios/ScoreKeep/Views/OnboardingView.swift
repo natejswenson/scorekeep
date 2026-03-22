@@ -18,8 +18,8 @@ struct OnboardingView: View {
             "Hold the center button to end a set.\nScores reset — you can Undo if needed."
         ),
         (
-            "History & Team Names",
-            "Tap your team name to rename it.\nTap the clock to view past game history."
+            "History & New Game",
+            "Tap the clock to view past games and start a new one.\nTap your team name to rename it."
         )
     ]
 

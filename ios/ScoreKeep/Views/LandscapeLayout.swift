@@ -16,25 +16,21 @@ struct LandscapeLayout: View {
                         side: .team1,
                         teamName: viewModel.team1Name,
                         score: viewModel.team1Score,
-                        gamesWon: viewModel.team1GamesWon,
                         isPortrait: false,
                         onTapName: { editingTeam = .team1 },
                         viewModel: viewModel
                     )
                     .frame(width: geo.size.width / 2)
-                    .onTapGesture { dismissToast() }
 
                     TeamHalfView(
                         side: .team2,
                         teamName: viewModel.team2Name,
                         score: viewModel.team2Score,
-                        gamesWon: viewModel.team2GamesWon,
                         isPortrait: false,
                         onTapName: { editingTeam = .team2 },
                         viewModel: viewModel
                     )
                     .frame(width: geo.size.width / 2)
-                    .onTapGesture { dismissToast() }
                 }
 
                 // Hairline vertical separator

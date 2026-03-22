@@ -16,25 +16,21 @@ struct PortraitLayout: View {
                         side: .team1,
                         teamName: viewModel.team1Name,
                         score: viewModel.team1Score,
-                        gamesWon: viewModel.team1GamesWon,
                         isPortrait: true,
                         onTapName: { editingTeam = .team1 },
                         viewModel: viewModel
                     )
                     .frame(height: geo.size.height / 2)
-                    .onTapGesture { dismissToast() }
 
                     TeamHalfView(
                         side: .team2,
                         teamName: viewModel.team2Name,
                         score: viewModel.team2Score,
-                        gamesWon: viewModel.team2GamesWon,
                         isPortrait: true,
                         onTapName: { editingTeam = .team2 },
                         viewModel: viewModel
                     )
                     .frame(height: geo.size.height / 2)
-                    .onTapGesture { dismissToast() }
                 }
 
                 // Hairline separator

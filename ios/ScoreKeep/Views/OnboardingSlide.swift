@@ -31,13 +31,10 @@ struct OnboardingSlide<Animation: View>: View {
                         .padding(.top, 16)
                     }
 
-                    // Animated scene — upper ~55% of screen
+                    // Animated scene — upper portion of screen
                     animation
                         .frame(maxWidth: .infinity)
-                        .frame(height: geo.size.height * 0.50)
-                        .padding(.horizontal, 24)
-                        .padding(.top, 8)
-                        .clipShape(RoundedRectangle(cornerRadius: 24))
+                        .frame(height: geo.size.height * 0.52)
 
                     Spacer()
 
