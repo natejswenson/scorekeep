@@ -1,13 +1,12 @@
 import SwiftUI
 
-/// A single scoring chip — styled like the sport selector cards.
-/// Shows the point value in Digital-7 with "pts" / "pt" label beneath.
+/// A point-value selector chip. Highlighted when selected; muted otherwise.
+/// Tapping selects the chip — scoring happens via tap-anywhere on the parent view.
 struct ScoringChip: View {
     let points: Int
     let accentColor: Color
+    let isSelected: Bool
     let action: () -> Void
-
-    @GestureState private var isPressed = false
 
     private var suffix: String { points == 1 ? "pt" : "pts" }
 
@@ -15,23 +14,29 @@ struct ScoringChip: View {
         Button(action: action) {
             VStack(spacing: 1) {
                 Text("\(points)")
-                    .font(.custom("Digital-7", size: 28))
-                    .foregroundColor(accentColor)
+                    .font(.custom("Digital-7", size: 22))
+                    .foregroundColor(isSelected ? accentColor : Color(hex: "#3A3A3C"))
                 Text(suffix)
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundColor(accentColor.opacity(0.65))
+                    .font(.system(size: 8, weight: .medium))
+                    .foregroundColor(isSelected ? accentColor.opacity(0.65) : Color(hex: "#2C2C2E"))
                     .kerning(0.8)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(
-                RoundedRectangle(cornerRadius: 14)
+                RoundedRectangle(cornerRadius: 12)
                     .fill(Color(hex: "#1C1C1E"))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 14)
-                            .strokeBorder(accentColor.opacity(0.45), lineWidth: 0.75)
+                        RoundedRectangle(cornerRadius: 12)
+                            .strokeBorder(
+                                isSelected ? accentColor.opacity(0.55) : Color(hex: "#2C2C2E"),
+                                lineWidth: 0.75
+                            )
                     )
             )
-            .shadow(color: accentColor.opacity(0.18), radius: 10, x: 0, y: 0)
+            .shadow(
+                color: isSelected ? accentColor.opacity(0.20) : .clear,
+                radius: 8, x: 0, y: 0
+            )
         }
         .buttonStyle(.plain)
     }
@@ -48,14 +53,14 @@ struct UndoChip: View {
             action()
         } label: {
             Image(systemName: "arrow.uturn.backward")
-                .font(.system(size: 15, weight: .light))
+                .font(.system(size: 14, weight: .light))
                 .foregroundColor(canUndo ? Color(hex: "#8E8E93") : Color(hex: "#3A3A3C"))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(
-                    RoundedRectangle(cornerRadius: 14)
+                    RoundedRectangle(cornerRadius: 12)
                         .fill(Color(hex: "#1C1C1E"))
                         .overlay(
-                            RoundedRectangle(cornerRadius: 14)
+                            RoundedRectangle(cornerRadius: 12)
                                 .strokeBorder(
                                     canUndo
                                         ? Color(hex: "#8E8E93").opacity(0.35)

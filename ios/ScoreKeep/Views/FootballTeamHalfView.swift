@@ -11,6 +11,10 @@ struct FootballTeamHalfView: View {
     let onUndo: () -> Void
 
     @State private var scoreScale: CGFloat = 1.0
+    @State private var selectedPoints: Int = 6
+    @State private var lastTapTime: Date = .distantPast
+
+    private let tapDebounce: TimeInterval = 0.20
 
     private var backgroundColor: Color {
         side == .team1 ? Color(hex: "#1E1E1E") : Color(hex: "#161616")
@@ -18,12 +22,12 @@ struct FootballTeamHalfView: View {
     private let accentColor = Color(hex: "#F59E0B")
     private let pointValues = [6, 3, 2, 1]
 
-    // Fixed heights — chips stay compact; score claims everything else.
+    // Fixed heights — chips stay compact selectors; score claims everything else.
     private let nameHeight: CGFloat    = 40
-    private let chipRowHeight: CGFloat = 46
-    private let undoRowHeight: CGFloat = 34
-    private let chipSpacing: CGFloat   = 7
-    private let bottomPad: CGFloat     = 12
+    private let chipRowHeight: CGFloat = 32
+    private let undoRowHeight: CGFloat = 26
+    private let chipSpacing: CGFloat   = 6
+    private let bottomPad: CGFloat     = 10
 
     private var totalChipsHeight: CGFloat {
         chipRowHeight + chipSpacing + undoRowHeight + bottomPad
@@ -51,19 +55,24 @@ struct FootballTeamHalfView: View {
                         .animation(.spring(response: 0.18, dampingFraction: 0.7), value: scoreScale)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-                    // Chips — fixed bottom
+                    // Chips — compact selectors at bottom
                     chipsView
                         .padding(.horizontal, 12)
                         .frame(height: totalChipsHeight)
                 }
             }
         }
+        // Tap anywhere on this half to score with the selected point value
+        .onTapGesture {
+            let now = Date()
+            guard now.timeIntervalSince(lastTapTime) >= tapDebounce else { return }
+            lastTapTime = now
+            scoreAction(selectedPoints)
+        }
     }
 
     // MARK: - Dynamic Font Size
 
-    /// Give the score everything except the name row and chips block.
-    /// The Digital-7 glyph fills ~80% of its point size vertically.
     private func dynamicFontSize(for availableHeight: CGFloat) -> CGFloat {
         let scoreSpace = availableHeight - nameHeight - totalChipsHeight
         return max(48, scoreSpace * 0.80)
@@ -73,11 +82,18 @@ struct FootballTeamHalfView: View {
 
     private var chipsView: some View {
         VStack(spacing: chipSpacing) {
-            // Scoring chips row
+            // Selector chips row
             HStack(spacing: 8) {
                 ForEach(pointValues, id: \.self) { pts in
-                    ScoringChip(points: pts, accentColor: accentColor) { scoreAction(pts) }
-                        .frame(height: chipRowHeight)
+                    ScoringChip(
+                        points: pts,
+                        accentColor: accentColor,
+                        isSelected: selectedPoints == pts
+                    ) {
+                        selectedPoints = pts
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    }
+                    .frame(height: chipRowHeight)
                 }
             }
             // Undo — full width
