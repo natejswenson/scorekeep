@@ -67,14 +67,21 @@ struct PortraitLayout: View {
                 }
                 .frame(maxHeight: .infinity, alignment: .center)
 
-                // Sport switcher — top center
+                // Sport switcher — top-right, subtle (no glow)
                 VStack {
-                    SportSwitcherButton(sport: viewModel.activeSport) {
-                        showSportSelector = true
+                    HStack {
+                        Spacer()
+                        Button { showSportSelector = true } label: {
+                            Image(systemName: viewModel.activeSport.systemImageName)
+                                .font(.system(size: 15, weight: .light))
+                                .foregroundStyle(Color(hex: "#636366"))
+                                .frame(width: 44, height: 44)
+                                .contentShape(Rectangle())
+                        }
                     }
-                    .padding(.top, 14)
                     Spacer()
                 }
+                .padding(.top, 4)
                 .allowsHitTesting(true)
                 .zIndex(15)
 

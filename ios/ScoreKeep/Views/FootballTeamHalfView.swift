@@ -19,7 +19,7 @@ struct FootballTeamHalfView: View {
     private var backgroundColor: Color {
         side == .team1 ? Color(hex: "#1E1E1E") : Color(hex: "#161616")
     }
-    private let accentColor = Color(hex: "#F59E0B")
+    private let accentColor = Color(hex: "#FB923C")
     private let pointValues = [6, 3, 2, 1]
 
     // Fixed heights — chips stay compact selectors; score claims everything else.

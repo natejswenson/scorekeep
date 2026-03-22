@@ -27,10 +27,10 @@ enum Sport: String, Codable, CaseIterable, Hashable {
     // Hex strings — converted to Color in views via Color(hex:) extension
     var glowHex: String {
         switch self {
-        case .volleyball: return "#818CF8"  // bluish-purple
-        case .football:   return "#F59E0B"  // amber
-        case .basketball: return "#F97316"  // orange
-        case .soccer:     return "#22C55E"  // green
+        case .volleyball: return "#38BDF8"  // electric cyan
+        case .football:   return "#FB923C"  // orange-coral
+        case .basketball: return "#E879F9"  // magenta
+        case .soccer:     return "#A78BFA"  // soft violet
         }
     }
 
