@@ -35,33 +35,13 @@ struct SettingsSheet: View {
                     Text("Appearance")
                 }
 
-                // MARK: Max Score
+                // MARK: Volleyball
                 Section {
-                    maxScoreRow(label: "Volleyball", value: Binding(
+                    maxScoreRow(label: "Max Score", value: Binding(
                         get: { settings.maxScoreVolleyball },
                         set: { settings.maxScoreVolleyball = $0; settings.save() }
                     ))
-                    maxScoreRow(label: "Football", value: Binding(
-                        get: { settings.maxScoreFootball },
-                        set: { settings.maxScoreFootball = $0; settings.save() }
-                    ))
-                    maxScoreRow(label: "Basketball", value: Binding(
-                        get: { settings.maxScoreBasketball },
-                        set: { settings.maxScoreBasketball = $0; settings.save() }
-                    ))
-                    maxScoreRow(label: "Soccer", value: Binding(
-                        get: { settings.maxScoreSoccer },
-                        set: { settings.maxScoreSoccer = $0; settings.save() }
-                    ))
-                } header: {
-                    Text("Max Score")
-                } footer: {
-                    Text("Score turns gold when the max is reached. Set to 0 to disable.")
-                        .font(.system(size: 11))
-                }
 
-                // MARK: Volleyball
-                Section {
                     Toggle("Auto-Advance Set", isOn: Binding(
                         get: { settings.autoAdvanceSet },
                         set: { settings.autoAdvanceSet = $0; settings.save() }
@@ -97,7 +77,7 @@ struct SettingsSheet: View {
                 } header: {
                     Text("Volleyball")
                 } footer: {
-                    Text("Auto-Advance prompts to start the next set when win-by-2 is met. Final Set Score applies to the deciding set (win by 2).")
+                    Text("Max Score turns gold when reached (0 = off). Auto-Advance prompts to start the next set when win-by-2 is met. Final Set Score applies to the deciding set.")
                         .font(.system(size: 11))
                 }
 
