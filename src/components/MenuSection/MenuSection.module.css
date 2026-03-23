@@ -1,0 +1,87 @@
+.h2 {
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  line-height: 1.1;
+}
+
+.intro {
+  font-size: 17px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.70);
+  line-height: 1.65;
+  margin: 0 0 28px 0;
+}
+
+.menuList {
+  display: flex;
+  flex-direction: column;
+  background: #1C1C1E;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 24px;
+}
+
+.menuRow {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 14px;
+}
+
+.menuRow:last-child {
+  border-bottom: none;
+}
+
+.rowIcon {
+  font-size: 18px;
+  margin-top: 1px;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.rowContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowLabel {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 3px 0;
+}
+
+.rowDesc {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.chevron {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 14px;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.timerNote {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.50);
+  line-height: 1.55;
+  margin: 0;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.timerNote strong {
+  color: rgba(255, 255, 255, 0.75);
+}

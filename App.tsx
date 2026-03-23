@@ -1,17 +1,23 @@
-import { Provider } from 'react-redux';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { store } from './src/store';
-import { theme } from './src/theme';
-import GameScreen from './src/components/GameScreen';
+import HeroSection from './src/components/HeroSection/HeroSection';
+import FeatureStrip from './src/components/FeatureStrip/FeatureStrip';
+import HowToScore from './src/components/HowToScore/HowToScore';
+import MenuSection from './src/components/MenuSection/MenuSection';
+import VolleyballSection from './src/components/VolleyballSection/VolleyballSection';
+import HistorySection from './src/components/HistorySection/HistorySection';
+import SettingsSection from './src/components/SettingsSection/SettingsSection';
+import Footer from './src/components/Footer/Footer';
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <GameScreen />
-      </ThemeProvider>
-    </Provider>
+    <>
+      <HeroSection />
+      <FeatureStrip />
+      <HowToScore />
+      <MenuSection />
+      <VolleyballSection />
+      <HistorySection />
+      <SettingsSection />
+      <Footer />
+    </>
   );
 }
