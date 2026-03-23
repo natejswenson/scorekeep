@@ -16,42 +16,38 @@ struct OnboardingView: View {
     private let slides: [InfoSlide] = [
         InfoSlide(
             title: "Tap to Score",
-            body: "Tap anywhere on your team's half to add a point. Long press to subtract one."
+            body: "Tap anywhere on your team's side to add a point. Volleyball and soccer add 1. Basketball and football use your selected chip value."
         ),
         InfoSlide(
-            title: "Undo Last Point",
-            body: "An undo button appears after every score. Tap it to instantly reverse the last point."
+            title: "Remove a Point",
+            body: "Tap the − button at the bottom of your team's side to subtract a point. It fades out when the score is already 0."
         ),
         InfoSlide(
-            title: "Basketball",
-            body: "Tap a chip to pick your point value — 3, 2, or 1 — then tap your side to score."
-        ),
-        InfoSlide(
-            title: "Football",
-            body: "Select a chip — 6, 3, 2, or 1 — then tap your side. The chip stays active until you change it."
+            title: "Basketball & Football",
+            body: "Tap a chip to set your point value before scoring. Your selection stays active — change it anytime by tapping a different chip."
         ),
         InfoSlide(
             title: "Volleyball Sets",
-            body: "Sets are tracked automatically. Enable Auto-Advance in Settings to prompt for the next set when win conditions are met."
+            body: "Hold the center button to end the current set and start the next one. Set wins are tracked automatically. Enable Auto-Advance in Settings to be prompted when win conditions are met."
+        ),
+        InfoSlide(
+            title: "Reset Scores",
+            body: "For all other sports, hold the center button until the ring fills to reset both scores. An undo option appears for 4 seconds if you change your mind."
         ),
         InfoSlide(
             title: "Switch Sports",
-            body: "Tap the sport icon at the top center to switch between Volleyball, Basketball, Football, and Soccer."
+            body: "Tap the sport icon at the top center of the screen to switch between Volleyball, Basketball, Football, and Soccer."
         ),
         InfoSlide(
-            title: "Menu & More",
-            body: "Swipe down from the top to open the menu. Start a new game, view history, set a timer, or adjust settings."
-        ),
-        InfoSlide(
-            title: "Personalize",
-            body: "Tap a team name to rename it. Open Settings to choose a theme, toggle haptics, and keep the screen on during play."
+            title: "Menu & Settings",
+            body: "Swipe down anywhere to open the menu. Start a New Game, view History, enable a Timer, or open Settings to pick a theme, rename teams, and more."
         ),
     ]
 
     var body: some View {
         ZStack {
 
-            // App-matching split gradient background
+            // Split gradient matches the live game background
             HStack(spacing: 0) {
                 LinearGradient(
                     colors: [Color(hex: "#3b75e9"), Color(hex: "#0e1e4a")],
@@ -64,7 +60,7 @@ struct OnboardingView: View {
             }
             .ignoresSafeArea()
 
-            // Hairline centre separator
+            // Centre hairline
             Rectangle()
                 .fill(Color.white.opacity(0.12))
                 .frame(width: 0.5)
@@ -72,7 +68,7 @@ struct OnboardingView: View {
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
 
-            // Tap zones — behind content so the close button stays active
+            // Tap-zone layer — left half goes back, right half goes forward
             HStack(spacing: 0) {
                 Color.clear.contentShape(Rectangle()).onTapGesture { back() }
                 Color.clear.contentShape(Rectangle()).onTapGesture { forward() }
@@ -88,7 +84,7 @@ struct OnboardingView: View {
                     Button { dismiss() } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 13, weight: .light))
-                            .foregroundStyle(Color.white.opacity(0.50))
+                            .foregroundStyle(Color.white.opacity(0.45))
                             .frame(width: 44, height: 44)
                             .contentShape(Rectangle())
                     }
@@ -100,7 +96,7 @@ struct OnboardingView: View {
 
                 // Illustration
                 illustration(for: current)
-                    .padding(.bottom, 36)
+                    .padding(.bottom, 40)
 
                 // Title
                 Text(slides[current].title)
@@ -121,7 +117,7 @@ struct OnboardingView: View {
 
                 Spacer()
 
-                // Pill indicators
+                // Slide indicator pills
                 HStack(spacing: 7) {
                     ForEach(0..<slides.count, id: \.self) { i in
                         Capsule()
@@ -148,205 +144,303 @@ struct OnboardingView: View {
     private func illustration(for index: Int) -> some View {
         switch index {
 
-        // Tap to Score
+        // 0 — Tap to Score
         case 0:
-            VStack(spacing: 20) {
+            VStack(spacing: 22) {
                 Image(systemName: "hand.tap.fill")
-                    .font(.system(size: 54, weight: .thin))
+                    .font(.system(size: 56, weight: .thin))
                     .foregroundStyle(Color.white.opacity(0.82))
-                HStack(spacing: 24) {
-                    gestureTag(icon: "hand.tap", label: "+1")
-                    gestureTag(icon: "hand.point.up.left", label: "−1", isHold: true)
+                // Score label mockup
+                HStack(spacing: 6) {
+                    scoreDigit("7")
+                    Image(systemName: "arrow.right")
+                        .font(.system(size: 14, weight: .light))
+                        .foregroundColor(Color.white.opacity(0.35))
+                    scoreDigit("8")
+                        .foregroundColor(Color(hex: "#FFD700").opacity(0.90))
                 }
             }
 
-        // Undo
+        // 1 — Remove a Point
         case 1:
-            VStack(spacing: 16) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(Color.white.opacity(0.10))
-                        .frame(width: 180, height: 44)
-                    HStack(spacing: 10) {
-                        Image(systemName: "arrow.uturn.backward")
-                            .font(.system(size: 15, weight: .light))
-                            .foregroundColor(Color.white.opacity(0.70))
-                        Text("Undo Last Point")
-                            .font(.system(size: 14, weight: .regular))
-                            .foregroundColor(Color.white.opacity(0.80))
-                    }
-                }
-                Text("Appears for 4 seconds after scoring")
+            VStack(spacing: 28) {
+                // Actual − button replica
+                decrementButtonPreview
+                // Caption
+                Text("appears at the bottom of each side")
                     .font(.system(size: 11, weight: .regular))
                     .foregroundColor(Color.white.opacity(0.30))
-                    .kerning(0.5)
+                    .kerning(0.4)
             }
 
-        // Basketball
+        // 2 — Basketball & Football chips
         case 2:
-            HStack(spacing: 12) {
-                BasketballHoopChip(points: 3, isSelected: true,  action: {})
-                BasketballHoopChip(points: 2, isSelected: false, action: {})
-                BasketballHoopChip(points: 1, isSelected: false, action: {})
-                inlineUndoPreview
+            VStack(spacing: 20) {
+                // Basketball row
+                chipRow(values: [3, 2, 1], selected: 3, label: "BASKETBALL")
+                // Football row
+                chipRow(values: [6, 3, 2, 1], selected: 6, label: "FOOTBALL")
             }
-            .allowsHitTesting(false)
 
-        // Football
+        // 3 — Volleyball Sets
         case 3:
-            HStack(spacing: 10) {
-                FootballGoalpostChip(points: 6, isSelected: true,  action: {})
-                FootballGoalpostChip(points: 3, isSelected: false, action: {})
-                FootballGoalpostChip(points: 2, isSelected: false, action: {})
-                FootballGoalpostChip(points: 1, isSelected: false, action: {})
-                inlineUndoPreview
+            VStack(spacing: 24) {
+                // Static SetCompleteButton replica
+                setCompleteButtonPreview
+                // Set-win dot track
+                setWinTrack(team1Wins: 1, team2Wins: 0, bestOf: 3)
             }
-            .allowsHitTesting(false)
 
-        // Volleyball sets
+        // 4 — Reset Scores
         case 4:
-            VStack(spacing: 18) {
-                Image(systemName: "volleyball.fill")
-                    .font(.system(size: 46, weight: .thin))
-                    .foregroundStyle(Color.white.opacity(0.82))
-                HStack(spacing: 10) {
-                    setDot(label: "Set 1", filled: true)
-                    setDot(label: "Set 2", filled: true)
-                    setDot(label: "Set 3", filled: false)
-                }
+            VStack(spacing: 24) {
+                // Static ResetButton replica (ring partially filled to hint "hold")
+                resetButtonPreview(ringProgress: 0.65)
+                // Undo toast preview
+                undoToastPreview
             }
 
-        // Switch Sports
+        // 5 — Switch Sports
         case 5:
-            VStack(spacing: 20) {
-                HStack(spacing: 36) {
-                    sportIcon("volleyball.fill",        label: "Volleyball")
-                    sportIcon("basketball.fill",        label: "Basketball")
-                }
-                HStack(spacing: 36) {
-                    sportIcon("american.football.fill", label: "Football")
-                    sportIcon("soccerball",             label: "Soccer")
-                }
-            }
-
-        // Menu
-        case 6:
-            VStack(spacing: 16) {
-                Image(systemName: "line.3.horizontal")
-                    .font(.system(size: 34, weight: .thin))
-                    .foregroundStyle(Color.white.opacity(0.82))
-                VStack(spacing: 8) {
-                    menuPreviewRow(icon: "arrow.counterclockwise", label: "New Game")
-                    menuPreviewRow(icon: "clock",                  label: "History")
-                    menuPreviewRow(icon: "timer",                  label: "Timer")
-                    menuPreviewRow(icon: "gearshape",              label: "Settings")
-                }
-            }
-
-        // Personalize
-        default:
-            VStack(spacing: 20) {
-                HStack(spacing: 28) {
-                    VStack(spacing: 8) {
-                        Image(systemName: "pencil")
-                            .font(.system(size: 32, weight: .thin))
-                            .foregroundStyle(Color.white.opacity(0.82))
-                        Text("Rename Teams")
-                            .font(.system(size: 11, weight: .regular))
-                            .foregroundColor(Color.white.opacity(0.40))
-                            .kerning(0.8)
-                    }
-                    VStack(spacing: 8) {
-                        Image(systemName: "paintpalette")
-                            .font(.system(size: 32, weight: .thin))
-                            .foregroundStyle(Color.white.opacity(0.82))
-                        Text("Themes")
-                            .font(.system(size: 11, weight: .regular))
-                            .foregroundColor(Color.white.opacity(0.40))
-                            .kerning(0.8)
-                    }
-                    VStack(spacing: 8) {
-                        Image(systemName: "iphone.and.arrow.forward.inward")
-                            .font(.system(size: 32, weight: .thin))
-                            .foregroundStyle(Color.white.opacity(0.82))
-                        Text("Screen On")
-                            .font(.system(size: 11, weight: .regular))
-                            .foregroundColor(Color.white.opacity(0.40))
-                            .kerning(0.8)
-                    }
-                }
-            }
-        }
-    }
-
-    // MARK: - Sub-views
-
-    private func gestureTag(icon: String, label: String, isHold: Bool = false) -> some View {
-        HStack(spacing: 6) {
-            Image(systemName: icon)
-                .font(.system(size: 14, weight: .light))
-                .foregroundColor(Color.white.opacity(0.55))
-            Text(label)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(Color.white.opacity(0.75))
-            if isHold {
-                Text("hold")
-                    .font(.system(size: 10, weight: .regular))
+            VStack(spacing: 18) {
+                // Sport switcher button replica (glowing icon at top)
+                sportSwitcherPreview
+                Text("tap the icon at the top of the screen")
+                    .font(.system(size: 11, weight: .regular))
                     .foregroundColor(Color.white.opacity(0.30))
+                    .kerning(0.4)
+                    .multilineTextAlignment(.center)
+            }
+
+        // 6 — Menu & Settings
+        default:
+            VStack(spacing: 6) {
+                swipeDownHint
+                    .padding(.bottom, 8)
+                menuPreviewRows
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 7)
-        .background(Color.white.opacity(0.08), in: Capsule())
     }
 
-    private func setDot(label: String, filled: Bool) -> some View {
-        VStack(spacing: 6) {
-            Circle()
-                .fill(filled ? Color.white.opacity(0.80) : Color.white.opacity(0.15))
-                .frame(width: 18, height: 18)
-            Text(label)
-                .font(.system(size: 10, weight: .regular))
-                .foregroundColor(Color.white.opacity(0.35))
-        }
+    // MARK: - Sub-view builders
+
+    /// Digital-7 styled score digit
+    private func scoreDigit(_ text: String) -> some View {
+        Text(text)
+            .font(.custom("Digital-7", size: 52))
+            .foregroundColor(Color.white.opacity(0.80))
     }
 
-    private func menuPreviewRow(icon: String, label: String) -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: icon)
-                .font(.system(size: 13, weight: .light))
-                .foregroundColor(Color.white.opacity(0.50))
-                .frame(width: 20)
-            Text(label)
-                .font(.system(size: 13, weight: .regular))
-                .foregroundColor(Color.white.opacity(0.65))
-            Spacer()
-        }
-        .frame(width: 160)
-    }
-
-    /// Static undo circle preview matching InlineUndoButton appearance.
-    private var inlineUndoPreview: some View {
+    /// Replica of the − decrement button
+    private var decrementButtonPreview: some View {
         ZStack {
             Circle()
-                .strokeBorder(Color.white.opacity(0.50), lineWidth: 1.0)
-            Image(systemName: "arrow.uturn.backward")
-                .font(.system(size: 13, weight: .light))
-                .foregroundColor(Color.white.opacity(0.60))
+                .strokeBorder(Color.white.opacity(0.28), lineWidth: 1)
+            Text("−")
+                .font(.system(size: 22, weight: .light))
+                .foregroundColor(Color.white.opacity(0.45))
         }
-        .frame(width: 34, height: 34)
+        .frame(width: 52, height: 52)
     }
 
-    private func sportIcon(_ name: String, label: String) -> some View {
+    /// A horizontal row of ScoringChip instances
+    private func chipRow(values: [Int], selected: Int, label: String) -> some View {
         VStack(spacing: 8) {
-            Image(systemName: name)
-                .font(.system(size: 34, weight: .thin))
-                .foregroundStyle(Color.white.opacity(0.82))
             Text(label)
-                .font(.system(size: 11, weight: .regular))
-                .foregroundColor(Color.white.opacity(0.40))
-                .kerning(1.2)
+                .font(.system(size: 9, weight: .medium))
+                .foregroundColor(Color.white.opacity(0.28))
+                .kerning(1.4)
+            HStack(spacing: 4) {
+                ForEach(values, id: \.self) { pts in
+                    ScoringChip(
+                        points: pts,
+                        accentColor: .white,
+                        isSelected: pts == selected,
+                        action: {}
+                    )
+                    .frame(width: 54, height: 44)
+                }
+            }
+            .allowsHitTesting(false)
         }
+    }
+
+    /// Static replica of SetCompleteButton
+    private var setCompleteButtonPreview: some View {
+        ZStack {
+            // Partial ring hint
+            Circle()
+                .trim(from: 0, to: 0.55)
+                .stroke(
+                    Color.white.opacity(0.55),
+                    style: StrokeStyle(lineWidth: 2, lineCap: .round)
+                )
+                .frame(width: 76, height: 76)
+                .rotationEffect(.degrees(-90))
+
+            Circle()
+                .fill(Color.white.opacity(0.12))
+                .frame(width: 64, height: 64)
+
+            Circle()
+                .strokeBorder(Color.white.opacity(0.30), lineWidth: 0.8)
+                .frame(width: 64, height: 64)
+
+            VStack(spacing: 2) {
+                Text("NEXT")
+                    .font(.system(size: 8, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.70))
+                    .kerning(1.4)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(Color.white.opacity(0.85))
+                Text("SET")
+                    .font(.system(size: 8, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.70))
+                    .kerning(1.4)
+            }
+        }
+    }
+
+    /// Set-win tracker dots
+    private func setWinTrack(team1Wins: Int, team2Wins: Int, bestOf: Int) -> some View {
+        let needed = (bestOf + 1) / 2
+        return HStack(spacing: 20) {
+            // Team 1 dots
+            HStack(spacing: 5) {
+                ForEach(0..<needed, id: \.self) { i in
+                    Circle()
+                        .fill(i < team1Wins ? Color.white.opacity(0.80) : Color.white.opacity(0.15))
+                        .frame(width: 10, height: 10)
+                }
+            }
+            Text("SETS")
+                .font(.system(size: 9, weight: .medium))
+                .foregroundColor(Color.white.opacity(0.28))
+                .kerning(1.4)
+            // Team 2 dots
+            HStack(spacing: 5) {
+                ForEach(0..<needed, id: \.self) { i in
+                    Circle()
+                        .fill(i < team2Wins ? Color.white.opacity(0.80) : Color.white.opacity(0.15))
+                        .frame(width: 10, height: 10)
+                }
+            }
+        }
+    }
+
+    /// Static reset button with ring partially filled
+    private func resetButtonPreview(ringProgress: CGFloat) -> some View {
+        ZStack {
+            Circle()
+                .trim(from: 0, to: ringProgress)
+                .stroke(
+                    Color.white.opacity(0.60),
+                    style: StrokeStyle(lineWidth: 2, lineCap: .round)
+                )
+                .frame(width: 76, height: 76)
+                .rotationEffect(.degrees(-90))
+
+            Circle()
+                .fill(Color.white.opacity(0.12))
+                .frame(width: 64, height: 64)
+
+            Circle()
+                .strokeBorder(Color.white.opacity(0.30), lineWidth: 0.8)
+                .frame(width: 64, height: 64)
+
+            Image(systemName: "arrow.counterclockwise")
+                .font(.system(size: 22, weight: .light))
+                .foregroundStyle(Color.white.opacity(0.80))
+        }
+    }
+
+    /// Undo toast replica (matches UndoToastView)
+    private var undoToastPreview: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "arrow.uturn.backward")
+                .font(.system(size: 13, weight: .medium))
+            Text("Undo Reset")
+                .font(.system(size: 13, weight: .medium))
+        }
+        .foregroundColor(.white)
+        .padding(.horizontal, 18)
+        .padding(.vertical, 10)
+        .background(
+            Capsule()
+                .fill(Color(hex: "#2C2C2E"))
+                .overlay(
+                    Capsule().strokeBorder(Color(hex: "#3A3A3C"), lineWidth: 1)
+                )
+                .shadow(color: .black.opacity(0.4), radius: 12, x: 0, y: 4)
+        )
+    }
+
+    /// Sport switcher button replica (glowing, as seen at top-center of game)
+    private var sportSwitcherPreview: some View {
+        ZStack {
+            Circle()
+                .fill(Color.white.opacity(0.08))
+                .frame(width: 60, height: 60)
+            Circle()
+                .strokeBorder(Color.white.opacity(0.18), lineWidth: 0.8)
+                .frame(width: 60, height: 60)
+            Image(systemName: "volleyball.fill")
+                .font(.system(size: 24, weight: .light))
+                .foregroundStyle(Color.white)
+                .shadow(color: Color.white.opacity(0.6), radius: 8)
+                .shadow(color: Color.white.opacity(0.3), radius: 20)
+        }
+    }
+
+    /// Swipe-down arrow hint
+    private var swipeDownHint: some View {
+        VStack(spacing: 4) {
+            Image(systemName: "chevron.down")
+                .font(.system(size: 20, weight: .light))
+                .foregroundColor(Color.white.opacity(0.50))
+            Text("SWIPE DOWN")
+                .font(.system(size: 9, weight: .medium))
+                .foregroundColor(Color.white.opacity(0.28))
+                .kerning(1.6)
+        }
+    }
+
+    /// Mini menu row list
+    private var menuPreviewRows: some View {
+        VStack(spacing: 0) {
+            menuRow(icon: "arrow.counterclockwise", label: "New Game")
+            thinDivider
+            menuRow(icon: "clock",                  label: "History")
+            thinDivider
+            menuRow(icon: "timer",                  label: "Timer")
+            thinDivider
+            menuRow(icon: "gearshape",              label: "Settings")
+        }
+        .background(Color(hex: "#111111").opacity(0.85), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .frame(width: 200)
+    }
+
+    private func menuRow(icon: String, label: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .light))
+                .foregroundColor(Color.white.opacity(0.50))
+                .frame(width: 22)
+            Text(label)
+                .font(.system(size: 14, weight: .regular))
+                .foregroundColor(Color.white.opacity(0.80))
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 13)
+    }
+
+    private var thinDivider: some View {
+        Rectangle()
+            .fill(Color.white.opacity(0.08))
+            .frame(height: 0.5)
+            .padding(.horizontal, 16)
     }
 
     // MARK: - Navigation
