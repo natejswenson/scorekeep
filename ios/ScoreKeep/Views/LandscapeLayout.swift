@@ -214,19 +214,21 @@ struct LandscapeLayout: View {
             FootballTeamHalfView(
                 side: side, teamName: name, score: score,
                 isPortrait: false,
+                canUndo: viewModel.canUndoGlobal,
                 onTapName: { editingTeam = side },
                 onScore: { pts in viewModel.addScore(team: side, points: pts) },
-                onDecrement: { viewModel.decrementScore(team: side) },
-                selectedPoints: landscapeSelectedPoints
+                onUndo: { viewModel.undoLastGlobalAction() },
+                externalSelectedPoints: landscapeSelectedPoints
             )
         case .basketball:
             BasketballTeamHalfView(
                 side: side, teamName: name, score: score,
                 isPortrait: false,
+                canUndo: viewModel.canUndoGlobal,
                 onTapName: { editingTeam = side },
                 onScore: { pts in viewModel.addScore(team: side, points: pts) },
-                onDecrement: { viewModel.decrementScore(team: side) },
-                selectedPoints: landscapeSelectedPoints
+                onUndo: { viewModel.undoLastGlobalAction() },
+                externalSelectedPoints: landscapeSelectedPoints
             )
         }
     }

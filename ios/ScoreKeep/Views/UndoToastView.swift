@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct UndoToastView: View {
+    let message: String
     let onUndo: () -> Void
 
     var body: some View {
@@ -8,7 +9,7 @@ struct UndoToastView: View {
             HStack(spacing: 8) {
                 Image(systemName: "arrow.uturn.backward")
                     .font(.system(size: 13, weight: .medium))
-                Text("Undo Reset")
+                Text(message)
                     .font(.system(size: 13, weight: .medium))
             }
             .foregroundColor(.white)

@@ -188,7 +188,7 @@ struct ResetAnimation: View {
 
                 // Undo toast
                 if showUndo {
-                    UndoToastView { }
+                    UndoToastView(message: "Undo Reset") { }
                         .opacity(undoOpacity)
                         .padding(.top, 20)
                         .transition(.opacity)

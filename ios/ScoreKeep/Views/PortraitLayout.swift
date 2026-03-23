@@ -255,19 +255,21 @@ struct PortraitLayout: View {
             FootballTeamHalfView(
                 side: side, teamName: name, score: score,
                 isPortrait: true,
+                canUndo: viewModel.canUndoGlobal,
                 onTapName: { editingTeam = side },
                 onScore: { pts in viewModel.addScore(team: side, points: pts) },
-                onDecrement: { viewModel.decrementScore(team: side) },
-                selectedPoints: portraitSelectedPoints
+                onUndo: { viewModel.undoLastGlobalAction() },
+                externalSelectedPoints: portraitSelectedPoints
             )
         case .basketball:
             BasketballTeamHalfView(
                 side: side, teamName: name, score: score,
                 isPortrait: true,
+                canUndo: viewModel.canUndoGlobal,
                 onTapName: { editingTeam = side },
                 onScore: { pts in viewModel.addScore(team: side, points: pts) },
-                onDecrement: { viewModel.decrementScore(team: side) },
-                selectedPoints: portraitSelectedPoints
+                onUndo: { viewModel.undoLastGlobalAction() },
+                externalSelectedPoints: portraitSelectedPoints
             )
         }
     }

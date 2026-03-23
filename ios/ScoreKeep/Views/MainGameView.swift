@@ -47,7 +47,7 @@ struct MainGameView: View {
 
             // Undo toast (new game)
             if showUndoToast {
-                UndoToastView {
+                UndoToastView(message: "Undo Reset") {
                     viewModel.undoReset()
                     dismissToast()
                 }
