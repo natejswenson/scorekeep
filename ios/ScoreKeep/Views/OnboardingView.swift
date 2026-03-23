@@ -31,12 +31,8 @@ struct OnboardingView: View {
             body: "Hold the center button to end the current set and start the next one. Set wins are tracked automatically. Enable Auto-Advance in Settings to be prompted when win conditions are met."
         ),
         InfoSlide(
-            title: "Reset Scores",
-            body: "For all other sports, hold the center button until the ring fills to reset both scores. An undo option appears for 4 seconds if you change your mind."
-        ),
-        InfoSlide(
             title: "The Menu",
-            body: "Swipe down anywhere on the screen to open the menu. This is where everything lives — switch sports, start a new game, view history, set a timer, and open settings."
+            body: "Swipe down anywhere to open the menu. Everything lives here — switch sports, start a new game (which also resets the current scores), view history, and open settings."
         ),
         InfoSlide(
             title: "Game History",
@@ -195,31 +191,22 @@ struct OnboardingView: View {
                 setWinTrack(team1Wins: 1, team2Wins: 0, bestOf: 3)
             }
 
-        // 4 — Reset Scores
+        // 4 — The Menu
         case 4:
-            VStack(spacing: 24) {
-                // Static ResetButton replica (ring partially filled to hint "hold")
-                resetButtonPreview(ringProgress: 0.65)
-                // Undo toast preview
-                undoToastPreview
-            }
-
-        // 5 — The Menu
-        case 5:
             VStack(spacing: 6) {
                 swipeDownHint
                     .padding(.bottom, 8)
                 menuPreviewRows
             }
 
-        // 6 — Game History
-        case 6:
+        // 5 — Game History
+        case 5:
             VStack(spacing: 12) {
                 historyPreviewCard
                 historyHintRow
             }
 
-        // 7 — Settings & More
+        // 6 — Settings & More
         default:
             VStack(spacing: 20) {
                 // Rename team hint
@@ -351,53 +338,6 @@ struct OnboardingView: View {
         }
     }
 
-    /// Static reset button with ring partially filled
-    private func resetButtonPreview(ringProgress: CGFloat) -> some View {
-        ZStack {
-            Circle()
-                .trim(from: 0, to: ringProgress)
-                .stroke(
-                    Color.white.opacity(0.60),
-                    style: StrokeStyle(lineWidth: 2, lineCap: .round)
-                )
-                .frame(width: 76, height: 76)
-                .rotationEffect(.degrees(-90))
-
-            Circle()
-                .fill(Color.white.opacity(0.12))
-                .frame(width: 64, height: 64)
-
-            Circle()
-                .strokeBorder(Color.white.opacity(0.30), lineWidth: 0.8)
-                .frame(width: 64, height: 64)
-
-            Image(systemName: "arrow.counterclockwise")
-                .font(.system(size: 22, weight: .light))
-                .foregroundStyle(Color.white.opacity(0.80))
-        }
-    }
-
-    /// Undo toast replica (matches UndoToastView)
-    private var undoToastPreview: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "arrow.uturn.backward")
-                .font(.system(size: 13, weight: .medium))
-            Text("Undo Reset")
-                .font(.system(size: 13, weight: .medium))
-        }
-        .foregroundColor(.white)
-        .padding(.horizontal, 18)
-        .padding(.vertical, 10)
-        .background(
-            Capsule()
-                .fill(Color(hex: "#2C2C2E"))
-                .overlay(
-                    Capsule().strokeBorder(Color(hex: "#3A3A3C"), lineWidth: 1)
-                )
-                .shadow(color: .black.opacity(0.4), radius: 12, x: 0, y: 4)
-        )
-    }
-
     /// Swipe-down arrow hint
     private var swipeDownHint: some View {
         VStack(spacing: 4) {
@@ -411,16 +351,16 @@ struct OnboardingView: View {
         }
     }
 
-    /// Full menu row list — matches the actual drawer order
+    /// Full menu row list — matches the actual drawer order exactly
     private var menuPreviewRows: some View {
         VStack(spacing: 0) {
-            menuRow(icon: "volleyball.fill",        label: "Sport",    value: "Volleyball")
+            menuRow(icon: "american.football",      label: "Sport",    value: "Football")
             thinDivider
             menuRow(icon: "arrow.counterclockwise", label: "New Game")
             thinDivider
             menuRow(icon: "clock",                  label: "History")
             thinDivider
-            menuRow(icon: "timer",                  label: "Timer")
+            menuRow(icon: "info.circle",            label: "Help")
             thinDivider
             menuRow(icon: "gearshape",              label: "Settings")
         }
