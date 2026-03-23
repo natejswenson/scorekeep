@@ -1,0 +1,51 @@
+.landscapeImg {
+  border-radius: 16px;
+  transform: rotate(-1.5deg);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+  max-width: 560px;
+  width: 100%;
+  display: block;
+}
+
+.h2 {
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  line-height: 1.1;
+}
+
+.intro {
+  font-size: 17px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.70);
+  line-height: 1.65;
+  margin: 0 0 28px 0;
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.featureCard {
+  background: #1C1C1E;
+  border-radius: 10px;
+  padding: 20px 24px;
+}
+
+.featureTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+}
+
+.featureDesc {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+  margin: 0;
+}
