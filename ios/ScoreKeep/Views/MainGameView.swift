@@ -10,6 +10,11 @@ struct MainGameView: View {
     @State private var showBannerAd = false
     @State private var adCycleTask: Task<Void, Never>? = nil
 
+    // Drawer discovery hint
+    @AppStorage("drawerHintCount") private var drawerHintCount = 0
+    @State private var hintOffset: CGFloat = 0
+    @State private var hintOpacity: Double = 0.28
+
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     private var isLandscape: Bool { verticalSizeClass == .compact }
@@ -84,9 +89,29 @@ struct MainGameView: View {
                 .zIndex(91)
             }
 
+            // Drawer discovery hint — faint chevron at top centre, inside ZStack
+            if !showDrawer {
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 15, weight: .light))
+                    .foregroundStyle(Color.white.opacity(hintOpacity))
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 56)
+                    .offset(y: hintOffset)
+                    .allowsHitTesting(false)
+                    .animation(.easeInOut(duration: 0.18), value: showDrawer)
+            }
+
         }
         .onAppear {
             startAdCycle()
+            runDrawerHint()
+        }
+        .onChange(of: showDrawer) { _, open in
+            if open {
+                // Snap back cleanly when drawer opens
+                hintOffset = 0
+                hintOpacity = 0.28
+            }
         }
         .preferredColorScheme(.dark)
         .statusBarHidden(true)
@@ -95,6 +120,30 @@ struct MainGameView: View {
         }
         .fullScreenCover(isPresented: $showOnboarding) {
             OnboardingView(isPresented: $showOnboarding)
+        }
+    }
+
+    // MARK: - Drawer Hint
+
+    /// Bounces the chevron twice after the game screen appears.
+    /// Runs on the first 3 app opens, then only the static indicator remains.
+    private func runDrawerHint() {
+        guard drawerHintCount < 3 else { return }
+        drawerHintCount += 1
+        for i in 0..<2 {
+            let base = 1.2 + Double(i) * 1.1
+            DispatchQueue.main.asyncAfter(deadline: .now() + base) {
+                withAnimation(.easeOut(duration: 0.30)) {
+                    hintOffset = 7
+                    hintOpacity = 0.55
+                }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + base + 0.30) {
+                withAnimation(.easeIn(duration: 0.40)) {
+                    hintOffset = 0
+                    hintOpacity = 0.28
+                }
+            }
         }
     }
 

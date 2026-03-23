@@ -12,6 +12,8 @@ private struct InfoSlide {
 struct OnboardingView: View {
     @Binding var isPresented: Bool
     @State private var current = 0
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    private var isLandscape: Bool { verticalSizeClass == .compact }
 
     private let slides: [InfoSlide] = [
         InfoSlide(
@@ -20,7 +22,7 @@ struct OnboardingView: View {
         ),
         InfoSlide(
             title: "Remove a Point",
-            body: "Tap the − button at the bottom of your team's side to subtract a point. It fades out when the score is already 0."
+            body: "Long press anywhere on your team's side to subtract a point. For volleyball and soccer it removes 1. For basketball and football it removes the last amount you scored."
         ),
         InfoSlide(
             title: "Basketball & Football",
@@ -47,24 +49,27 @@ struct OnboardingView: View {
     var body: some View {
         ZStack {
 
-            // Split gradient matches the live game background
-            HStack(spacing: 0) {
-                LinearGradient(
-                    colors: [Color(hex: "#3b75e9"), Color(hex: "#0e1e4a")],
-                    startPoint: .top, endPoint: .bottom
-                )
-                LinearGradient(
-                    colors: [Color(hex: "#f32727"), Color(hex: "#460808")],
-                    startPoint: .top, endPoint: .bottom
-                )
+            // Split gradient — portrait: top/bottom (matches real game portrait), landscape: left/right
+            Group {
+                if isLandscape {
+                    HStack(spacing: 0) {
+                        LinearGradient(colors: [Color(hex: "#3b75e9"), Color(hex: "#0e1e4a")], startPoint: .top, endPoint: .bottom)
+                        LinearGradient(colors: [Color(hex: "#f32727"), Color(hex: "#460808")], startPoint: .top, endPoint: .bottom)
+                    }
+                } else {
+                    VStack(spacing: 0) {
+                        LinearGradient(colors: [Color(hex: "#3b75e9"), Color(hex: "#0e1e4a")], startPoint: .top, endPoint: .bottom)
+                        LinearGradient(colors: [Color(hex: "#f32727"), Color(hex: "#460808")], startPoint: .top, endPoint: .bottom)
+                    }
+                }
             }
             .ignoresSafeArea()
 
-            // Centre hairline
+            // Centre hairline — vertical in landscape, horizontal in portrait
             Rectangle()
                 .fill(Color.white.opacity(0.12))
-                .frame(width: 0.5)
-                .frame(maxWidth: .infinity, alignment: .center)
+                .frame(width: isLandscape ? 0.5 : .infinity, height: isLandscape ? .infinity : 0.5)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
 
@@ -161,16 +166,25 @@ struct OnboardingView: View {
                 }
             }
 
-        // 1 — Remove a Point
+        // 1 — Remove a Point (long press)
         case 1:
-            VStack(spacing: 28) {
-                // Actual − button replica
-                decrementButtonPreview
-                // Caption
-                Text("appears at the bottom of each side")
+            VStack(spacing: 20) {
+                // Long-press hold indicator
+                ZStack {
+                    Circle()
+                        .fill(Color.white.opacity(0.10))
+                        .frame(width: 72, height: 72)
+                    Circle()
+                        .strokeBorder(Color.white.opacity(0.25), lineWidth: 1.5)
+                        .frame(width: 72, height: 72)
+                    Image(systemName: "hand.tap")
+                        .font(.system(size: 28, weight: .ultraLight))
+                        .foregroundColor(Color.white.opacity(0.70))
+                }
+                Text("hold ~0.5s")
                     .font(.system(size: 11, weight: .regular))
                     .foregroundColor(Color.white.opacity(0.30))
-                    .kerning(0.4)
+                    .kerning(0.8)
             }
 
         // 2 — Basketball & Football chips
@@ -238,18 +252,6 @@ struct OnboardingView: View {
         Text(text)
             .font(.custom("Digital-7", size: 52))
             .foregroundColor(Color.white.opacity(0.80))
-    }
-
-    /// Replica of the − decrement button
-    private var decrementButtonPreview: some View {
-        ZStack {
-            Circle()
-                .strokeBorder(Color.white.opacity(0.28), lineWidth: 1)
-            Text("−")
-                .font(.system(size: 22, weight: .light))
-                .foregroundColor(Color.white.opacity(0.45))
-        }
-        .frame(width: 52, height: 52)
     }
 
     /// A horizontal row of ScoringChip instances

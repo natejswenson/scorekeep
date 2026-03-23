@@ -214,20 +214,20 @@ struct LandscapeLayout: View {
             FootballTeamHalfView(
                 side: side, teamName: name, score: score,
                 isPortrait: false,
-                canUndo: viewModel.canUndoGlobal,
+                canUndo: side == .team1 ? viewModel.team1CanUndo : viewModel.team2CanUndo,
                 onTapName: { editingTeam = side },
                 onScore: { pts in viewModel.addScore(team: side, points: pts) },
-                onUndo: { viewModel.undoLastGlobalAction() },
+                onUndo: { viewModel.undoLastAction(team: side) },
                 externalSelectedPoints: landscapeSelectedPoints
             )
         case .basketball:
             BasketballTeamHalfView(
                 side: side, teamName: name, score: score,
                 isPortrait: false,
-                canUndo: viewModel.canUndoGlobal,
+                canUndo: side == .team1 ? viewModel.team1CanUndo : viewModel.team2CanUndo,
                 onTapName: { editingTeam = side },
                 onScore: { pts in viewModel.addScore(team: side, points: pts) },
-                onUndo: { viewModel.undoLastGlobalAction() },
+                onUndo: { viewModel.undoLastAction(team: side) },
                 externalSelectedPoints: landscapeSelectedPoints
             )
         }

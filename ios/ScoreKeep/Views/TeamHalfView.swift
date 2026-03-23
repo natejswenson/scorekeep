@@ -16,23 +16,31 @@ struct TeamHalfView: View {
 
     private let longPressDuration: TimeInterval = 0.45
 
-    private var backgroundColor: Color {
-        side == .team1 ? Color(hex: "#1E1E1E") : Color(hex: "#161616")
+    private var backgroundColor: LinearGradient {
+        let theme = SettingsManager.shared.activeTheme
+        return side == .team1
+            ? LinearGradient(colors: [Color(hex: theme.team1Top), Color(hex: theme.team1Bottom)], startPoint: .top, endPoint: .bottom)
+            : LinearGradient(colors: [Color(hex: theme.team2Top), Color(hex: theme.team2Bottom)], startPoint: .top, endPoint: .bottom)
     }
 
     var body: some View {
-        ZStack {
-            backgroundColor.ignoresSafeArea()
+        GeometryReader { geo in
+            let scoreSize = isPortrait
+                ? geo.size.height * 0.55
+                : min(geo.size.height * 0.52, geo.size.width * 0.80)
+            ZStack {
+                backgroundColor.ignoresSafeArea()
 
-            flashColor
-                .opacity(flashOpacity)
-                .ignoresSafeArea()
-                .allowsHitTesting(false)
+                flashColor
+                    .opacity(flashOpacity)
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
 
-            if isPortrait {
-                portraitContent
-            } else {
-                landscapeContent
+                if isPortrait {
+                    portraitContent(scoreSize: scoreSize)
+                } else {
+                    landscapeContent(scoreSize: scoreSize)
+                }
             }
         }
         .contentShape(Rectangle())
@@ -56,10 +64,10 @@ struct TeamHalfView: View {
 
     // MARK: - Layouts
 
-    private var portraitContent: some View {
+    private func portraitContent(scoreSize: CGFloat) -> some View {
         ZStack {
             // Score: always centered
-            scoreLabel
+            scoreLabel(size: scoreSize)
 
             if side == .team1 {
                 VStack(spacing: 0) {
@@ -97,12 +105,12 @@ struct TeamHalfView: View {
         }
     }
 
-    private var landscapeContent: some View {
+    private func landscapeContent(scoreSize: CGFloat) -> some View {
         VStack(spacing: 0) {
             teamNameLabel
                 .padding(.top, 20)
             Spacer()
-            scoreLabel
+            scoreLabel(size: scoreSize)
             Spacer()
             if showGamesWon {
                 gamesWonBadge(alignment: .center)
@@ -124,9 +132,9 @@ struct TeamHalfView: View {
             .contentShape(Rectangle())
     }
 
-    private var scoreLabel: some View {
+    private func scoreLabel(size: CGFloat) -> some View {
         Text("\(score)")
-            .font(.custom("Digital-7", size: 160))
+            .font(.custom("Digital-7", size: size))
             .foregroundColor(.white)
             .minimumScaleFactor(0.3)
             .lineLimit(1)

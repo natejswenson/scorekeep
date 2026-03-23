@@ -15,14 +15,20 @@ struct FootballTeamHalfView: View {
     @State private var scoreScale: CGFloat = 1.0
     @State private var _selectedPoints: Int = 6
     @State private var lastTapTime: Date = .distantPast
+    @State private var pressStartTime: Date?
+    @State private var flashOpacity: Double = 0
 
     private let tapDebounce: TimeInterval = 0.20
+    private let longPressDuration: TimeInterval = 0.45
 
     private var showChips: Bool { externalSelectedPoints == nil }
     private var activeSelectedPoints: Int { externalSelectedPoints ?? _selectedPoints }
 
-    private var backgroundColor: Color {
-        side == .team1 ? Color(hex: "#1E1E1E") : Color(hex: "#161616")
+    private var backgroundColor: LinearGradient {
+        let theme = SettingsManager.shared.activeTheme
+        return side == .team1
+            ? LinearGradient(colors: [Color(hex: theme.team1Top), Color(hex: theme.team1Bottom)], startPoint: .top, endPoint: .bottom)
+            : LinearGradient(colors: [Color(hex: theme.team2Top), Color(hex: theme.team2Bottom)], startPoint: .top, endPoint: .bottom)
     }
     private let accentColor = Color(hex: "#FB923C")
     private let pointValues = [6, 3, 2, 1]
@@ -40,6 +46,10 @@ struct FootballTeamHalfView: View {
     var body: some View {
         ZStack {
             backgroundColor.ignoresSafeArea()
+
+            Color(red: 1, green: 0.231, blue: 0, opacity: flashOpacity)
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
 
             GeometryReader { geo in
                 let scoreSize = dynamicFontSize(for: geo.size.height)
@@ -65,12 +75,21 @@ struct FootballTeamHalfView: View {
                 }
             }
         }
-        .onTapGesture {
-            let now = Date()
-            guard now.timeIntervalSince(lastTapTime) >= tapDebounce else { return }
-            lastTapTime = now
-            scoreAction(activeSelectedPoints)
-        }
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    if pressStartTime == nil { pressStartTime = Date() }
+                }
+                .onEnded { _ in
+                    defer { pressStartTime = nil }
+                    let elapsed = pressStartTime.map { Date().timeIntervalSince($0) } ?? 0
+                    if elapsed >= longPressDuration {
+                        handleLongPress()
+                    } else {
+                        handleTap()
+                    }
+                }
+        )
     }
 
     // MARK: - Dynamic Font Size
@@ -116,6 +135,22 @@ struct FootballTeamHalfView: View {
     }
 
     // MARK: - Actions
+
+    private func handleTap() {
+        let now = Date()
+        guard now.timeIntervalSince(lastTapTime) >= tapDebounce else { return }
+        lastTapTime = now
+        scoreAction(activeSelectedPoints)
+    }
+
+    private func handleLongPress() {
+        undoAction()
+        withAnimation(.easeIn(duration: 0.06)) { flashOpacity = 0.08 }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
+            withAnimation(.easeOut(duration: 0.1)) { flashOpacity = 0 }
+        }
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+    }
 
     private func scoreAction(_ points: Int) {
         onScore(points)
