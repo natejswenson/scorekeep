@@ -1,21 +1,21 @@
+import Header from './src/components/Header/Header';
 import HeroSection from './src/components/HeroSection/HeroSection';
-import FeatureStrip from './src/components/FeatureStrip/FeatureStrip';
-import HowToScore from './src/components/HowToScore/HowToScore';
-import MenuSection from './src/components/MenuSection/MenuSection';
+import ScoringSection from './src/components/ScoringSection/ScoringSection';
+import SportsSection from './src/components/SportsSection/SportsSection';
 import VolleyballSection from './src/components/VolleyballSection/VolleyballSection';
-import HistorySection from './src/components/HistorySection/HistorySection';
+import MenuSection from './src/components/MenuSection/MenuSection';
 import SettingsSection from './src/components/SettingsSection/SettingsSection';
 import Footer from './src/components/Footer/Footer';
 
 export default function App() {
   return (
     <>
+      <Header />
       <HeroSection />
-      <FeatureStrip />
-      <HowToScore />
-      <MenuSection />
+      <ScoringSection />
+      <SportsSection />
       <VolleyballSection />
-      <HistorySection />
+      <MenuSection />
       <SettingsSection />
       <Footer />
     </>

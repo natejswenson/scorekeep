@@ -1,34 +1,68 @@
+.section {
+  width: 100%;
+  background: #000;
+}
+
+.inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 96px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  align-items: center;
+}
+
+.media {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.text {
+  width: 100%;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.30);
+  margin: 0 0 16px;
+}
+
 .h2 {
-  font-size: clamp(28px, 5vw, 40px);
+  font-size: clamp(32px, 5vw, 48px);
   font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 16px 0;
-  line-height: 1.1;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0 0 16px;
 }
 
 .intro {
-  font-size: 17px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.70);
+  font-size: clamp(15px, 2vw, 17px);
+  color: rgba(255, 255, 255, 0.50);
   line-height: 1.65;
-  margin: 0 0 28px 0;
+  margin: 0 0 32px;
+  max-width: 480px;
 }
 
 .menuList {
   display: flex;
   flex-direction: column;
-  background: #1C1C1E;
-  border-radius: 12px;
+  background: #111;
+  border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .menuRow {
   display: flex;
   align-items: flex-start;
   padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   gap: 14px;
 }
 
@@ -40,7 +74,6 @@
   font-size: 18px;
   margin-top: 1px;
   flex-shrink: 0;
-  color: rgba(255, 255, 255, 0.55);
 }
 
 .rowContent {
@@ -49,39 +82,33 @@
 }
 
 .rowLabel {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: #ffffff;
-  margin: 0 0 3px 0;
+  color: #fff;
+  margin: 0 0 3px;
 }
 
 .rowDesc {
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.55);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.50);
   line-height: 1.5;
   margin: 0;
 }
 
-.chevron {
-  color: rgba(255, 255, 255, 0.25);
-  font-size: 14px;
-  margin-top: 3px;
-  flex-shrink: 0;
-}
+@media (min-width: 768px) {
+  .inner {
+    flex-direction: row;
+    gap: 72px;
+    align-items: center;
+  }
 
-.timerNote {
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.50);
-  line-height: 1.55;
-  margin: 0;
-  padding: 14px 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
+  .media {
+    flex: 0 0 auto;
+    order: 2;
+  }
 
-.timerNote strong {
-  color: rgba(255, 255, 255, 0.75);
+  .text {
+    flex: 1;
+    order: 1;
+  }
 }

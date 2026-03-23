@@ -1,6 +1,6 @@
 .section {
   width: 100%;
-  background: #0a0a0a;
+  background: #000;
 }
 
 .inner {
@@ -13,14 +13,14 @@
   align-items: center;
 }
 
+.text {
+  width: 100%;
+}
+
 .media {
   width: 100%;
   display: flex;
   justify-content: center;
-}
-
-.text {
-  width: 100%;
 }
 
 .eyebrow {
@@ -41,40 +41,49 @@
   margin: 0 0 16px;
 }
 
-.intro {
+.subtitle {
   font-size: clamp(15px, 2vw, 17px);
   color: rgba(255, 255, 255, 0.50);
   line-height: 1.65;
-  margin: 0 0 36px;
+  margin: 0 0 40px;
   max-width: 480px;
 }
 
-.groups {
+.sportGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.sportCard {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  align-items: flex-start;
+  gap: 12px;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 16px 18px;
 }
 
-.group {
-  padding: 18px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+.dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 5px;
 }
 
-.group:last-child {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-.groupTitle {
-  font-size: 14px;
+.sportName {
+  font-size: 15px;
   font-weight: 600;
   color: #fff;
-  margin: 0 0 6px;
+  margin: 0 0 4px;
 }
 
-.groupBody {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.50);
-  line-height: 1.65;
+.sportDetail {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.5;
   margin: 0;
 }
 
@@ -85,13 +94,13 @@
     align-items: center;
   }
 
-  .media {
-    flex: 0 0 auto;
+  .text {
+    flex: 1;
     order: 1;
   }
 
-  .text {
-    flex: 1;
+  .media {
+    flex: 0 0 auto;
     order: 2;
   }
 }

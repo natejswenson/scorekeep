@@ -1,51 +1,95 @@
-.landscapeImg {
-  border-radius: 16px;
-  transform: rotate(-1.5deg);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
-  max-width: 560px;
+.section {
   width: 100%;
-  display: block;
+  background: #0a0a0a;
+}
+
+.inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 96px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  align-items: center;
+}
+
+.text {
+  width: 100%;
+}
+
+.media {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.30);
+  margin: 0 0 16px;
 }
 
 .h2 {
-  font-size: clamp(28px, 5vw, 40px);
+  font-size: clamp(32px, 5vw, 48px);
   font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 16px 0;
-  line-height: 1.1;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0 0 16px;
 }
 
 .intro {
-  font-size: 17px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.70);
+  font-size: clamp(15px, 2vw, 17px);
+  color: rgba(255, 255, 255, 0.50);
   line-height: 1.65;
-  margin: 0 0 28px 0;
+  margin: 0 0 32px;
+  max-width: 480px;
 }
 
 .featureList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .featureCard {
-  background: #1C1C1E;
-  border-radius: 10px;
-  padding: 20px 24px;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 18px 22px;
 }
 
 .featureTitle {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: #ffffff;
-  margin: 0 0 6px 0;
+  color: #fff;
+  margin: 0 0 5px;
 }
 
 .featureDesc {
-  font-size: 15px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.65);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
   line-height: 1.6;
   margin: 0;
+}
+
+@media (min-width: 768px) {
+  .inner {
+    flex-direction: row;
+    gap: 72px;
+    align-items: center;
+  }
+
+  .text {
+    flex: 1;
+    order: 1;
+  }
+
+  .media {
+    flex: 0 0 auto;
+    order: 2;
+  }
 }
