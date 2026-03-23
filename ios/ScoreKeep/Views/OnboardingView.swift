@@ -35,12 +35,16 @@ struct OnboardingView: View {
             body: "For all other sports, hold the center button until the ring fills to reset both scores. An undo option appears for 4 seconds if you change your mind."
         ),
         InfoSlide(
-            title: "Switch Sports",
-            body: "Tap the sport icon at the top center of the screen to switch between Volleyball, Basketball, Football, and Soccer."
+            title: "The Menu",
+            body: "Swipe down anywhere on the screen to open the menu. This is where everything lives — switch sports, start a new game, view history, set a timer, and open settings."
         ),
         InfoSlide(
-            title: "Menu & Settings",
-            body: "Swipe down anywhere to open the menu. Start a New Game, view History, enable a Timer, or open Settings to pick a theme, rename teams, and more."
+            title: "Game History",
+            body: "Every game is saved automatically. Open History from the menu to review past results. Volleyball matches expand to show set-by-set scores. Swipe a row left to delete it, or tap Clear All to wipe the slate."
+        ),
+        InfoSlide(
+            title: "Settings & More",
+            body: "Tap either team name on the main screen to rename it. Open Settings from the menu to choose a theme, toggle haptics, keep the screen on during play, and configure volleyball rules."
         ),
     ]
 
@@ -200,24 +204,42 @@ struct OnboardingView: View {
                 undoToastPreview
             }
 
-        // 5 — Switch Sports
+        // 5 — The Menu
         case 5:
-            VStack(spacing: 18) {
-                // Sport switcher button replica (glowing icon at top)
-                sportSwitcherPreview
-                Text("tap the icon at the top of the screen")
-                    .font(.system(size: 11, weight: .regular))
-                    .foregroundColor(Color.white.opacity(0.30))
-                    .kerning(0.4)
-                    .multilineTextAlignment(.center)
-            }
-
-        // 6 — Menu & Settings
-        default:
             VStack(spacing: 6) {
                 swipeDownHint
                     .padding(.bottom, 8)
                 menuPreviewRows
+            }
+
+        // 6 — Game History
+        case 6:
+            VStack(spacing: 12) {
+                historyPreviewCard
+                historyHintRow
+            }
+
+        // 7 — Settings & More
+        default:
+            VStack(spacing: 20) {
+                // Rename team hint
+                VStack(spacing: 8) {
+                    HStack(spacing: 8) {
+                        Text("TEAM A")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundColor(Color.white.opacity(0.55))
+                            .kerning(1.5)
+                        Image(systemName: "pencil")
+                            .font(.system(size: 11, weight: .light))
+                            .foregroundColor(Color.white.opacity(0.35))
+                    }
+                    Text("tap any team name to rename it")
+                        .font(.system(size: 10, weight: .regular))
+                        .foregroundColor(Color.white.opacity(0.28))
+                        .kerning(0.4)
+                }
+                // Settings rows hint
+                settingsPreviewRows
             }
         }
     }
@@ -376,23 +398,6 @@ struct OnboardingView: View {
         )
     }
 
-    /// Sport switcher button replica (glowing, as seen at top-center of game)
-    private var sportSwitcherPreview: some View {
-        ZStack {
-            Circle()
-                .fill(Color.white.opacity(0.08))
-                .frame(width: 60, height: 60)
-            Circle()
-                .strokeBorder(Color.white.opacity(0.18), lineWidth: 0.8)
-                .frame(width: 60, height: 60)
-            Image(systemName: "volleyball.fill")
-                .font(.system(size: 24, weight: .light))
-                .foregroundStyle(Color.white)
-                .shadow(color: Color.white.opacity(0.6), radius: 8)
-                .shadow(color: Color.white.opacity(0.3), radius: 20)
-        }
-    }
-
     /// Swipe-down arrow hint
     private var swipeDownHint: some View {
         VStack(spacing: 4) {
@@ -406,9 +411,11 @@ struct OnboardingView: View {
         }
     }
 
-    /// Mini menu row list
+    /// Full menu row list — matches the actual drawer order
     private var menuPreviewRows: some View {
         VStack(spacing: 0) {
+            menuRow(icon: "volleyball.fill",        label: "Sport",    value: "Volleyball")
+            thinDivider
             menuRow(icon: "arrow.counterclockwise", label: "New Game")
             thinDivider
             menuRow(icon: "clock",                  label: "History")
@@ -417,11 +424,11 @@ struct OnboardingView: View {
             thinDivider
             menuRow(icon: "gearshape",              label: "Settings")
         }
-        .background(Color(hex: "#111111").opacity(0.85), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .frame(width: 200)
+        .background(Color(hex: "#111111").opacity(0.90), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .frame(width: 220)
     }
 
-    private func menuRow(icon: String, label: String) -> some View {
+    private func menuRow(icon: String, label: String, value: String? = nil) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.system(size: 14, weight: .light))
@@ -431,9 +438,17 @@ struct OnboardingView: View {
                 .font(.system(size: 14, weight: .regular))
                 .foregroundColor(Color.white.opacity(0.80))
             Spacer()
+            if let value {
+                Text(value)
+                    .font(.system(size: 12, weight: .regular))
+                    .foregroundColor(Color.white.opacity(0.30))
+            }
+            Image(systemName: "chevron.right")
+                .font(.system(size: 10, weight: .light))
+                .foregroundColor(Color.white.opacity(0.18))
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 13)
+        .padding(.vertical, 12)
     }
 
     private var thinDivider: some View {
@@ -441,6 +456,102 @@ struct OnboardingView: View {
             .fill(Color.white.opacity(0.08))
             .frame(height: 0.5)
             .padding(.horizontal, 16)
+    }
+
+    /// Mock game history card
+    private var historyPreviewCard: some View {
+        VStack(spacing: 0) {
+            // Game row
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Team A  vs  Team B")
+                        .font(.system(size: 14, weight: .regular))
+                        .foregroundColor(.white)
+                    Text("Today · Team A")
+                        .font(.system(size: 11))
+                        .foregroundColor(Color.white.opacity(0.38))
+                }
+                Spacer()
+                Text("25 – 18")
+                    .font(.system(size: 18, weight: .thin))
+                    .foregroundColor(.white)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+
+            thinDivider
+
+            // Volleyball expanded set detail
+            HStack {
+                Text("Set 1")
+                    .font(.system(size: 11))
+                    .foregroundColor(Color.white.opacity(0.38))
+                Spacer()
+                Text("25 – 18")
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundColor(Color.white.opacity(0.60))
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+
+            thinDivider
+
+            HStack {
+                Text("Set 2")
+                    .font(.system(size: 11))
+                    .foregroundColor(Color.white.opacity(0.38))
+                Spacer()
+                Text("25 – 22")
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundColor(Color.white.opacity(0.60))
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+        }
+        .background(Color(hex: "#1C1C1E"), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .frame(width: 230)
+    }
+
+    /// Swipe-to-delete hint below the history card
+    private var historyHintRow: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "arrow.left")
+                .font(.system(size: 10, weight: .light))
+                .foregroundColor(Color.white.opacity(0.28))
+            Text("swipe left to delete · Clear All in top-right")
+                .font(.system(size: 10, weight: .regular))
+                .foregroundColor(Color.white.opacity(0.28))
+                .kerning(0.3)
+        }
+    }
+
+    /// Settings section preview
+    private var settingsPreviewRows: some View {
+        VStack(spacing: 0) {
+            settingsRow(label: "Theme",         value: "Classic")
+            thinDivider
+            settingsRow(label: "Haptic Feedback", value: "On")
+            thinDivider
+            settingsRow(label: "Keep Screen On",  value: "On")
+            thinDivider
+            settingsRow(label: "Timer",           value: "Off")
+        }
+        .background(Color(hex: "#1C1C1E"), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .frame(width: 230)
+    }
+
+    private func settingsRow(label: String, value: String) -> some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 13, weight: .regular))
+                .foregroundColor(Color.white.opacity(0.80))
+            Spacer()
+            Text(value)
+                .font(.system(size: 13, weight: .regular))
+                .foregroundColor(Color.white.opacity(0.35))
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 11)
     }
 
     // MARK: - Navigation
