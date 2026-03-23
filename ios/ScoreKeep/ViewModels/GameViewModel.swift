@@ -75,6 +75,46 @@ final class GameViewModel {
     var team2CanUndo: Bool { !team2ActionStack.isEmpty }
     var canUndoGlobal: Bool { !globalActionLog.isEmpty }
 
+    // MARK: - Volleyball match rules
+
+    var setsToWin: Int { (SettingsManager.shared.bestOfSets + 1) / 2 }
+
+    /// True when this is the deciding final set (e.g. 1-1 in best-of-3)
+    var isFinalSet: Bool {
+        guard activeSport == .volleyball else { return false }
+        return team1GamesWon == setsToWin - 1 && team2GamesWon == setsToWin - 1
+    }
+
+    /// The score needed to win the current set
+    var currentSetMaxScore: Int {
+        guard activeSport == .volleyball else { return SettingsManager.shared.maxScore(for: activeSport) }
+        return isFinalSet ? SettingsManager.shared.finalSetScore : SettingsManager.shared.maxScoreVolleyball
+    }
+
+    /// Which team has won the match (nil if ongoing)
+    var matchWinner: TeamSide? {
+        guard activeSport == .volleyball else { return nil }
+        if team1GamesWon >= setsToWin { return .team1 }
+        if team2GamesWon >= setsToWin { return .team2 }
+        return nil
+    }
+    var isMatchWon: Bool { matchWinner != nil }
+
+    /// Which team meets the win-by-2 condition for the current set
+    var setWinner: TeamSide? {
+        guard activeSport == .volleyball else { return nil }
+        let max = currentSetMaxScore
+        if team1Score >= max && team1Score - team2Score >= 2 { return .team1 }
+        if team2Score >= max && team2Score - team1Score >= 2 { return .team2 }
+        return nil
+    }
+
+    /// True when auto-advance is on and a team has clinched the set
+    var setWinConditionMet: Bool {
+        guard SettingsManager.shared.autoAdvanceSet else { return false }
+        return setWinner != nil
+    }
+
     // Debounce for tap-anywhere sports (volleyball, soccer)
     private var lastTapTime: [Int: Date] = [:]   // 1 = team1, 2 = team2
     private let tapDebounceInterval: TimeInterval = 0.2
