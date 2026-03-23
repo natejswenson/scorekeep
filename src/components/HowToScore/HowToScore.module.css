@@ -1,0 +1,27 @@
+.h2 {
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 28px 0;
+  line-height: 1.1;
+}
+
+.body {
+  font-size: 17px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.70);
+  line-height: 1.65;
+  margin: 0 0 24px 0;
+}
+
+.body strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.subheading {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 32px 0 10px 0;
+}

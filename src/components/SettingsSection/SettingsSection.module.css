@@ -1,0 +1,89 @@
+.h2 {
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  line-height: 1.1;
+}
+
+.intro {
+  font-size: 17px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.70);
+  line-height: 1.65;
+  margin: 0 0 32px 0;
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.group {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 24px;
+}
+
+.groupTitle {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.40);
+  margin: 0 0 12px 0;
+}
+
+.groupBody {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.70);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.groupBody strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.themeTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 13px;
+}
+
+.themeTable th {
+  text-align: left;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.40);
+  padding: 0 0 8px 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.themeTable td {
+  padding: 10px 0;
+  color: rgba(255, 255, 255, 0.65);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.themeTable td:first-child {
+  color: #ffffff;
+  font-weight: 500;
+  min-width: 140px;
+}
+
+.swatch {
+  display: inline-block;
+  width: 24px;
+  height: 14px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-right: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}

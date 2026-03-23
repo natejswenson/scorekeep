@@ -1,0 +1,132 @@
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Split gradient background */
+.bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 0;
+}
+
+.bgLeft {
+  flex: 1;
+  background: linear-gradient(to bottom, #3b75e9, #0e1e4a);
+}
+
+.bgRight {
+  flex: 1;
+  background: linear-gradient(to bottom, #f32727, #460808);
+}
+
+/* Hairline divider */
+.divider {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 0.5px;
+  background: rgba(255, 255, 255, 0.12);
+  z-index: 1;
+}
+
+/* Watermark scores */
+.watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.watermarkScore {
+  font-family: 'Digital-7', monospace;
+  font-size: clamp(80px, 18vw, 160px);
+  color: #ffffff;
+  opacity: 0.12;
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+.watermarkSep {
+  width: 40px;
+}
+
+/* Content layout */
+.content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+}
+
+.textCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+
+.h1 {
+  font-size: clamp(40px, 7vw, 64px);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.tagline {
+  font-size: clamp(18px, 3vw, 24px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.80);
+  max-width: 420px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.phoneCol {
+  display: flex;
+  justify-content: center;
+  width: 55vw;
+  max-width: 280px;
+}
+
+@media (min-width: 768px) {
+  .content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    min-height: 100dvh;
+    gap: 64px;
+  }
+
+  .textCol {
+    align-items: flex-start;
+    text-align: left;
+    flex: 1;
+  }
+
+  .phoneCol {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+  }
+}
