@@ -5,6 +5,21 @@ options:
     iOS: "17.0"
   xcodeVersion: "15.0"
   createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+schemes:
+  ScoreKeep:
+    build:
+      targets:
+        ScoreKeep: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - ScoreKeepTests
+    archive:
+      config: Release
 
 settings:
   base:
@@ -13,6 +28,11 @@ settings:
     SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: "NO"
     INFOPLIST_KEY_UIStatusBarHidden: "YES"
     INFOPLIST_KEY_UIRequiresFullScreen: "YES"
+
+packages:
+  GoogleMobileAds:
+    url: https://github.com/googleads/swift-package-manager-google-mobile-ads.git
+    minorVersion: 13.1.0
 
 targets:
   ScoreKeep:
@@ -24,6 +44,8 @@ targets:
     resources:
       - path: ScoreKeep/Resources/Assets.xcassets
       - path: ScoreKeep/Resources/Fonts
+    dependencies:
+      - package: GoogleMobileAds
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.scorekeep.app
