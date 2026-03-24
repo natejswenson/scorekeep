@@ -21,7 +21,7 @@ export default function Header() {
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.inner}>
-        <a href="#" className={styles.logo}>ScoreKeep</a>
+        <a href="#" className={styles.logo}>SetScore</a>
         <nav className={styles.nav}>
           {links.map(l => (
             <a key={l.href} href={l.href} className={styles.link}>{l.label}</a>

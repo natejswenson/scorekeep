@@ -2,7 +2,7 @@ import SwiftUI
 import GoogleMobileAds
 
 @main
-struct ScoreKeepApp: App {
+struct SetScoreApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

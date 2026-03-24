@@ -29,7 +29,7 @@ export default function ScoringSection() {
           <p className={styles.eyebrow}>How to Play</p>
           <h2 className={styles.h2}>Three gestures. That's it.</h2>
           <p className={styles.subtitle}>
-            ScoreKeep is built around the idea that you should never have to look away from the game.
+            SetScore is built around the idea that you should never have to look away from the game.
             Every action is a single gesture.
           </p>
         </div>

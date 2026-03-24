@@ -32,7 +32,7 @@ export default function SettingsSection() {
         <div className={styles.media}>
           <PhoneFrame
             src={settingsPng}
-            alt="ScoreKeep settings — themes, volleyball, timer, display, haptics"
+            alt="SetScore settings — themes, volleyball, timer, display, haptics"
             maxHeight={560}
           />
         </div>
@@ -40,7 +40,7 @@ export default function SettingsSection() {
           <p className={styles.eyebrow}>Settings</p>
           <h2 className={styles.h2}>Set it up your way.</h2>
           <p className={styles.intro}>
-            ScoreKeep stays out of your way during play. When you need to configure something,
+            SetScore stays out of your way during play. When you need to configure something,
             Settings has it all in one place — open it from the menu.
           </p>
           <div className={styles.groups}>

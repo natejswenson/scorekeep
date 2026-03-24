@@ -33,7 +33,7 @@ export default function VolleyballSection() {
           <p className={styles.eyebrow}>Volleyball</p>
           <h2 className={styles.h2}>Built for volleyball.</h2>
           <p className={styles.intro}>
-            Volleyball has rules that most scorekeeping apps ignore. ScoreKeep handles every
+            Volleyball has rules that most scorekeeping apps ignore. SetScore handles every
             detail — sets, win-by-two, deciding set scoring, and full match tracking.
           </p>
           <div className={styles.featureList}>
@@ -48,7 +48,7 @@ export default function VolleyballSection() {
         <div className={styles.media}>
           <PhoneFrame
             src={portraitVolleyball}
-            alt="ScoreKeep — volleyball game in progress"
+            alt="SetScore — volleyball game in progress"
             maxHeight={540}
           />
         </div>

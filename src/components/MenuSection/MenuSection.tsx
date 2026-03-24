@@ -37,7 +37,7 @@ export default function MenuSection() {
         <div className={styles.media}>
           <PhoneFrame
             src={menuDrawer}
-            alt="ScoreKeep menu open — Sport, New Game, History, Help, Settings"
+            alt="SetScore menu open — Sport, New Game, History, Help, Settings"
             maxHeight={520}
           />
         </div>

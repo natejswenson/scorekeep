@@ -10,13 +10,13 @@ export default function HeroSection() {
         <div className={styles.phone}>
           <PhoneFrame
             src={gamePortrait}
-            alt="ScoreKeep — volleyball game in progress"
+            alt="SetScore — volleyball game in progress"
             maxHeight={560}
           />
         </div>
         <div className={styles.text}>
           <p className={styles.eyebrow}>iOS App</p>
-          <h1 className={styles.h1}>ScoreKeep</h1>
+          <h1 className={styles.h1}>SetScore</h1>
           <p className={styles.tagline}>
             The cleanest scorekeeping app for volleyball, basketball, football, and soccer.
             No ads during play. No clutter. Just the score.

@@ -52,7 +52,7 @@ export default function SportsSection() {
         <div className={styles.media}>
           <PhoneFrame
             src={sportSelector}
-            alt="ScoreKeep sport selector — volleyball, basketball, football, soccer"
+            alt="SetScore sport selector — volleyball, basketball, football, soccer"
             maxHeight={520}
           />
         </div>
