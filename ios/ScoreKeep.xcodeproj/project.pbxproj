@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -67,7 +67,7 @@
 		336828ED5E567C498BEF6014 /* UndoToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoToastView.swift; sourceTree = "<group>"; };
 		3E903809003EC65459475774 /* Sport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sport.swift; sourceTree = "<group>"; };
 		3FE6D8AD487EA49B19984B6C /* SportIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportIconView.swift; sourceTree = "<group>"; };
-		450E84D79BD76EFE2C255049 /* ScoreKeep.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ScoreKeep.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		450E84D79BD76EFE2C255049 /* ScoreKeep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScoreKeep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A52F7B9ED6F8418B76AB559 /* ActiveGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveGame.swift; sourceTree = "<group>"; };
 		5B2EFCE0FF9BE617C2586627 /* MainGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainGameView.swift; sourceTree = "<group>"; };
 		671252FE7F5582418B34369A /* BasketballTeamHalfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasketballTeamHalfView.swift; sourceTree = "<group>"; };
@@ -298,7 +298,6 @@
 			packageReferences = (
 				D91D8118C3F60F72E652B0C5 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -454,7 +453,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.scorekeep.tests;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ScoreKeep.app/ScoreKeep";
 			};
 			name = Release;
@@ -466,7 +465,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 52URU97J98;
 				INFOPLIST_FILE = ScoreKeep/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait\nUIInterfaceOrientationLandscapeLeft\nUIInterfaceOrientationLandscapeRight\n";
@@ -475,9 +476,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.scorekeep.app;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -494,7 +496,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.scorekeep.tests;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ScoreKeep.app/ScoreKeep";
 			};
 			name = Debug;
@@ -573,7 +575,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 52URU97J98;
 				INFOPLIST_FILE = ScoreKeep/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait\nUIInterfaceOrientationLandscapeLeft\nUIInterfaceOrientationLandscapeRight\n";
@@ -582,9 +586,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.scorekeep.app;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
